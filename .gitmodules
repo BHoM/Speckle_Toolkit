@@ -1,9 +1,6 @@
 [submodule "SpeckleCore"]
 	path = SpeckleCore
 	url = https://github.com/speckleworks/SpeckleCore.git
-[submodule "BHoM"]
-	path = BHoM
-	url = https://github.com/BHoM/BHoM.git
 [submodule "BHoM_Engine"]
 	path = BHoM_Engine
 	url = https://github.com/BHoM/BHoM_Engine.git
