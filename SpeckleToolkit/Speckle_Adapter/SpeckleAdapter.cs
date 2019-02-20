@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BH.Adapter;
 using BH.Engine.Speckle;
+using BH.oM.Base;
 
 namespace BH.Adapter.Speckle
 {
@@ -16,17 +18,26 @@ namespace BH.Adapter.Speckle
     /***************************************************/
 
     //Add any applicable constructors here, such as linking to a specific file or anything else as well as linking to that file through the (if existing) com link via the API
-    public SpeckleAdapter( )
+    public SpeckleAdapter( SpeckleCore.Account speckleAccount, string streamId )
     {
       AdapterId = BH.Engine.Speckle.Convert.AdapterId;   //Set the "AdapterId" to "SoftwareName_id". Generally stored as a constant string in the convert class in the SoftwareName_Engine
 
       Config.SeparateProperties = true;   //Set to true to push dependant properties of objects before the main objects are being pushed. Example: push nodes before pushing bars
-      Config.MergeWithComparer = true;    //Set to true to use EqualityComparers to merge objects. Example: merge nodes in the same location
+      Config.MergeWithComparer = false;    //Set to true to use EqualityComparers to merge objects. Example: merge nodes in the same location
       Config.ProcessInMemory = false;     //Set to false to to update objects in the toolkit during the push
-      Config.CloneBeforePush = true;      //Set to true to clone the objects before they are being pushed through the software. Required if any modifications at all, as adding a software ID is done to the objects
-      Config.UseAdapterId = true;         //Tag objects with a software specific id in the CustomData. Requires the NextIndex method to be overridden and implemented
+      Config.CloneBeforePush = false;      //Set to true to clone the objects before they are being pushed through the software. Required if any modifications at all, as adding a software ID is done to the objects
+      Config.UseAdapterId = false;         //Tag objects with a software specific id in the CustomData. Requires the NextIndex method to be overridden and implemented
     }
 
+    protected override bool Create<T>( IEnumerable<T> objects, bool replaceAll = false )
+    {
+      throw new NotImplementedException();
+    }
+
+    protected override IEnumerable<IBHoMObject> Read( Type type, IList ids )
+    {
+      throw new NotImplementedException();
+    }
 
 
 
