@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BH.Adapter;
 using BH.Engine.Speckle;
 using BH.oM.Base;
+using BH.oM.DataManipulation.Queries;
 using SpeckleCore;
 
 namespace BH.Adapter.Speckle
@@ -16,10 +17,6 @@ namespace BH.Adapter.Speckle
 
     public SpeckleApiClient myClient;
     public Account myAccount;
-
-    /***************************************************/
-    /**** Constructors                              ****/
-    /***************************************************/
 
     //Add any applicable constructors here, such as linking to a specific file or anything else as well as linking to that file through the (if existing) com link via the API
     public SpeckleAdapter( SpeckleCore.Account speckleAccount, string streamId )
@@ -33,17 +30,34 @@ namespace BH.Adapter.Speckle
       Config.UseAdapterId = false;
 
       myAccount = speckleAccount;
+      myClient = new SpeckleApiClient() { BaseUrl = myAccount.RestApi, AuthToken=myAccount.Token, Stream = new SpeckleStream() { StreamId = streamId } }; // hacky, but i don't want to rebuild stuff and fiddle dll loading etc.
 
-      myClient = new SpeckleApiClient(myAccount.RestApi, false);
+      myClient.SetupWebsocket();
+    }
 
+    // Super naive implementation to get the ball rolling - in theory, this should implement the orchestration methods from gh/dyn senders (which actually should be moved in the core)
+    public override List<IObject> Push( IEnumerable<IObject> objects, string tag = "", Dictionary<string, object> config = null )
+    {
 
+      var converted = SpeckleCore.Converter.Serialise( objects );
+      var defaultLayer = new Layer() { Name = "Default Layer", OrderIndex = 0, StartIndex = 0, ObjectCount = converted.Count, Topology = "", Guid = "c8a58593-7080-450b-96b9-b0158844644b" };
+      var myStream = new SpeckleStream() { Objects = converted, Layers = new List<Layer>() { defaultLayer } };
+
+      var cloneResponse = myClient.StreamCloneAsync( myClient.Stream.StreamId ).Result;
+      var updateResponse = myClient.StreamUpdateAsync( myClient.Stream.StreamId, myStream ).Result;
+      myClient.BroadcastMessage( "stream", myClient.Stream.StreamId, new { eventType = "update-global" } );
+      return objects.ToList();
+    }
+
+    // Again, super naive implementation but does what it says on the tin
+    public override IEnumerable<object> Pull( IQuery query, Dictionary<string, object> config = null )
+    {
+      var response = myClient.StreamGetObjectsAsync( myClient.Stream.StreamId, "" ).Result;
+      return Converter.Deserialise( response.Resources );
     }
 
     protected override bool Create<T>( IEnumerable<T> objects, bool replaceAll = false )
     {
-
-      var x = objects;
-
       throw new NotImplementedException();
     }
 
@@ -51,20 +65,6 @@ namespace BH.Adapter.Speckle
     {
       throw new NotImplementedException();
     }
-
-
-
-    /***************************************************/
-    /**** Private  Fields                           ****/
-    /***************************************************/
-
-    //Add any comlink object as a private field here, example named:
-
-    //private SoftwareComLink m_softwareNameCom;
-
-
-    /***************************************************/
-
 
   }
 }
