@@ -7,11 +7,15 @@ using System.Threading.Tasks;
 using BH.Adapter;
 using BH.Engine.Speckle;
 using BH.oM.Base;
+using SpeckleCore;
 
 namespace BH.Adapter.Speckle
 {
   public partial class SpeckleAdapter : BHoMAdapter
   {
+
+    public SpeckleApiClient myClient;
+    public Account myAccount;
 
     /***************************************************/
     /**** Constructors                              ****/
@@ -26,11 +30,20 @@ namespace BH.Adapter.Speckle
       Config.MergeWithComparer = false;    //Set to true to use EqualityComparers to merge objects. Example: merge nodes in the same location
       Config.ProcessInMemory = false;     //Set to false to to update objects in the toolkit during the push
       Config.CloneBeforePush = false;      //Set to true to clone the objects before they are being pushed through the software. Required if any modifications at all, as adding a software ID is done to the objects
-      Config.UseAdapterId = false;         //Tag objects with a software specific id in the CustomData. Requires the NextIndex method to be overridden and implemented
+      Config.UseAdapterId = false;
+
+      myAccount = speckleAccount;
+
+      myClient = new SpeckleApiClient(myAccount.RestApi, false);
+
+
     }
 
     protected override bool Create<T>( IEnumerable<T> objects, bool replaceAll = false )
     {
+
+      var x = objects;
+
       throw new NotImplementedException();
     }
 
