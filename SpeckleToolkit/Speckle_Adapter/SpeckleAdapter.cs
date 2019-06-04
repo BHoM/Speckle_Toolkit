@@ -2,10 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BH.Adapter;
-using BH.Engine.Speckle;
 using BH.oM.Base;
 using BH.oM.DataManipulation.Queries;
 using SpeckleCore;

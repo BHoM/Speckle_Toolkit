@@ -16,7 +16,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\Build\</OutputPath>
+    <OutputPath>..\..\Build\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -32,29 +32,46 @@
   <ItemGroup>
     <Reference Include="BHoM">
       <HintPath>..\..\..\BHoM\Build\BHoM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="BHoM_Adapter">
       <HintPath>..\..\..\BHoM_Adapter\Build\BHoM_Adapter.dll</HintPath>
-    </Reference>
-    <Reference Include="BHoM_Engine">
-      <HintPath>..\..\..\BHoMEngine\Build\BHoM_Engine.dll</HintPath>
-    </Reference>
-    <Reference Include="DataManipulation_Engine, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\BHoMEngine\Build\DataManipulation_Engine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DataManipulation_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\BHoM\Build\DataManipulation_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
+    <Reference Include="SpeckleCore, Version=1.5.7067.37830, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\AppData\Roaming\McNeel\Rhinoceros\6.0\Plug-ins\Speckle Rhino (512d9705-6f92-49ca-a606-d6d5c1ac6aa2)\1.0.0.0\SpeckleCore.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.CSharp">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Data">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Net.Http">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CRUD\Create.cs" />
@@ -68,10 +85,6 @@
     <Compile Include="Types\DependencyTypes.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SpeckleCore\SpeckleCore\SpeckleCore.csproj">
-      <Project>{cfe27d3d-8a1a-43f9-9387-8fd9e119e174}</Project>
-      <Name>SpeckleCore</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Speckle_Engine\Speckle_Engine.csproj">
       <Project>{5e10ac78-dcb1-4cd8-bba5-5d33fdffaf8b}</Project>
       <Name>Speckle_Engine</Name>
@@ -80,7 +93,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>Copy "$(TargetDir)" "C:\Users\Dim\AppData\Roaming\Grasshopper\Libraries\BHoM"</PostBuildEvent>
+    <PostBuildEvent>REM Copy /Y "$(TargetDir)$(TargetName).dll" "$(AppData)\BHoM\Assemblies"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
