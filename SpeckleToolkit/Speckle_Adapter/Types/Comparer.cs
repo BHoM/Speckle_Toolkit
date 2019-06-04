@@ -1,5 +1,4 @@
-﻿using BH.Engine.Base.Objects;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace BH.Adapter.Speckle
