@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speckle_Adapter", "Speckle_Adapter\Speckle_Adapter.csproj", "{ADC4A383-C826-40D3-B639-90760BF32E74}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speckle_Engine", "Speckle_Engine\Speckle_Engine.csproj", "{94A03DE9-C196-49B1-A509-CBAFCD63BA3C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ADC4A383-C826-40D3-B639-90760BF32E74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADC4A383-C826-40D3-B639-90760BF32E74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADC4A383-C826-40D3-B639-90760BF32E74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADC4A383-C826-40D3-B639-90760BF32E74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94A03DE9-C196-49B1-A509-CBAFCD63BA3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94A03DE9-C196-49B1-A509-CBAFCD63BA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94A03DE9-C196-49B1-A509-CBAFCD63BA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94A03DE9-C196-49B1-A509-CBAFCD63BA3C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C18E5C66-1244-43D8-95F5-DF57E48C03F2}
+	EndGlobalSection
+EndGlobal
