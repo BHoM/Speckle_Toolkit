@@ -2,19 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 using BH.oM.Base;
+using BH.oM.DataManipulation.Queries;
+using SpeckleCore;
 
 namespace BH.Adapter.Speckle
 {
-  public partial class SpeckleAdapter
-  {
+    public partial class SpeckleAdapter
+    {
         /***************************************************/
         /**** Adapter overload method                   ****/
         /***************************************************/
         protected override IEnumerable<IBHoMObject> Read(Type type, IList ids)
         {
+            // // - This method will only be called from the BHoM_Adapter by either: 1) The Replace method 2) The Read overload with the query stuff in it
+
             ////Choose what to pull out depending on the type. Also see example methods below for pulling out bars and dependencies
             //if (type == typeof(Node))
             //    return ReadNodes(ids as dynamic);
@@ -25,7 +28,61 @@ namespace BH.Adapter.Speckle
             //else if (type == typeof(Material))
             //    return ReadMaterials(ids as dynamic);
 
-            return new List<IBHoMObject>();
+            ///------
+            ///
+
+            List<string> speckleGuids = new List<string>();
+
+            for (int i = 0; i < ids?.Count; i++)
+                speckleGuids.Add(ids[i].ToString());
+
+            ResponseObject response = MakeGETRequest(speckleGuids);               
+            
+            List <IBHoMObject> bHoMObjects = new List<IBHoMObject>();
+            List<IObject> iObjects = new List<IObject>();
+            List<object> reminder = new List<object>();
+
+            bool assignSpeckleIdToBHoMObjects = true;
+
+            if (!BH.Engine.Speckle.Convert.ResponseToBHoM(response, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects))
+            {
+                Engine.Reflection.Compute.RecordError("Failed to elaborate server response.");
+                return new List<IBHoMObject>();
+            }
+
+            return bHoMObjects;
+        }
+
+  
+        public ResponseObject MakeGETRequest(List<string> speckleGuids = null)
+        {
+            if (speckleGuids == null)
+            {
+                return SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, "").Result;      
+            }
+            else
+            {
+                // GET only specific IDs
+                return SpeckleClient.ObjectGetBulkAsync(speckleGuids.ToArray(), "omit=displayValue").Result;
+            }
+        }
+
+        public List<string> QueryToSpeckleIds(FilterQuery query)
+        {
+            List<string> speckleGuids = new List<string>();
+
+            IList objectIds = null;
+            object idObject;
+            if (query.Equalities.TryGetValue("ObjectIds", out idObject) && idObject is IList)
+                objectIds = idObject as IList;
+
+            if (objectIds == null)
+                return speckleGuids;
+
+            for (int i = 0; i < objectIds.Count; i++)
+                speckleGuids.Add(objectIds[i].ToString());
+
+            return speckleGuids;
         }
 
         /***************************************************/

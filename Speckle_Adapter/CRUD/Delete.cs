@@ -6,18 +6,30 @@ using System.Threading.Tasks;
 
 namespace BH.Adapter.Speckle
 {
-  public partial class SpeckleAdapter
-  {
-    /***************************************************/
-    /**** Adapter overload method                   ****/
-    /***************************************************/
-
-    protected override int Delete( Type type, IEnumerable<object> ids )
+    public partial class SpeckleAdapter
     {
-      //Insert code here to enable deletion of specific types of objects with specific ids
-      return 0;
-    }
+        /***************************************************/
+        /**** Adapter overload method                   ****/
+        /***************************************************/
 
-    /***************************************************/
-  }
+        protected override int Delete(Type type, IEnumerable<object> ids)
+        {
+            IEnumerable<string> speckleGuids = ids as IEnumerable<string>;
+
+            if (speckleGuids != null)
+                DeleteIBHoMObjectsBySpeckleGUID(speckleGuids);
+
+            return 0;
+        }
+
+        protected bool DeleteIBHoMObjectsBySpeckleGUID(IEnumerable<string> speckleGuids)
+        {
+            //SpeckleClient.StreamUpdateAsync
+
+
+            return true;
+        }
+
+        /***************************************************/
+    }
 }
