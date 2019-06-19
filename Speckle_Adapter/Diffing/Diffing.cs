@@ -53,27 +53,27 @@ namespace BH.Adapter.Speckle
             List<IBHoMObject> toBeDeleted = guidDiagram.OnlySet2.ToList(); // Objects in the Speckle server that do not exist anymore locally. Just not push them.
             List<IBHoMObject> toBeDiffedByProperty = guidDiagram.Intersection.Select(o => o.Item1).ToList(); // Objects that already exist on the Speckle Server, based on their BHoM GUID. 
 
-            // Diffing for IObjects and everything else
+
+            // // - Insert code here for toBeDiffedByProperty to use custom comparers to diff by property.
+
+            // At the moment, not having any custom comparer, the toBeDiffedByProperty are all just re-created (like assuming they've all changed, even if they didn't).
+            objectsToBeCreated = newObjects.Concat(toBeDiffedByProperty).Concat(objectsToBePushed.Where(o => o as IBHoMObject == null)).ToList();
+
+            if (objectsToBeCreated.Count == 0)
+            {
+                BH.Engine.Reflection.Compute.RecordNote("Speckle already contains every BHoM currently being pushed. They have not been pushed.");
+            }
+
+            // IObjects always have to be recreated as they have no GUID
             List<int> objectsToPushHashes = new List<int>();
             objectsToPushHashes = objectsToBePushed.Select(o => o.ToString().GetHashCode()).ToList();
 
-            foreach (var o in iObjectsInSpeckle) //.Concat(reminderObjectsInSpeckle)
+            foreach (var o in iObjectsToBePushed) //.Concat(reminderObjectsInSpeckle)
             {
                 if (!objectsToPushHashes.Any(hash => hash == o.ToString().GetHashCode()))
                     objectsToBeCreated.Add(o);
             }
 
-
-            // // - Insert code here for toBeDiffedByProperty to use custom comparers to diff by property.
-
-            // At the moment, not having any custom comparer, the toBeDiffedByProperty are all just re-created (like assuming they've all changed, even if they didn't).
-            newObjects.Concat(toBeDiffedByProperty).Concat(objectsToBePushed.Where(o => o as IBHoMObject == null)).ToList();
-
-            if (objectsToBeCreated.Count == 0)
-            {
-                BH.Engine.Reflection.Compute.RecordNote("Speckle already contains every object currently being pushed. Nothing has been uploaded.");
-                return true;
-            }
 
             if (CreateAnyObject(objectsToBeCreated))
                 objectsCreated = objectsToBeCreated;

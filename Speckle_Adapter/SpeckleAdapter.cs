@@ -64,6 +64,11 @@ namespace BH.Adapter.Speckle
                 if (configObj is bool)
                     useGUIDS = (bool)configObj;
 
+            bool setAssignedId = true;
+            if (config != null && config.TryGetValue("SetAssignedId", out configObj))
+                if (configObj is bool)
+                    setAssignedId = (bool)configObj;
+
             // //- Configure history. By default it's enabled, and it produces "child" streams at every push that correspond to versions.
             configureHistory(config);
 
@@ -87,7 +92,7 @@ namespace BH.Adapter.Speckle
             else
             {
                 // // - Base push rewritten to allow some additional CustomData to go in.
-                BasePushRewritten(objectsToPush, pushType, tag, ref success);
+                BasePushRewritten(objectsToPush, pushType, tag, setAssignedId, ref success);
             }
 
             return success ? objectsToPush : new List<IObject>();
@@ -151,7 +156,7 @@ namespace BH.Adapter.Speckle
         /**** Private Helper Methods                    ****/
         /***************************************************/
 
-        private void BasePushRewritten(List<IObject> objectsToPush, string pushType, string tag, ref bool success)
+        private void BasePushRewritten(List<IObject> objectsToPush, string pushType, string tag, bool setAssignedId, ref bool success)
         {
             // // - Base push rewritten to allow some additional CustomData to go in.
             Type iBHoMObjectType = typeof(IBHoMObject);
@@ -171,10 +176,7 @@ namespace BH.Adapter.Speckle
                     iBHoMObjects.ToList().ForEach(o => o.CustomData["Speckle_StreamId"] = SpeckleStreamId);
 
                     /// Switch push type
-                    if (pushType == "Replace")
-                        success &= Replace(iBHoMObjects as dynamic, tag);
-                    else if (pushType == "UpdateOnly")
-                        success &= UpdateOnly(iBHoMObjects as dynamic, tag);
+                    success &= CreateIBHoMObjects(iBHoMObjects as dynamic, setAssignedId);//Replace(iBHoMObjects as dynamic, tag);
                 }
                 else
                 {
@@ -199,7 +201,7 @@ namespace BH.Adapter.Speckle
                 response = SpeckleClient.StreamCloneAsync(SpeckleClient.Stream.StreamId).Result; //this line enables history generating "children" streams at every push
         }
 
-         
+
 
         /***************************************************/
         /**** Public Properties                         ****/
