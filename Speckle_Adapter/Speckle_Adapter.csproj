@@ -102,9 +102,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Speckle_Engine\Speckle_Engine.csproj">
-      <Project>{5e10ac78-dcb1-4cd8-bba5-5d33fdffaf8b}</Project>
+      <Project>{94a03de9-c196-49b1-a509-cbafcd63ba3c}</Project>
       <Name>Speckle_Engine</Name>
-      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

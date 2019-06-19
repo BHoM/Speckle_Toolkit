@@ -59,10 +59,10 @@ namespace BH.Adapter.Speckle
             if (config != null && config.TryGetValue("PushType", out configObj))
                 pushType = configObj.ToString();
 
-            bool enableDiffing = false;
-            if (config != null && config.TryGetValue("EnableDiffing", out configObj))
+            bool useGUIDS = true;
+            if (config != null && config.TryGetValue("UseGUIDS", out configObj))
                 if (configObj is bool)
-                    enableDiffing = (bool)configObj;
+                    useGUIDS = (bool)configObj;
 
             // //- Configure history. By default it's enabled, and it produces "child" streams at every push that correspond to versions.
             configureHistory(config);
@@ -74,15 +74,15 @@ namespace BH.Adapter.Speckle
             List<IBHoMObject> bHoMObjects = new List<IBHoMObject>();
             List<IObject> iobjects = new List<IObject>();
 
-            if (enableDiffing)
+            if (useGUIDS)
             {
-                // This part is actually useless -- written assuming IBHoMObjects had static GUID (instead they are re-instantiated at any modification).
-                Engine.Speckle.UtilityMethods.DispatchBHoMObjects(objectsToPush, out bHoMObjects, out iobjects);
+                // This part works using IBHoMObjects GUID.
+                Engine.Speckle.Query.DispatchBHoMObjects(objectsToPush, out bHoMObjects, out iobjects);
 
                 List<IObject> objectsCreated = null;
-                DiffingByBHoMGuid(objectsToPush, out objectsCreated);
+                success = DiffingByBHoMGuid(objectsToPush, out objectsCreated);
 
-                objectsToPush = objectsCreated;
+                objectsToPush = objectsCreated.Count > 0 ? objectsCreated : objectsToPush;
             }
             else
             {
@@ -107,7 +107,7 @@ namespace BH.Adapter.Speckle
             if (query == null)
             {
 
-                if (!BH.Engine.Speckle.Convert.ResponseToBHoM(response, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects))
+                if (!BH.Engine.Speckle.Convert.ToBHoM(response, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects))
                     BH.Engine.Reflection.Compute.RecordError("Failed to deserialize and cast the Server response into BHoM objects.");
 
                 return bHoMObjects.Concat(iObjects).Concat(reminder);
@@ -129,7 +129,7 @@ namespace BH.Adapter.Speckle
                 List<string> speckleIds = QueryToSpeckleIds(filter);
 
                 // Read the IBHoMObjects
-                BH.Engine.Speckle.Convert.ResponseToBHoM(response, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects, speckleIds);
+                BH.Engine.Speckle.Convert.ToBHoM(response, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects, speckleIds);
 
                 // Filter by tag if any 
                 bHoMObjects = filter.Tag == "" ? bHoMObjects : bHoMObjects.Where(x => x.Tags.Contains(filter.Tag)).ToList();
