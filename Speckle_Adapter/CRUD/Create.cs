@@ -38,7 +38,7 @@ namespace BH.Adapter.Speckle
             return true;
         }
 
-        protected bool CreateIBHoMObjects(IEnumerable<IBHoMObject> objects, bool replaceAll = false, bool setAssignedId = true)
+        protected bool CreateIBHoMObjects(IEnumerable<IBHoMObject> objects, bool setAssignedId = true)
         {
             /// Create the objects
             List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(objects);
@@ -85,7 +85,7 @@ namespace BH.Adapter.Speckle
             return true;
         }
 
-        protected bool CreateAnyObject(List<IObject> objects, bool replaceAll = false, bool setAssignedId = true)
+        protected bool CreateAnyObject(List<IObject> objects, bool setAssignedId = true)
         {
             /// Create the objects
             List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(objects);
