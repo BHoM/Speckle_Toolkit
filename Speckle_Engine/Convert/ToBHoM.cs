@@ -14,20 +14,22 @@ namespace BH.Engine.Speckle
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IEnumerable<IBHoMObject> ResponseToBHoM(ResponseObject response, bool setAssignedId = true, List<string> speckleIds = null)
+        public static IEnumerable<IBHoMObject> ToBHoM(ResponseObject response, bool setAssignedId = true, List<string> speckleIds = null)
         {
             List<IBHoMObject> bhomObjects = new List<IBHoMObject>();
 
-            ResponseToBHoM(response, out bhomObjects, out _, out _, setAssignedId, speckleIds);
+            ToBHoM(response, out bhomObjects, out _, out _, setAssignedId, speckleIds);
 
             return bhomObjects;
         }
 
-        public static bool ResponseToBHoM(ResponseObject response, out List<IBHoMObject> bHoMObjects, out List<IObject> iObjects, out List<object> reminder, bool assignSpeckleIdToBHoMObjects = true, List<string> speckleIds = null)
+        public static bool ToBHoM(ResponseObject response, out List<IBHoMObject> bHoMObjects, out List<IObject> iObjects, out List<object> reminder, bool assignSpeckleIdToBHoMObjects = true, List<string> speckleIds = null)
         {
             bHoMObjects = new List<IBHoMObject>();
             iObjects = new List<IObject>();
             reminder = new List<object>();
+            
+
 
             for (int i = 0; i < response.Resources.Count; i++)
             {
@@ -61,5 +63,18 @@ namespace BH.Engine.Speckle
         }
 
 
+        /// <summary>
+        /// Extension method to convert bhom meshes to speckle meshes. 
+        /// Will get called automatically in the speckle "Deserialise" method.
+        /// https://github.com/speckleworks/SpeckleCore/blob/9545e96f04d85f46203a99c21c76eeea0ea03dae/SpeckleCore/Conversion/ConverterDeserialisation.cs#L64
+        /// </summary>
+        //public static BH.oM.Geometry.Mesh ToNative (this Specklemesh speckleMesh)
+        //{
+        //    BH.oM.Geometry.Mesh bhomMesh = new BH.oM.Geometry.Mesh();
+
+        //    // Conversion stuff
+
+        //    return bhomMesh;
+        //}
     }
 }

@@ -34,6 +34,9 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Geometry_oM">
+      <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+    </Reference>
     <Reference Include="SpeckleCore, Version=1.5.7067.37830, Culture=neutral, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\AppData\Roaming\McNeel\Rhinoceros\6.0\Plug-ins\Speckle Rhino Plugin (512d9705-6f92-49ca-a606-d6d5c1ac6aa2)\SpeckleCore.dll</HintPath>
@@ -52,7 +55,7 @@
     <Compile Include="Convert\AdapterId.cs" />
     <Compile Include="Convert\ToBHoM.cs" />
     <Compile Include="Convert\ToSpeckle.cs" />
-    <Compile Include="UtilityMethods.cs" />
+    <Compile Include="Modify\UtilityMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

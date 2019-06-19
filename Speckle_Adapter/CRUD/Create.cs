@@ -68,7 +68,7 @@ namespace BH.Adapter.Speckle
 
                 ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, "").Result;
 
-                IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ResponseToBHoM(response, true);
+                IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
 
                 VennDiagram<IBHoMObject> correspondenceDiagram = Engine.DataStructure.Create.VennDiagram(objects, objectsInSpeckle, new IBHoMGUIDComparer());
 
@@ -119,7 +119,7 @@ namespace BH.Adapter.Speckle
                 ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, "").Result;
 
                 List<IBHoMObject> bHoMObjects_inSpeckle = new List<IBHoMObject>();
-                IEnumerable<IBHoMObject> iBhomObjsInSpeckle = BH.Engine.Speckle.Convert.ResponseToBHoM(response, true);
+                IEnumerable<IBHoMObject> iBhomObjsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
 
                 VennDiagram<IBHoMObject> correspondenceDiagram = Engine.DataStructure.Create.VennDiagram(objects.Where(o => o as IBHoMObject != null).Cast<IBHoMObject>(), iBhomObjsInSpeckle, new IBHoMGUIDComparer());
 

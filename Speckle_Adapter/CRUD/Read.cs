@@ -44,7 +44,7 @@ namespace BH.Adapter.Speckle
 
             bool assignSpeckleIdToBHoMObjects = true;
 
-            if (!BH.Engine.Speckle.Convert.ResponseToBHoM(response, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects))
+            if (!BH.Engine.Speckle.Convert.ToBHoM(response, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects))
             {
                 Engine.Reflection.Compute.RecordError("Failed to elaborate server response.");
                 return new List<IBHoMObject>();

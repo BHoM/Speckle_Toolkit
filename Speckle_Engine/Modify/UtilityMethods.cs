@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BH.Engine.Speckle
 {
-    public static class UtilityMethods
+    public static class Query
     {
         public static IEnumerable<IBHoMObject> FilterIBHoMObjects(IEnumerable<object> objects)
         {
@@ -38,7 +38,17 @@ namespace BH.Engine.Speckle
             ibhomObjects = new List<IBHoMObject>();
             iObjects = new List<IObject>();
 
+            DispatchBHoMObjects(objects, out ibhomObjects, out iObjects, out _);
+        }
+
+        public static void DispatchBHoMObjects(IEnumerable<object> objects, out List<IBHoMObject> ibhomObjects, out List<IObject> iObjects, out List<object> reminder)
+        {
+            ibhomObjects = new List<IBHoMObject>();
+            iObjects = new List<IObject>();
+            reminder = new List<object>();
+
             Type iBHoMObjectType = typeof(IBHoMObject);
+            Type iObjectType = typeof(IObject);
 
             MethodInfo miToList = typeof(Enumerable).GetMethod("Cast");
 
@@ -50,16 +60,19 @@ namespace BH.Engine.Speckle
 
                 if (iBHoMObjectType.IsAssignableFrom(typeGroup.Key))
                 {
+                    // They're iBHoMObjects
                     ibhomObjects.AddRange((IEnumerable<IBHoMObject>)castedObjects);
                 }
-                else
+                else if (iObjectType.IsAssignableFrom(typeGroup.Key))
                 {
                     // They're iObjects
                     iObjects.AddRange((IEnumerable<IObject>)castedObjects);
+                } else
+                {
+                    // They're something else
+                    reminder.AddRange((IEnumerable<object>)castedObjects);
                 }
             }
-
-            
         }
 
         public static IEnumerable<IBHoMObject> FilterByBHoMGUID(IEnumerable<IBHoMObject> objects, List<string> bhomGuid)
