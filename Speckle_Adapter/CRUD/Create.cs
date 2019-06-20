@@ -26,9 +26,19 @@ namespace BH.Adapter.Speckle
 
         protected bool CreateIObjects(IEnumerable<IObject> objects, bool replaceAll = false)
         {
-            IEnumerable<object> newObjects = (IEnumerable<object>)objects; //hacky; assumes T is always a reference type. Should be no problem anyway
+            List<object> objectsConverted = new List<object>();
 
-            List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(newObjects);
+            //IEnumerable<object> newObjects = (IEnumerable<object>)objects; //hacky; assumes T is always a reference type. Should be no problem anyway
+            foreach (var o in objects)
+            {
+                var mesh  = o as BH.oM.Geometry.Mesh;
+                if (mesh != null)
+                    objectsConverted.Add(BH.Engine.Speckle.Convert.ToSpeckle(mesh));
+                else
+                    objectsConverted.Add(o);
+            }
+
+            List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(objectsConverted);
             SpeckleLayer.ObjectCount += objects.Count();
             SpeckleStream.Objects.AddRange(objs_serialized);
 

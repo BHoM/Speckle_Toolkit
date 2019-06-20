@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SpeckleCoreGeometryClasses;
+using Rhino;
 
 namespace BH.Engine.Speckle
 {
@@ -68,13 +70,55 @@ namespace BH.Engine.Speckle
         /// Will get called automatically in the speckle "Deserialise" method.
         /// https://github.com/speckleworks/SpeckleCore/blob/9545e96f04d85f46203a99c21c76eeea0ea03dae/SpeckleCore/Conversion/ConverterDeserialisation.cs#L64
         /// </summary>
-        //public static BH.oM.Geometry.Mesh ToNative (this Specklemesh speckleMesh)
-        //{
-        //    BH.oM.Geometry.Mesh bhomMesh = new BH.oM.Geometry.Mesh();
+        public static BH.oM.Geometry.Mesh ToNative(this SpeckleCoreGeometryClasses.SpeckleMesh speckleMesh)
+        {
 
-        //    // Conversion stuff
+            BH.oM.Geometry.Mesh bhomMesh = new BH.oM.Geometry.Mesh();
 
-        //    return bhomMesh;
-        //}
+            List<BH.oM.Geometry.Point> bhomVertices = new List<BH.oM.Geometry.Point>();
+            for (int j = 0; j < speckleMesh.Vertices.Count; j++)
+            {
+
+                if((j%3) == 0)
+                {
+                    BH.oM.Geometry.Point bhomPoint = new BH.oM.Geometry.Point();
+                    bhomPoint.X = speckleMesh.Vertices[j];
+                    bhomPoint.Y = speckleMesh.Vertices[j +1];
+                    bhomPoint.Z = speckleMesh.Vertices[j + 2];
+                    bhomVertices.Add(bhomPoint);
+                }
+            }
+            
+            List<BH.oM.Geometry.Face> bhomFaces = new List<BH.oM.Geometry.Face>();
+            int i = 0;
+            while (i < speckleMesh.Faces.Count)
+            {
+                if (speckleMesh.Faces[i] == 0)
+                { // triangle
+                    BH.oM.Geometry.Face bhomFace = new BH.oM.Geometry.Face();
+                    bhomFace.A = speckleMesh.Faces[i + 1];
+                    bhomFace.B = speckleMesh.Faces[i + 2];
+                    bhomFace.C = speckleMesh.Faces[i + 3];
+                    bhomFace.D = -1;
+                    bhomFaces.Add(bhomFace);
+                    i += 4;
+                }
+                else
+                { // quad
+                    BH.oM.Geometry.Face bhomFace = new BH.oM.Geometry.Face();
+                    bhomFace.A = speckleMesh.Faces[i + 1];
+                    bhomFace.B = speckleMesh.Faces[i + 2];
+                    bhomFace.C = speckleMesh.Faces[i + 3];
+                    bhomFace.D = speckleMesh.Faces[i + 4];
+                    bhomFaces.Add(bhomFace);
+                    i += 5;
+                }
+            }
+
+            bhomMesh.Vertices = bhomVertices;
+            bhomMesh.Faces = bhomFaces;
+
+            return bhomMesh;
+        }
     }
 }

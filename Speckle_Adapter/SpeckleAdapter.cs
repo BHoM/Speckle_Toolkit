@@ -59,7 +59,7 @@ namespace BH.Adapter.Speckle
             if (config != null && config.TryGetValue("PushType", out configObj))
                 pushType = configObj.ToString();
 
-            bool useGUIDS = true;
+            bool useGUIDS = false;
             if (config != null && config.TryGetValue("UseGUIDS", out configObj))
                 if (configObj is bool)
                     useGUIDS = (bool)configObj;
