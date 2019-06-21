@@ -41,10 +41,6 @@
       <HintPath>..\..\BHoM_Adapter\Build\BHoM_Adapter.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DataManipulation_oM">
-      <HintPath>..\..\BHoM\Build\DataManipulation_oM.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="DataStructure_Engine">
       <HintPath>..\..\BHoM_Engine\Build\DataStructure_Engine.dll</HintPath>
       <Private>False</Private>
@@ -52,6 +48,9 @@
     <Reference Include="DataStructure_oM">
       <HintPath>..\..\BHoM_Engine\Build\DataStructure_oM.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="Data_oM">
+      <HintPath>..\..\BHoM\Build\Data_oM.dll</HintPath>
     </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Reflection_Engine.dll</HintPath>

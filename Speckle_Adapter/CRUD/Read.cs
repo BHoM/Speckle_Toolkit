@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BH.oM.Base;
-using BH.oM.DataManipulation.Queries;
+using BH.oM.Data.Requests;
 using SpeckleCore;
 
 namespace BH.Adapter.Speckle
@@ -67,7 +67,7 @@ namespace BH.Adapter.Speckle
             }
         }
 
-        public List<string> QueryToSpeckleIds(FilterQuery query)
+        public List<string> QueryToSpeckleIds(FilterRequest query)
         {
             List<string> speckleGuids = new List<string>();
 
