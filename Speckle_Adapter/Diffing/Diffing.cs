@@ -1,5 +1,5 @@
 ﻿using BH.oM.Base;
-using BH.oM.DataStructure;
+using BH.oM.Data;
 using BH.Adapter.Speckle.Types;
 using System;
 using System.Collections.Generic;
@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Reflection;
 using System.Collections;
 using SpeckleCore;
+using BH.oM.Data.Collections;
 
 namespace BH.Adapter.Speckle
 {
@@ -47,7 +48,7 @@ namespace BH.Adapter.Speckle
             }
 
             // Diffing for IBHoMObjects
-            VennDiagram<IBHoMObject> guidDiagram = Engine.DataStructure.Create.VennDiagram(objectsToBePushed.Where(o => o as IBHoMObject != null).Cast<IBHoMObject>(), bhomObjectsInSpeckle, new IBHoMGUIDComparer());
+            VennDiagram<IBHoMObject> guidDiagram = Engine.Data.Create.VennDiagram(objectsToBePushed.Where(o => o as IBHoMObject != null).Cast<IBHoMObject>(), bhomObjectsInSpeckle, new IBHoMGUIDComparer());
 
             List<IBHoMObject> newObjects = guidDiagram.OnlySet1.ToList(); // Not having a counterpart in the Speckle Server
             List<IBHoMObject> toBeDeleted = guidDiagram.OnlySet2.ToList(); // Objects in the Speckle server that do not exist anymore locally. Just not push them.
