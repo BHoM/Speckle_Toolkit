@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using BH.oM.Base;
-using BH.oM.DataManipulation.Queries;
+using BH.oM.Data.Requests;
 using SpeckleCore;
 
 namespace BH.Adapter.Speckle
@@ -99,7 +99,7 @@ namespace BH.Adapter.Speckle
         }
 
 
-        public override IEnumerable<object> Pull(IQuery query, Dictionary<string, object> config = null)
+        public override IEnumerable<object> Pull(IRequest query, Dictionary<string, object> config = null)
         {
             var response = SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, "").Result;
 
@@ -123,8 +123,8 @@ namespace BH.Adapter.Speckle
                 /// Base Pull rewritten
                 /// -------------------
 
-                // Make sure this is a FilterQuery
-                FilterQuery filter = query as FilterQuery;
+                // Make sure this is a FilterRequest
+                FilterRequest filter = query as FilterRequest;
                 if (filter == null)
                 {
                     Engine.Reflection.Compute.RecordWarning("Please specify a FilterQuery");

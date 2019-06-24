@@ -42,17 +42,11 @@
       <HintPath>..\..\BHoM_Adapter\Build\BHoM_Adapter.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DataManipulation_oM">
-      <HintPath>..\..\BHoM\Build\DataManipulation_oM.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Data_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Data_Engine.dll</HintPath>
     </Reference>
-    <Reference Include="DataStructure_Engine">
-      <HintPath>..\..\BHoM_Engine\Build\DataStructure_Engine.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="DataStructure_oM">
-      <HintPath>..\..\BHoM_Engine\Build\DataStructure_oM.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="Data_oM">
+      <HintPath>..\..\BHoM\Build\Data_oM.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_oM, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -66,6 +60,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\AppData\Roaming\McNeel\Rhinoceros\6.0\Plug-ins\Speckle Rhino Plugin (512d9705-6f92-49ca-a606-d6d5c1ac6aa2)\SpeckleCore.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="SpeckleCoreGeometryClasses">
+      <HintPath>..\SpeckleRhinoDlls\SpeckleCoreGeometryClasses.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
