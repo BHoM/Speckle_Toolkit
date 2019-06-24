@@ -1,6 +1,7 @@
 ﻿using BH.Adapter.Speckle.Types;
 using BH.oM.Base;
-using BH.oM.DataStructure;
+using BH.oM.Data;
+using BH.oM.Data.Collections;
 using SpeckleCore;
 using System;
 using System.Collections.Generic;
@@ -70,7 +71,7 @@ namespace BH.Adapter.Speckle
 
                 IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
 
-                VennDiagram<IBHoMObject> correspondenceDiagram = Engine.DataStructure.Create.VennDiagram(objects, objectsInSpeckle, new IBHoMGUIDComparer());
+                VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(objects, objectsInSpeckle, new IBHoMGUIDComparer());
 
                 if (correspondenceDiagram.Intersection.Count != objects.Count())
                 {
@@ -121,7 +122,7 @@ namespace BH.Adapter.Speckle
                 List<IBHoMObject> bHoMObjects_inSpeckle = new List<IBHoMObject>();
                 IEnumerable<IBHoMObject> iBhomObjsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
 
-                VennDiagram<IBHoMObject> correspondenceDiagram = Engine.DataStructure.Create.VennDiagram(objects.Where(o => o as IBHoMObject != null).Cast<IBHoMObject>(), iBhomObjsInSpeckle, new IBHoMGUIDComparer());
+                VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(objects.Where(o => o as IBHoMObject != null).Cast<IBHoMObject>(), iBhomObjsInSpeckle, new IBHoMGUIDComparer());
 
                 if (correspondenceDiagram.Intersection.Count != objects.Count())
                 {

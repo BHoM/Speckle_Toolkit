@@ -99,7 +99,7 @@ namespace BH.Adapter.Speckle
         }
 
 
-        public override IEnumerable<object> Pull(FilterRequest query, Dictionary<string, object> config = null)
+        public override IEnumerable<object> Pull(IRequest query, Dictionary<string, object> config = null)
         {
             var response = SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, "").Result;
 
