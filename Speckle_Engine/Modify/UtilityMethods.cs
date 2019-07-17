@@ -38,7 +38,8 @@ namespace BH.Engine.Speckle
             ibhomObjects = new List<IBHoMObject>();
             iObjects = new List<IObject>();
 
-            DispatchBHoMObjects(objects, out ibhomObjects, out iObjects, out List<object> reminder);
+            List<object> reminder;
+            DispatchBHoMObjects(objects, out ibhomObjects, out iObjects, out reminder);
         }
 
         public static void DispatchBHoMObjects(IEnumerable<object> objects, out List<IBHoMObject> ibhomObjects, out List<IObject> iObjects, out List<object> reminder)
