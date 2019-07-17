@@ -18,7 +18,7 @@ namespace BH.Engine.Speckle
         {
             List<IBHoMObject> bhomObjects = new List<IBHoMObject>();
 
-            ToBHoM(response, out bhomObjects, out _, out _, setAssignedId, speckleIds);
+            ToBHoM(response, out bhomObjects, out List<IObject> iObjects, out List<object> reminder, setAssignedId, speckleIds);
 
             return bhomObjects;
         }
