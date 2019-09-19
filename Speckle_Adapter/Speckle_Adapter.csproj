@@ -104,6 +104,7 @@
     </Reference>
     <Reference Include="websocket-sharp, Version=1.0.2.32519, Culture=neutral, PublicKeyToken=5660b08a1845a91e, processorArchitecture=MSIL">
       <HintPath>..\packages\WebSocketSharp-NonPreRelease.1.0.0\lib\net35\websocket-sharp.dll</HintPath>
+      <Private>False</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +124,7 @@
     <ProjectReference Include="..\Speckle_Engine\Speckle_Engine.csproj">
       <Project>{94a03de9-c196-49b1-a509-cbafcd63ba3c}</Project>
       <Name>Speckle_Engine</Name>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
