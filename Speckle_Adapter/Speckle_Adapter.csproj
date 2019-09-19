@@ -125,7 +125,7 @@
     <ProjectReference Include="..\Speckle_Engine\Speckle_Engine.csproj">
       <Project>{94a03de9-c196-49b1-a509-cbafcd63ba3c}</Project>
       <Name>Speckle_Engine</Name>
-      <Private>True</Private>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
