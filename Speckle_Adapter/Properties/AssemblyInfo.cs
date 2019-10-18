@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle( "Speckle_Adapter" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
-[assembly: AssemblyCompany( "Buro Happold" )]
+[assembly: AssemblyCompany( "" )]
 [assembly: AssemblyProduct( "Speckle_Adapter" )]
-[assembly: AssemblyCopyright( "Copyright © Buro Happold" )]
+[assembly: AssemblyCopyright("Copyright © https://github.com/BHoM")]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 
