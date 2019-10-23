@@ -58,7 +58,7 @@ namespace BH.Adapter.Speckle
         {
             if (speckleGuids == null)
             {
-                return SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, "").Result;      
+                return SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;      
             }
             else
             {

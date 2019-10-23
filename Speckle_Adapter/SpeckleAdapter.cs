@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using SpeckleCore;
@@ -20,17 +21,26 @@ namespace BH.Adapter.Speckle
             Config.UseAdapterId = false;
 
             AdapterId = BH.Engine.Speckle.Convert.AdapterId;
-            SpeckleStreamId = speckleStreamId;
+
             SpeckleAccount = speckleAccount;
             SpeckleStream = new SpeckleStream() { StreamId = SpeckleStreamId };
 
             SpeckleClient = new SpeckleApiClient() { BaseUrl = SpeckleAccount.RestApi, AuthToken = SpeckleAccount.Token, Stream = SpeckleStream }; // hacky, but i don't want to rebuild stuff and fiddle dll loading etc.
             SpeckleClient.SetupWebsocket();
+
+
+            //if (string.IsNullOrWhiteSpace(speckleStreamId))
+            SpeckleStreamId = speckleStreamId;
         }
 
 
         public override List<IObject> Push(IEnumerable<IObject> objects, string tag = "", Dictionary<string, object> config = null)
         {
+            //var gna = SpeckleClient.StreamsGetAllAsync("").Result;
+
+            //gna.Resources[0].StreamId
+
+
             objects = objects.ToList(); // to avoid modifying the original objects
             List<IObject> IBHoMObjectsToPush = new List<IObject>(); //has to be IObject even if it's going to collect IBHoMObjects
             List<IObject> IObjectsToPush = new List<IObject>();
@@ -69,7 +79,7 @@ namespace BH.Adapter.Speckle
                 if (configObj is bool)
                     setAssignedId = (bool)configObj;
 
-            // //- Configure history. By default it's enabled, and it produces "child" streams at every push that correspond to versions.
+            // //- Configure history. By default it's enabled, and it produces a new stream at every push that correspond to versions.
             configureHistory(config);
 
             // //- Clone objects
@@ -101,7 +111,7 @@ namespace BH.Adapter.Speckle
 
         public override IEnumerable<object> Pull(IRequest query, Dictionary<string, object> config = null)
         {
-            var response = SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, "").Result;
+            var response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
             List<IBHoMObject> bHoMObjects = new List<IBHoMObject>();
             List<IObject> iObjects = new List<IObject>();
@@ -188,7 +198,8 @@ namespace BH.Adapter.Speckle
 
         private void configureHistory(Dictionary<string, object> config = null)
         {
-            ResponseStreamClone response;
+            ResponseStreamClone response = null;
+            Task<ResponseStreamClone> respStreamClTask = null;
 
             object enableHistoryObj = null;
 
@@ -197,8 +208,22 @@ namespace BH.Adapter.Speckle
 
             bool? enableHistory = enableHistoryObj as bool?;
 
-            if (enableHistory != null && enableHistory == true)
-                response = SpeckleClient.StreamCloneAsync(SpeckleClient.Stream.StreamId).Result; //this line enables history generating "children" streams at every push
+            if (!(bool)enableHistory)
+                return;
+
+            // The following line creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.
+            // The streamId of the cloned "backup" is saved among the main Stream "children" field,
+            // accessible through SpeckleServerAddress/api/v1/streams/streamId
+            respStreamClTask = SpeckleClient.StreamCloneAsync(SpeckleStreamId); 
+
+            try
+            {
+                response = respStreamClTask?.Result;
+            }
+            catch (Exception e) { }
+
+            if (response == null)
+                BH.Engine.Reflection.Compute.RecordWarning($"Could not set the EnableHistory option. Task status: {respStreamClTask.Status.ToString()}");
         }
 
 

@@ -29,7 +29,7 @@ namespace BH.Adapter.Speckle
             BH.Engine.Speckle.Query.DispatchBHoMObjects(objectsToBePushed, out bhomObjectsToBePushed, out iObjectsToBePushed);
 
             // Receive and dispatch objects already in speckle
-            ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, "").Result;
+            ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
             List<IBHoMObject> bhomObjectsInSpeckle = null;
             List<IObject> iObjectsInSpeckle = null;
