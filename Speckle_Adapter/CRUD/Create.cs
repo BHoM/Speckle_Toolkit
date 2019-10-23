@@ -33,8 +33,8 @@ namespace BH.Adapter.Speckle
             SpeckleLayer.ObjectCount += objects.Count();
             SpeckleStream.Objects.AddRange(objs_serialized);
 
-            var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleClient.Stream.StreamId, SpeckleStream).Result;
-            SpeckleClient.BroadcastMessage("stream", SpeckleClient.Stream.StreamId, new { eventType = "update-global" });
+            var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
+            SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
             return true;
         }
@@ -58,8 +58,8 @@ namespace BH.Adapter.Speckle
             }
 
             /// Send the objects
-            var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleClient.Stream.StreamId, SpeckleStream).Result;
-            SpeckleClient.BroadcastMessage("stream", SpeckleClient.Stream.StreamId, new { eventType = "update-global" });
+            var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
+            SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
 
             /// Read the IBHoMobjects as exported in speckle
@@ -67,7 +67,7 @@ namespace BH.Adapter.Speckle
             if (setAssignedId)
             {
 
-                ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, "").Result;
+                ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
                 IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
 
@@ -108,8 +108,8 @@ namespace BH.Adapter.Speckle
             }
 
             /// Send the objects
-            var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleClient.Stream.StreamId, SpeckleStream).Result;
-            SpeckleClient.BroadcastMessage("stream", SpeckleClient.Stream.StreamId, new { eventType = "update-global" });
+            var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
+            SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
 
 
@@ -117,7 +117,7 @@ namespace BH.Adapter.Speckle
             /// so we can assign the Speckle-generated id into the BHoMobjects
             if (setAssignedId)
             {
-                ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, "").Result;
+                ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
                 List<IBHoMObject> bHoMObjects_inSpeckle = new List<IBHoMObject>();
                 IEnumerable<IBHoMObject> iBhomObjsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
