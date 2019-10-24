@@ -207,8 +207,7 @@ namespace BH.Adapter.Speckle
                 config.TryGetValue("EnableHistory", out enableHistoryObj);
 
             bool? enableHistory = enableHistoryObj as bool?;
-
-            if (!(bool)enableHistory)
+            if (enableHistory!= null && !(bool)enableHistory)
                 return;
 
             // The following line creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.
