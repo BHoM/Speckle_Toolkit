@@ -125,11 +125,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdapterActions\Pull.cs" />
+    <Compile Include="AdapterActions\Push.cs" />
     <Compile Include="CRUD\Create.cs" />
     <Compile Include="CRUD\Delete.cs" />
-    <Compile Include="CRUD\NextId.cs" />
     <Compile Include="CRUD\Read.cs" />
-    <Compile Include="CRUD\UpdateObjects.cs" />
+    <Compile Include="CRUD\Update.cs" />
     <Compile Include="Diffing\Diffing.cs" />
     <Compile Include="SpeckleAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
