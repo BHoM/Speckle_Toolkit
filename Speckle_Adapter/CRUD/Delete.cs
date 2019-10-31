@@ -24,10 +24,7 @@ namespace BH.Adapter.Speckle
 
         protected bool DeleteIBHoMObjectsBySpeckleGUID(IEnumerable<string> speckleGuids)
         {
-            //SpeckleClient.StreamUpdateAsync
-
-
-            return true;
+            throw new NotImplementedException();
         }
 
         /***************************************************/
