@@ -3,11 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SpeckleCore;
+using BHG = BH.oM.Geometry;
+using SCG = SpeckleCoreGeometryClasses;
+
 
 namespace BH.Engine.Speckle
 {
-  public static partial class Convert
-  {
+    // initialise to make sure all Speckle kits are loaded
+    public class Initialiser : ISpeckleInitializer
+    {
+        public Initialiser() { }
+    }
+
+    public static partial class Convert
+    {
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
@@ -20,7 +30,68 @@ namespace BH.Engine.Speckle
         //}
 
         /***************************************************/
+        // Helper Methods from SpeckleCoreGeometry
+        public static double[] ToArray(this BHG.Point pt)
+        {
+            return new double[] { pt.X, pt.Y, pt.Z };
+        }
 
+        public static double[] ToFlatArray(this IEnumerable<BHG.Point> points)
+        {
+            return points.SelectMany(pt => pt.ToArray()).ToArray();
+        }
+
+
+        /// <summary>
+        /// Convert BHoM Point -> Speckle Point
+        /// </summary>
+        /// <returns>SpecklePoint object</returns>
+        public static SCG.SpecklePoint ToSpeckle(this BHG.Point bhomPoint)
+        {
+            if (bhomPoint == null) return default;
+
+            SCG.SpecklePoint specklePoint = new SCG.SpecklePoint(bhomPoint.X, bhomPoint.Y, bhomPoint.Z);
+
+            specklePoint.GenerateHash();
+            return specklePoint;
+        }
+
+        /// <summary>
+        /// Convert BHoM Line -> Speckle Line
+        /// </summary>
+        /// <returns>SpeckleLine object</returns>
+        public static SCG.SpeckleLine ToSpeckle(this BHG.Line bhomLine)
+        {
+            if (bhomLine == null) return default;
+
+            SCG.SpeckleLine speckleLine = new SCG.SpeckleLine(
+                (new BHG.Point[] { bhomLine.Start, bhomLine.End }).ToFlatArray()
+                );
+
+            speckleLine.GenerateHash();
+            return speckleLine;
+        }
+        
+        /// <summary>
+        /// Convert BHoM Mesh -> Speckle Mesh
+        /// </summary>
+        /// <returns>SpeckleMesh object</returns>
+        public static SCG.SpeckleMesh ToSpeckle(this BHG.Mesh bhomMesh)
+        {
+            double[] vertices = bhomMesh.Vertices.ToFlatArray();
+            int[] faces = bhomMesh.Faces.SelectMany(face =>
+            {
+                if (face.D != -1) return new int[] { 1, face.A, face.B, face.C, face.D };
+                return new int[] { 0, face.A, face.B, face.C };
+            }).ToArray();
+            var defaultColour = System.Drawing.Color.FromArgb(255, 100, 100, 100);
+            var colors = Enumerable.Repeat(defaultColour.ToArgb(), vertices.Count()).ToArray();
+            
+            SCG.SpeckleMesh speckleMesh = new SCG.SpeckleMesh(vertices, faces, colors, null);
+
+            speckleMesh.GenerateHash();
+            return speckleMesh;
+        }
         /// <summary>
         /// Extension method to convert bhom meshes to speckle meshes. 
         /// Will get called automatically in the speckle "Serialise" method.
@@ -36,7 +107,6 @@ namespace BH.Engine.Speckle
 
         //    return specklemesh;
         //}
-
 
         //public static void test()
         //{
