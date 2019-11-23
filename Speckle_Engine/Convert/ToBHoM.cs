@@ -1,4 +1,4 @@
-using BH.oM.Base;
+﻿using BH.oM.Base;
 using SpeckleCore;
 using System;
 using System.Collections.Generic;
@@ -98,5 +98,50 @@ namespace BH.Engine.Speckle
 
         //    return bhomMesh;
         //}
+
+        /// <summary>
+        /// Convert Speckle Point -> BHoM Point
+        /// </summary>
+        /// <returns>BHoM Point</returns>
+        public static BHG.Point ToBHoM(this SCG.SpecklePoint specklePoint)
+        {
+            return new BHG.Point { X = specklePoint.Value[0], Y = specklePoint.Value[1], Z = specklePoint.Value[2] };
+        }
+
+        /// <summary>
+        /// Convert Speckle Line -> BHoM Line
+        /// </summary>
+        /// <returns>BHoM Line</returns>
+        public static BHG.Line ToBHoM(this SCG.SpeckleLine speckleLine)
+        {
+            List<BHG.Point> points = speckleLine.Value.ToPoints();
+            return new BHG.Line { Start = points[0], End = points[1] };
+        }
+
+        /// <summary>
+        /// Convert Speckle Mesh -> BHoM Mesh
+        /// </summary>
+        /// <returns>BHoM Mesh</returns>
+        public static BHG.Mesh ToBHoM(this SCG.SpeckleMesh speckleMesh)
+        {
+            List<BHG.Point> vertices = speckleMesh.Vertices.ToPoints();
+            List<int> sfaces = speckleMesh.Faces;
+            List<BHG.Face> faces = new List<BHG.Face>();
+            for (int i = 0; i < sfaces.Count;)
+            {
+                if (sfaces[i] == 1) // triangle face
+                {
+                    faces.Add(new BHG.Face { A = sfaces[i + 1], B = sfaces[i + 2], C = sfaces[i + 3], D = -1 });
+                    i = i + 4;
+                }
+                if (sfaces[i] == 0) // quad face
+                {
+                    faces.Add(new BHG.Face { A = sfaces[i + 1], B = sfaces[i + 2], C = sfaces[i + 3], D = sfaces[i + 4] });
+                    i = i + 5;
+                }
+            }
+
+            return new BHG.Mesh { Vertices = vertices, Faces = faces };
+        }
     }
 }
