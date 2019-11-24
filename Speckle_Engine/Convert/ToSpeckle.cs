@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -54,6 +54,20 @@ namespace BH.Engine.Speckle
 
             specklePoint.GenerateHash();
             return specklePoint;
+        }
+
+        /// <summary>
+        /// Convert BHoM Vector -> Speckle Vector
+        /// </summary>
+        /// <returns>SpeckleVector object</returns>
+        public static SCG.SpeckleVector ToSpeckle(this BHG.Vector bhomVector)
+        {
+            if (bhomVector == null) return default;
+
+            SCG.SpeckleVector speckleVector = new SCG.SpeckleVector(bhomVector.X, bhomVector.Y, bhomVector.X);
+
+            speckleVector.GenerateHash();
+            return speckleVector;
         }
 
         /// <summary>
