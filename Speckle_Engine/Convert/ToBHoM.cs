@@ -50,7 +50,7 @@ namespace BH.Engine.Speckle
             bHoMObjects = new List<IBHoMObject>();
             iObjects = new List<IObject>();
             reminder = new List<object>();
-            
+
 
 
             for (int i = 0; i < response.Resources.Count; i++)
@@ -106,6 +106,15 @@ namespace BH.Engine.Speckle
         public static BHG.Point ToBHoM(this SCG.SpecklePoint specklePoint)
         {
             return new BHG.Point { X = specklePoint.Value[0], Y = specklePoint.Value[1], Z = specklePoint.Value[2] };
+        }
+
+        /// <summary>
+        /// Convert Speckle Vector -> BHoM Vector
+        /// </summary>
+        /// <returns>BHoM Vector</returns>
+        public static BHG.Vector ToBHoM(this SCG.SpeckleVector speckleVector)
+        {
+            return new BHG.Vector { X = speckleVector.Value[0], Y = speckleVector.Value[1], Z = speckleVector.Value[2] };
         }
 
         /// <summary>
