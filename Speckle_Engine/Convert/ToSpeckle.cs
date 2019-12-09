@@ -24,7 +24,7 @@ namespace BH.Engine.Speckle
 
         //Add methods for converting From BHoM to the specific software types, if possible to do without any BHoM calls
         //Example:
-        //public static SpeckleNode ToSpeckle(this Node node)
+        //public static SpeckleNode FromBHoM(this Node node)
         //{
         //    //Insert code for convertion
         //}
@@ -46,7 +46,7 @@ namespace BH.Engine.Speckle
         /// Convert BHoM Point -> Speckle Point
         /// </summary>
         /// <returns>SpecklePoint object</returns>
-        public static SCG.SpecklePoint ToSpeckle(this BHG.Point bhomPoint)
+        public static SCG.SpecklePoint FromBHoM(this BHG.Point bhomPoint)
         {
             if (bhomPoint == null) return default;
 
@@ -60,7 +60,7 @@ namespace BH.Engine.Speckle
         /// Convert BHoM Vector -> Speckle Vector
         /// </summary>
         /// <returns>SpeckleVector object</returns>
-        public static SCG.SpeckleVector ToSpeckle(this BHG.Vector bhomVector)
+        public static SCG.SpeckleVector FromBHoM(this BHG.Vector bhomVector)
         {
             if (bhomVector == null) return default;
 
@@ -74,7 +74,7 @@ namespace BH.Engine.Speckle
         /// Convert BHoM Line -> Speckle Line
         /// </summary>
         /// <returns>SpeckleLine object</returns>
-        public static SCG.SpeckleLine ToSpeckle(this BHG.Line bhomLine)
+        public static SCG.SpeckleLine FromBHoM(this BHG.Line bhomLine)
         {
             if (bhomLine == null) return default;
 
@@ -90,7 +90,7 @@ namespace BH.Engine.Speckle
         /// Convert BHoM Mesh -> Speckle Mesh
         /// </summary>
         /// <returns>SpeckleMesh object</returns>
-        public static SCG.SpeckleMesh ToSpeckle(this BHG.Mesh bhomMesh)
+        public static SCG.SpeckleMesh FromBHoM(this BHG.Mesh bhomMesh)
         {
             double[] vertices = bhomMesh.Vertices.ToFlatArray();
             int[] faces = bhomMesh.Faces.SelectMany(face =>
@@ -112,7 +112,7 @@ namespace BH.Engine.Speckle
         /// https://github.com/speckleworks/SpeckleCore/blob/9545e96f04d85f46203a99c21c76eeea0ea03dae/SpeckleCore/Conversion/ConverterSerialisation.cs#L94
         /// </summary>
 
-        //public static object ToSpeckle(this BH.oM.Geometry.Mesh bhomMesh)
+        //public static object FromBHoM(this BH.oM.Geometry.Mesh bhomMesh)
         //{
         //    object specklemesh = null;
 
@@ -126,7 +126,7 @@ namespace BH.Engine.Speckle
         //{
         //    BH.oM.Geometry.Mesh bhomMesh = new oM.Geometry.Mesh();
 
-        //    object speckleMesh = bhomMesh.ToSpeckle();
+        //    object speckleMesh = bhomMesh.FromBHoM();
 
         //}
 
