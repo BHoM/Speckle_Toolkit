@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SpeckleCore;
 using BHG = BH.oM.Geometry;
-using SCG = SpeckleCoreGeometryClasses;
+using SpeckleCoreGeometryClasses;
 
 
 namespace BH.Engine.Speckle
@@ -46,11 +46,11 @@ namespace BH.Engine.Speckle
         /// Convert BHoM Point -> Speckle Point
         /// </summary>
         /// <returns>SpecklePoint object</returns>
-        public static SCG.SpecklePoint FromBHoM(this BHG.Point bhomPoint)
+        public static SpecklePoint FromBHoM(this BHG.Point bhomPoint)
         {
-            if (bhomPoint == null) return default;
+            if (bhomPoint == null) return default(SpecklePoint);
 
-            SCG.SpecklePoint specklePoint = new SCG.SpecklePoint(bhomPoint.X, bhomPoint.Y, bhomPoint.Z);
+            SpecklePoint specklePoint = new SpecklePoint(bhomPoint.X, bhomPoint.Y, bhomPoint.Z);
 
             specklePoint.GenerateHash();
             return specklePoint;
@@ -60,11 +60,11 @@ namespace BH.Engine.Speckle
         /// Convert BHoM Vector -> Speckle Vector
         /// </summary>
         /// <returns>SpeckleVector object</returns>
-        public static SCG.SpeckleVector FromBHoM(this BHG.Vector bhomVector)
+        public static SpeckleVector FromBHoM(this BHG.Vector bhomVector)
         {
-            if (bhomVector == null) return default;
+            if (bhomVector == null) return default(SpeckleVector);
 
-            SCG.SpeckleVector speckleVector = new SCG.SpeckleVector(bhomVector.X, bhomVector.Y, bhomVector.X);
+            SpeckleVector speckleVector = new SpeckleVector(bhomVector.X, bhomVector.Y, bhomVector.X);
 
             speckleVector.GenerateHash();
             return speckleVector;
@@ -74,11 +74,11 @@ namespace BH.Engine.Speckle
         /// Convert BHoM Line -> Speckle Line
         /// </summary>
         /// <returns>SpeckleLine object</returns>
-        public static SCG.SpeckleLine FromBHoM(this BHG.Line bhomLine)
+        public static SpeckleLine FromBHoM(this BHG.Line bhomLine)
         {
-            if (bhomLine == null) return default;
+            if (bhomLine == null) return default(SpeckleLine);
 
-            SCG.SpeckleLine speckleLine = new SCG.SpeckleLine(
+            SpeckleLine speckleLine = new SpeckleLine(
                 (new BHG.Point[] { bhomLine.Start, bhomLine.End }).ToFlatArray()
                 );
 
@@ -90,7 +90,7 @@ namespace BH.Engine.Speckle
         /// Convert BHoM Mesh -> Speckle Mesh
         /// </summary>
         /// <returns>SpeckleMesh object</returns>
-        public static SCG.SpeckleMesh FromBHoM(this BHG.Mesh bhomMesh)
+        public static SpeckleMesh FromBHoM(this BHG.Mesh bhomMesh)
         {
             double[] vertices = bhomMesh.Vertices.ToFlatArray();
             int[] faces = bhomMesh.Faces.SelectMany(face =>
@@ -101,7 +101,7 @@ namespace BH.Engine.Speckle
             var defaultColour = System.Drawing.Color.FromArgb(255, 100, 100, 100);
             var colors = Enumerable.Repeat(defaultColour.ToArgb(), vertices.Count()).ToArray();
             
-            SCG.SpeckleMesh speckleMesh = new SCG.SpeckleMesh(vertices, faces, colors, null);
+            SpeckleMesh speckleMesh = new SpeckleMesh(vertices, faces, colors, null);
 
             speckleMesh.GenerateHash();
             return speckleMesh;
