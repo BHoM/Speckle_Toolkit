@@ -2,6 +2,7 @@
 using BH.oM.Base;
 using BH.oM.Data;
 using BH.oM.Data.Collections;
+using BH.oM.Geometry;
 using SpeckleCore;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using BH.Engine.Rhinoceros;
 
 namespace BH.Adapter.Speckle
 {
@@ -48,7 +50,7 @@ namespace BH.Adapter.Speckle
         protected bool CreateIBHoMObjects(IEnumerable<IBHoMObject> BHoMObjects, bool setAssignedId = true)
         {
             // Convert the objects into the appropriate SpeckleObject (Point, Line, etc.) using the available converters.
-            List<SpeckleObject> speckleObjects = BHoMObjects.Select(bhomObj => BH.Engine.Speckle.Convert.FromBHoM(bhomObj, m_GetGeometryMethods)).ToList();
+            List<SpeckleObject> speckleObjects = BHoMObjects.Select(bhomObj => BH.Engine.Speckle.Convert.FromBHoM(bhomObj)).ToList();
 
             // Add objects to the stream
             SpeckleLayer.ObjectCount += BHoMObjects.Count();
@@ -98,16 +100,42 @@ namespace BH.Adapter.Speckle
         // CRUDconfig will become available to all CRUD methods
         protected bool CreateIObjects(List<IObject> objects, bool setAssignedId = true)
         {
-            /// Convert the objects into SpeckleObjects and add them to the stream
-            List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(objects);
-            SpeckleLayer.ObjectCount += objects.Count();
-            SpeckleStream.Objects.AddRange(objs_serialized);
+            List<SpeckleObject> allObjects = new List<SpeckleObject>();
 
-            /// Update the stream
+            // If they are IGeometry, convert them to their Rhino representation that Speckle understands.
+            foreach (var obj in objects)
+            {
+                if (typeof(IGeometry).IsAssignableFrom(obj.GetType()))
+                {
+                    var rhinoGeom = Engine.Rhinoceros.Convert.IToRhino((IGeometry)obj);
+                    // Creates the SpeckleObject with the Rhino Geometry. 
+                    var speckleObj_rhinoGeom = (SpeckleObject)SpeckleCore.Converter.Serialise(rhinoGeom); // This will be our "wrapper" object for the rest of the IObject stuff.
+
+                    // Convert ("Serialise") the whole IObject object into a SpeckleObject,
+                    // to get the "Property" property where Speckle stores the Dictionary with all extra metadata.
+                    var speckleObj_iObj = (SpeckleObject)SpeckleCore.Converter.Serialise(obj);
+                    speckleObj_rhinoGeom.Properties = speckleObj_iObj.Properties; // Copy the dictionary with all extra metadata into our "wrapper" speckleObject.
+
+                    // Add to the list of all speckleObjects.
+                    allObjects.Add(speckleObj_rhinoGeom);
+                }
+                else
+                {
+                    // These will be exported as `Abstract` Speckle Objects.
+                    allObjects.Add((SpeckleObject)SpeckleCore.Converter.Serialise(obj));
+                }
+            }
+           
+
+            // Add the speckleObjects to the Stream
+            SpeckleLayer.ObjectCount += allObjects.Count();
+            SpeckleStream.Objects.AddRange(allObjects);
+
+            // Update the stream
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
-            /// Read the IBHoMobjects as exported in speckle
+            /// Read the objects as exported in speckle
             /// so we can assign the Speckle-generated id into the BHoMobjects
             if (setAssignedId)
             {
@@ -120,13 +148,11 @@ namespace BH.Adapter.Speckle
 
                 if (correspondenceDiagram.Intersection.Count != objects.Count())
                 {
-                    var gna = 0;
                     //Engine.Reflection.Compute.RecordError("Push failed.\nNumber of objects created in Speckle do not correspond to the number of objects pushed.");
                     //return false;
                 }
 
                 correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterId] = o.Item2.CustomData[AdapterId]);
-
             }
 
             return true;

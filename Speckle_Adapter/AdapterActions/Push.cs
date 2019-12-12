@@ -99,13 +99,12 @@ namespace BH.Adapter.Speckle
             foreach (var typeGroup in objectsToPush.GroupBy(x => x.GetType()))
             {
                 MethodInfo miListObject = miToList.MakeGenericMethod(new[] { typeGroup.Key });
-
                 var list = miListObject.Invoke(typeGroup, new object[] { typeGroup });
 
 
                 if ((typeof(IObject).IsAssignableFrom(typeGroup.Key)))
                 {
-                    // They are IObjects = all types within BHoM.
+                    // They are IObjects = all types within BHoM (now not needed, soon will be for the Adapter refactoring).
                     // These guys might be either IBHoMObjects (=complex objects)
                     // or IGeometries/other types inheriting only from IObject.
 
@@ -113,29 +112,19 @@ namespace BH.Adapter.Speckle
                     {
                         // They are IBHoMObjects
 
-                        /// Assign SpeckleStreamId to the CustomData of the IBHoMObjects
+                        // Assign SpeckleStreamId to the CustomData of the IBHoMObjects
                         var iBHoMObjects = list as IEnumerable<IBHoMObject>;
                         iBHoMObjects.ToList().ForEach(o => o.CustomData["Speckle_StreamId"] = SpeckleStreamId);
 
-                        /// Switch push type
-                        success &= CreateIBHoMObjects(iBHoMObjects as dynamic, setAssignedId);//Replace(iBHoMObjects as dynamic, tag);
+                        success &= CreateIBHoMObjects(iBHoMObjects as dynamic, setAssignedId);
                     }
                     else
                     {
                         // They are simply IObjects.
-                        // We need to do something different depending on whether they are IGeometry or not.
-
-                        if (typeof(IGeometry).IsAssignableFrom(typeGroup.Key))
-                        {
-
-                        }
-              
-
+                        var iObjects = (list as IEnumerable<IObject>).ToList();
+                        success &= CreateIObjects(iObjects as dynamic, setAssignedId);
 
                     }
-
-
-
                 }
                 else
                 {

@@ -37,6 +37,9 @@
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="BHoM_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\BHoM_Engine.dll</HintPath>
+    </Reference>
     <Reference Include="Countly, Version=19.8.0.0, Culture=neutral, PublicKeyToken=30fd2b3d8bfe4882, processorArchitecture=MSIL">
       <HintPath>..\packages\Countly.19.8.0\lib\net40-client\Countly.dll</HintPath>
     </Reference>
