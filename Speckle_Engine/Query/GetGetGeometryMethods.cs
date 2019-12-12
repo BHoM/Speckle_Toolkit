@@ -42,7 +42,7 @@ namespace BH.Engine.Speckle
 
                             var methods = a.GetTypes()
                                 .SelectMany(
-                                    t => t.GetMethods(BindingFlags.Public & BindingFlags.Static)
+                                    t => t.GetMethods(BindingFlags.Public | BindingFlags.Static)
                                     .Where(m => m.ReflectedType.Name == "Query"))
                                 .Where(m => m.Name == "Geometry").ToList();
 
