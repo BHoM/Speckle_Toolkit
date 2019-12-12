@@ -56,6 +56,11 @@ namespace BH.Engine.Speckle
             for (int i = 0; i < response.Resources.Count; i++)
             {
                 var resource = Converter.Deserialise(response.Resources[i]);
+                var gasd = Converter.Deserialise(response.Resources[i].Properties.Values.OfType<SpeckleObject>());
+                var nestedBHoMProperties = response.Resources[i].Properties;
+
+
+           
 
                 if (speckleIds != null && speckleIds.Count > 0)
                     if (!speckleIds.Any(id => id == response.Resources[i]._id))

@@ -10,6 +10,7 @@ using BH.oM.Base;
 using BH.Engine.Geometry;
 using System.Reflection;
 using BH.oM.Geometry;
+using BH.Engine.Base;
 
 namespace BH.Engine.Speckle
 {
@@ -40,12 +41,10 @@ namespace BH.Engine.Speckle
             return points.SelectMany(pt => pt.ToArray()).ToArray();
         }
 
-        //public static HashSet<string> WarningCollection = new HashSet<string>();
-
-        public static SpeckleObject FromBHoM(this IBHoMObject bhomObject, Dictionary<Type, MethodInfo> getGeometryMethods)
+        public static SpeckleObject FromBHoM(this IBHoMObject bhomObject)
         {
             // Retrieve the BHoM geometry to represent the object in SpeckleViewer.
-            IGeometry geom = bhomObject.GetGeometry(getGeometryMethods);
+            IGeometry geom = bhomObject.IGeometry();
 
             if (geom == null)
             {
@@ -57,10 +56,12 @@ namespace BH.Engine.Speckle
             // Creates the SpeckleObject with the BHoM Geometry, dynamically dispatching to the method for the right type.
             SpeckleObject speckleObject = FromBHoM(geom as dynamic); // This will be our "wrapper" object for the rest of the BHoM stuff.
 
-            // Convert ("Serialise") the whole BHoM object into a SpeckleObject,
+            // Convert ("Serialise") the whole BHoMobject into a SpeckleObject,
             // to get the "Property" property where Speckle stores the Dictionary with all extra metadata.
             SpeckleObject bhomObj_serialized = (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
-            speckleObject.Properties = bhomObj_serialized.Properties; // Copy the dictionary with all extra metadata into our "wrapper" speckleObject.
+            BH.Engine.Serialiser.Convert.ToJson(bhomObject);
+
+            speckleObject.Properties = new Dictionary<string,object>() { { bhomObject.GetType().Name, BH.Engine.Serialiser.Convert.ToJson(bhomObject) } };//bhomObj_serialized.Properties; // Copy the dictionary with all extra metadata into our "wrapper" speckleObject.
 
             return speckleObject;
         }
