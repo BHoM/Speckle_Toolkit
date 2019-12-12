@@ -131,8 +131,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Convert\AdapterId.cs" />
-    <Compile Include="Convert\ToBHoM.cs" />
-    <Compile Include="Convert\FromBHoM.cs" />
+    <Compile Include="Convert\FromBHoM\FromBHoMInterfaces.cs" />
+    <Compile Include="Convert\ToBHoM\ToBHoM.cs" />
+    <Compile Include="Convert\FromBHoM\FromBHoM.cs" />
+    <Compile Include="Convert\ToBHoM\ResponseToBHoM.cs" />
     <Compile Include="Query\FilterByBHoMGUID.cs" />
     <Compile Include="Query\GetOnlyIBHoMObjects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
