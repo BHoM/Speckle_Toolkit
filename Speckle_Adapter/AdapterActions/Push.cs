@@ -126,6 +126,9 @@ namespace BH.Adapter.Speckle
                         // We need to do something different depending on whether they are IGeometry or not.
 
                         if (typeof(IGeometry).IsAssignableFrom(typeGroup.Key))
+                        {
+
+                        }
               
 
 
