@@ -56,16 +56,25 @@ namespace BH.Engine.Speckle
             // Creates the SpeckleObject with the BHoM Geometry, dynamically dispatching to the method for the right type.
             SpeckleObject speckleObject = FromBHoM(geom as dynamic); // This will be our "wrapper" object for the rest of the BHoM stuff.
 
-            // Convert ("Serialise") the whole BHoMobject into a SpeckleObject,
-            // to get the "Property" property where Speckle stores the Dictionary with all extra metadata.
-            SpeckleObject bhomObj_serialized = (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
+            // Serialise the BHoMobject into a Json and append it to the additional properties of the SpeckleObject.
             BH.Engine.Serialiser.Convert.ToJson(bhomObject);
-
-            speckleObject.Properties = new Dictionary<string,object>() { { bhomObject.GetType().Name, BH.Engine.Serialiser.Convert.ToJson(bhomObject) } };//bhomObj_serialized.Properties; // Copy the dictionary with all extra metadata into our "wrapper" speckleObject.
+            speckleObject.Properties = new Dictionary<string,object>() { { bhomObject.GetType().Name, BH.Engine.Serialiser.Convert.ToJson(bhomObject) } };
 
             return speckleObject;
         }
 
+        public static SpeckleObject FromBHoM(this IGeometry iGeometry)
+        {
+            var rhinoGeom = Engine.Rhinoceros.Convert.IToRhino(iGeometry);
+            // Creates the SpeckleObject with the Rhino Geometry. 
+            var speckleObj_rhinoGeom = (SpeckleObject)SpeckleCore.Converter.Serialise(rhinoGeom); // This will be our "wrapper" object for the rest of the IObject stuff.
+
+            // Serialise the iGeometry into a Json and append it to the additional properties of the SpeckleObject.
+            BH.Engine.Serialiser.Convert.ToJson(iGeometry);
+            speckleObj_rhinoGeom.Properties = new Dictionary<string, object>() { { iGeometry.GetType().Name, BH.Engine.Serialiser.Convert.ToJson(iGeometry) } };
+
+            return speckleObj_rhinoGeom;
+        }
 
         /// <summary>
         /// Convert BHoM Point -> Speckle Point

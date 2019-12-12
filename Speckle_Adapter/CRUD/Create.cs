@@ -106,24 +106,9 @@ namespace BH.Adapter.Speckle
             foreach (var obj in objects)
             {
                 if (typeof(IGeometry).IsAssignableFrom(obj.GetType()))
-                {
-                    var rhinoGeom = Engine.Rhinoceros.Convert.IToRhino((IGeometry)obj);
-                    // Creates the SpeckleObject with the Rhino Geometry. 
-                    var speckleObj_rhinoGeom = (SpeckleObject)SpeckleCore.Converter.Serialise(rhinoGeom); // This will be our "wrapper" object for the rest of the IObject stuff.
-
-                    // Convert ("Serialise") the whole IObject object into a SpeckleObject,
-                    // to get the "Property" property where Speckle stores the Dictionary with all extra metadata.
-                    var speckleObj_iObj = (SpeckleObject)SpeckleCore.Converter.Serialise(obj);
-                    speckleObj_rhinoGeom.Properties = speckleObj_iObj.Properties; // Copy the dictionary with all extra metadata into our "wrapper" speckleObject.
-
-                    // Add to the list of all speckleObjects.
-                    allObjects.Add(speckleObj_rhinoGeom);
-                }
+                    allObjects.Add(BH.Engine.Speckle.Convert.FromBHoM((IGeometry)obj));
                 else
-                {
-                    // These will be exported as `Abstract` Speckle Objects.
-                    allObjects.Add((SpeckleObject)SpeckleCore.Converter.Serialise(obj));
-                }
+                    allObjects.Add((SpeckleObject)SpeckleCore.Converter.Serialise(obj)); // These will be exported as `Abstract` Speckle Objects.
             }
            
 

@@ -15,31 +15,16 @@ namespace BH.Adapter.Speckle
     {
         public override List<IObject> Push(IEnumerable<IObject> objects, string tag = "", Dictionary<string, object> config = null)
         {
-            //var gna = SpeckleClient.StreamsGetAllAsync("").Result;
-
-            //gna.Resources[0].StreamId
-
-
-            objects = objects.ToList(); // to avoid modifying the original objects
-            List<IObject> IBHoMObjectsToPush = new List<IObject>(); //has to be IObject even if it's going to collect IBHoMObjects
-            List<IObject> IObjectsToPush = new List<IObject>();
-
             // Initialize Speckle Layer if not existing
             if (SpeckleLayer == null)
             {
                 SpeckleLayer = new Layer() { Name = "Default Layer", OrderIndex = 0, StartIndex = 0, Topology = "", Guid = "c8a58593-7080-450b-96b9-b0158844644b" };
                 SpeckleLayer.ObjectCount = 0;
-
             }
 
             // Initialize the SpeckleStream
             SpeckleStream.Layers = new List<Layer>() { SpeckleLayer };
             SpeckleStream.Objects = new List<SpeckleObject>(); // --> shit's immutable, yo
-
-
-            /// -------------------
-            /// Base push rewritten
-            /// -------------------
 
             // //- Read config
             object configObj;
@@ -58,12 +43,13 @@ namespace BH.Adapter.Speckle
                 if (configObj is bool)
                     setAssignedId = (bool)configObj;
 
-            // //- Configure history. By default it's enabled, and it produces a new stream at every push that correspond to versions.
+            // // - Configure history. By default it's enabled, and it produces a new stream at every push that correspond to versions.
             configureHistory(config);
 
-            // //- Clone objects
+            // // - Clone objects
             List<IObject> objectsToPush = Config.CloneBeforePush ? objects.Select(x => x is BHoMObject ? ((BHoMObject)x).GetShallowClone() : x).ToList() : objects.ToList(); //ToList() necessary for the return collection to function properly for cloned objects
 
+            // // - Call the appropriate push method.
             bool success = true;
             List<IBHoMObject> bHoMObjects = new List<IBHoMObject>();
             List<IObject> iobjects = new List<IObject>();
@@ -85,83 +71,6 @@ namespace BH.Adapter.Speckle
             }
 
             return success ? objectsToPush : new List<IObject>();
-        }
-
-
-        /***************************************************/
-        /**** Private Helper Methods                    ****/
-        /***************************************************/
-
-        private void BasePushRewritten(List<IObject> objectsToPush, string pushType, string tag, bool setAssignedId, ref bool success)
-        {
-            // // - Base push rewritten to allow some additional CustomData to go in.
-            MethodInfo miToList = typeof(Enumerable).GetMethod("Cast");
-            foreach (var typeGroup in objectsToPush.GroupBy(x => x.GetType()))
-            {
-                MethodInfo miListObject = miToList.MakeGenericMethod(new[] { typeGroup.Key });
-                var list = miListObject.Invoke(typeGroup, new object[] { typeGroup });
-
-
-                if ((typeof(IObject).IsAssignableFrom(typeGroup.Key)))
-                {
-                    // They are IObjects = all types within BHoM (now not needed, soon will be for the Adapter refactoring).
-                    // These guys might be either IBHoMObjects (=complex objects)
-                    // or IGeometries/other types inheriting only from IObject.
-
-                    if (typeof(IBHoMObject).IsAssignableFrom(typeGroup.Key))
-                    {
-                        // They are IBHoMObjects
-
-                        // Assign SpeckleStreamId to the CustomData of the IBHoMObjects
-                        var iBHoMObjects = list as IEnumerable<IBHoMObject>;
-                        iBHoMObjects.ToList().ForEach(o => o.CustomData["Speckle_StreamId"] = SpeckleStreamId);
-
-                        success &= CreateIBHoMObjects(iBHoMObjects as dynamic, setAssignedId);
-                    }
-                    else
-                    {
-                        // They are simply IObjects.
-                        var iObjects = (list as IEnumerable<IObject>).ToList();
-                        success &= CreateIObjects(iObjects as dynamic, setAssignedId);
-
-                    }
-                }
-                else
-                {
-                    // They are something else.
-                    // These objects will be exported as "Abstract" SpeckleObjects.
-                    CreateObjects(list as dynamic);
-                }
-            }
-        }
-
-        private void configureHistory(Dictionary<string, object> config = null)
-        {
-            ResponseStreamClone response = null;
-            Task<ResponseStreamClone> respStreamClTask = null;
-
-            object enableHistoryObj = null;
-
-            if (config != null)
-                config.TryGetValue("EnableHistory", out enableHistoryObj);
-
-            bool? enableHistory = enableHistoryObj as bool?;
-            if (enableHistory != null && !(bool)enableHistory)
-                return;
-
-            // The following line creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.
-            // The streamId of the cloned "backup" is saved among the main Stream "children" field,
-            // accessible through SpeckleServerAddress/api/v1/streams/streamId
-            respStreamClTask = SpeckleClient.StreamCloneAsync(SpeckleStreamId);
-
-            try
-            {
-                response = respStreamClTask?.Result;
-            }
-            catch (Exception e) { }
-
-            if (response == null)
-                BH.Engine.Reflection.Compute.RecordWarning($"Could not set the EnableHistory option. Task status: {respStreamClTask.Status.ToString()}");
         }
     }
 }
