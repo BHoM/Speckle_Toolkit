@@ -6,18 +6,17 @@ using System.Threading.Tasks;
 using SpeckleCore;
 using BHG = BH.oM.Geometry;
 using SpeckleCoreGeometryClasses;
-
+using BH.oM.Base;
+using BH.Engine.Geometry;
+using System.Reflection;
+using BH.oM.Geometry;
 
 namespace BH.Engine.Speckle
 {
-    // initialise to make sure all Speckle kits are loaded
-    public class Initialiser : ISpeckleInitializer
-    {
-        public Initialiser() { }
-    }
-
     public static partial class Convert
     {
+
+
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
@@ -30,7 +29,7 @@ namespace BH.Engine.Speckle
         //}
 
         /***************************************************/
-        // Helper Methods from SpeckleCoreGeometry
+        // Helper Methods for SpeckleCoreGeometry
         public static double[] ToArray(this BHG.Point pt)
         {
             return new double[] { pt.X, pt.Y, pt.Z };
@@ -39,6 +38,31 @@ namespace BH.Engine.Speckle
         public static double[] ToFlatArray(this IEnumerable<BHG.Point> points)
         {
             return points.SelectMany(pt => pt.ToArray()).ToArray();
+        }
+
+        //public static HashSet<string> WarningCollection = new HashSet<string>();
+
+        public static SpeckleObject FromBHoM(this IBHoMObject bhomObject, Dictionary<Type, MethodInfo> getGeometryMethods)
+        {
+            // Retrieve the BHoM geometry to represent the object in SpeckleViewer.
+            IGeometry geom = bhomObject.GetGeometry(getGeometryMethods);
+
+            if (geom == null)
+            {
+                // BHoMObject does not have a geometrical representation in BHoM.
+                // It must be converted to an "Abstract" SpeckleObject.
+                return (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
+            }
+
+            // Creates the SpeckleObject with the BHoM Geometry, dynamically dispatching to the method for the right type.
+            SpeckleObject speckleObject = FromBHoM(geom as dynamic); // This will be our "wrapper" object for the rest of the BHoM stuff.
+
+            // Convert ("Serialise") the whole BHoM object into a SpeckleObject,
+            // to get the "Property" property where Speckle stores the Dictionary with all extra metadata.
+            SpeckleObject bhomObj_serialized = (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
+            speckleObject.Properties = bhomObj_serialized.Properties; // Copy the dictionary with all extra metadata into our "wrapper" speckleObject.
+
+            return speckleObject;
         }
 
 
@@ -85,7 +109,7 @@ namespace BH.Engine.Speckle
             speckleLine.GenerateHash();
             return speckleLine;
         }
-        
+
         /// <summary>
         /// Convert BHoM Mesh -> Speckle Mesh
         /// </summary>
@@ -100,7 +124,7 @@ namespace BH.Engine.Speckle
             }).ToArray();
             var defaultColour = System.Drawing.Color.FromArgb(255, 100, 100, 100);
             var colors = Enumerable.Repeat(defaultColour.ToArgb(), vertices.Count()).ToArray();
-            
+
             SpeckleMesh speckleMesh = new SpeckleMesh(vertices, faces, colors, null);
 
             speckleMesh.GenerateHash();

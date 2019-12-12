@@ -6,6 +6,7 @@ using SpeckleCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,14 +26,16 @@ namespace BH.Adapter.Speckle
             return CreateIBHoMObjects(objects as dynamic);
         }
 
-        protected bool CreateIObjects(IEnumerable<IObject> objects)
+        protected bool CreateObjects(IEnumerable<object> objects)
         {
-            IEnumerable<object> newObjects = (IEnumerable<object>)objects; //hacky; assumes T is always a reference type. Should be no problem anyway
+            // Convert the objects into "Abstract" SpeckleObjects 
+            List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(objects);
 
-            List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(newObjects);
+            // Add objects to the stream
             SpeckleLayer.ObjectCount += objects.Count();
             SpeckleStream.Objects.AddRange(objs_serialized);
 
+            // Send the objects
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
@@ -42,16 +45,17 @@ namespace BH.Adapter.Speckle
         // Note: setAssignedId is currently not exposed as an option
         //  -- waiting for Adapter refactoring LVL 04 to expose a new CRUDconfig input for the Push 
         // CRUDconfig will become available to all CRUD methods
-        protected bool CreateIBHoMObjects(IEnumerable<IBHoMObject> objects, bool setAssignedId = true)
+        protected bool CreateIBHoMObjects(IEnumerable<IBHoMObject> BHoMObjects, bool setAssignedId = true)
         {
-            /// Create the objects
-            List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(objects);
-            SpeckleLayer.ObjectCount += objects.Count();
-            SpeckleStream.Objects.AddRange(objs_serialized);
+            // Convert the objects into the appropriate SpeckleObject (Point, Line, etc.) using the available converters.
+            List<SpeckleObject> speckleObjects = BHoMObjects.Select(bhomObj => BH.Engine.Speckle.Convert.FromBHoM(bhomObj, m_GetGeometryMethods)).ToList();
 
+            // Add objects to the stream
+            SpeckleLayer.ObjectCount += BHoMObjects.Count();
+            SpeckleStream.Objects.AddRange(speckleObjects);
 
-            /// Assign any other property to the speckle objects before sending them
-            var objList = objects.ToList();
+            /// Assign any other property to the speckle objects before updating the stream
+            var objList = BHoMObjects.ToList();
             int i = 0;
             foreach (var o in SpeckleStream.Objects)
             {
@@ -60,7 +64,7 @@ namespace BH.Adapter.Speckle
                 i++;
             }
 
-            /// Send the objects
+            // Send the objects
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
@@ -74,15 +78,15 @@ namespace BH.Adapter.Speckle
 
                 IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
 
-                VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(objects, objectsInSpeckle, new IBHoMGUIDComparer());
+                //VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(BHoMObjects, objectsInSpeckle, new IBHoMGUIDComparer());
 
-                if (correspondenceDiagram.Intersection.Count != objects.Count())
-                {
-                    Engine.Reflection.Compute.RecordError("Push failed.\nNumber of objects created in Speckle do not correspond to the number of objects pushed.");
-                    return false;
-                }
+                //if (correspondenceDiagram.Intersection.Count != BHoMObjects.Count())
+                //{
+                //    Engine.Reflection.Compute.RecordError("Push failed.\nNumber of objects created in Speckle do not correspond to the number of objects pushed.");
+                //    return false;
+                //}
 
-                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterId] = o.Item2.CustomData[AdapterId]);
+                //correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterId] = o.Item2.CustomData[AdapterId]);
 
             }
 
@@ -92,32 +96,16 @@ namespace BH.Adapter.Speckle
         // Note: setAssignedId is currently not exposed as an option
         //  -- waiting for Adapter refactoring LVL 04 to expose a new CRUDconfig input for the Push 
         // CRUDconfig will become available to all CRUD methods
-        protected bool CreateAnyObject(List<IObject> objects, bool setAssignedId = true)
+        protected bool CreateIObjects(List<IObject> objects, bool setAssignedId = true)
         {
-            /// Create the objects
+            /// Convert the objects into SpeckleObjects and add them to the stream
             List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(objects);
             SpeckleLayer.ObjectCount += objects.Count();
             SpeckleStream.Objects.AddRange(objs_serialized);
 
-            /// Assign any other property to the objects before sending them
-            var objList = objects.ToList();
-            int i = 0;
-            foreach (var o in SpeckleStream.Objects)
-            {
-                IBHoMObject bhomObj = objList[i] as IBHoMObject;
-                if (bhomObj != null)
-                {
-                    SpeckleStream.Objects[i].Name = string.IsNullOrEmpty(bhomObj.Name) ? bhomObj.GetType().ToString() : bhomObj.Name;
-                    //SpeckleStream.Objects[i].Type = string.IsNullOrEmpty(bhomObj.Name) ? bhomObj.GetType().ToString() : bhomObj.Name;
-                }
-                i++;
-            }
-
-            /// Send the objects
+            /// Update the stream
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
-
-
 
             /// Read the IBHoMobjects as exported in speckle
             /// so we can assign the Speckle-generated id into the BHoMobjects

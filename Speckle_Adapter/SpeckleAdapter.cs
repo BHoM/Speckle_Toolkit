@@ -25,8 +25,9 @@ namespace BH.Adapter.Speckle
             SpeckleClient.SetupWebsocket();
 
 
-            //if (string.IsNullOrWhiteSpace(speckleStreamId))
             SpeckleStreamId = speckleStreamId;
+
+            m_GetGeometryMethods = BH.Engine.Speckle.Query.GetGetGeometryMethods();
         }
 
 
@@ -38,6 +39,7 @@ namespace BH.Adapter.Speckle
         public Account SpeckleAccount { get; private set; }
         public SpeckleStream SpeckleStream { get; private set; }
         public SpeckleCore.Layer SpeckleLayer { get; private set; }
+        private Dictionary<Type, MethodInfo> m_GetGeometryMethods;
 
     }
 }

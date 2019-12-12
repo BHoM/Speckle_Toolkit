@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
+using BH.oM.Geometry;
 using SpeckleCore;
 
 namespace BH.Adapter.Speckle
@@ -70,7 +71,7 @@ namespace BH.Adapter.Speckle
             if (useGUIDS)
             {
                 // This part works using IBHoMObjects GUID.
-                Engine.Speckle.Query.DispatchBHoMObjects(objectsToPush, out bHoMObjects, out iobjects);
+                Engine.Speckle.Query.DispatchByBaseInterface(objectsToPush, out bHoMObjects, out iobjects);
 
                 List<IObject> objectsCreated = null;
                 success = DiffingByBHoMGuid(objectsToPush, out objectsCreated);
@@ -94,7 +95,6 @@ namespace BH.Adapter.Speckle
         private void BasePushRewritten(List<IObject> objectsToPush, string pushType, string tag, bool setAssignedId, ref bool success)
         {
             // // - Base push rewritten to allow some additional CustomData to go in.
-            Type iBHoMObjectType = typeof(IBHoMObject);
             MethodInfo miToList = typeof(Enumerable).GetMethod("Cast");
             foreach (var typeGroup in objectsToPush.GroupBy(x => x.GetType()))
             {
@@ -102,21 +102,43 @@ namespace BH.Adapter.Speckle
 
                 var list = miListObject.Invoke(typeGroup, new object[] { typeGroup });
 
-                if (iBHoMObjectType.IsAssignableFrom(typeGroup.Key))
+
+                if ((typeof(IObject).IsAssignableFrom(typeGroup.Key)))
                 {
-                    // They are IBHoMObjects
+                    // They are IObjects = all types within BHoM.
+                    // These guys might be either IBHoMObjects (=complex objects)
+                    // or IGeometries/other types inheriting only from IObject.
 
-                    /// Assign SpeckleStreamId to the CustomData of the IBHoMObjects
-                    var iBHoMObjects = list as IEnumerable<IBHoMObject>;
-                    iBHoMObjects.ToList().ForEach(o => o.CustomData["Speckle_StreamId"] = SpeckleStreamId);
+                    if (typeof(IBHoMObject).IsAssignableFrom(typeGroup.Key))
+                    {
+                        // They are IBHoMObjects
 
-                    /// Switch push type
-                    success &= CreateIBHoMObjects(iBHoMObjects as dynamic, setAssignedId);//Replace(iBHoMObjects as dynamic, tag);
+                        /// Assign SpeckleStreamId to the CustomData of the IBHoMObjects
+                        var iBHoMObjects = list as IEnumerable<IBHoMObject>;
+                        iBHoMObjects.ToList().ForEach(o => o.CustomData["Speckle_StreamId"] = SpeckleStreamId);
+
+                        /// Switch push type
+                        success &= CreateIBHoMObjects(iBHoMObjects as dynamic, setAssignedId);//Replace(iBHoMObjects as dynamic, tag);
+                    }
+                    else
+                    {
+                        // They are simply IObjects.
+                        // We need to do something different depending on whether they are IGeometry or not.
+
+                        if (typeof(IGeometry).IsAssignableFrom(typeGroup.Key))
+              
+
+
+                    }
+
+
+
                 }
                 else
                 {
-                    // They are IObjects
-                    CreateIObjects(list as dynamic);
+                    // They are something else.
+                    // These objects will be exported as "Abstract" SpeckleObjects.
+                    CreateObjects(list as dynamic);
                 }
             }
         }
