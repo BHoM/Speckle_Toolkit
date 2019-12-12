@@ -26,7 +26,7 @@ namespace BH.Adapter.Speckle
             List <IBHoMObject> bhomObjectsToBePushed = null;
             List<IObject> iObjectsToBePushed = null;
 
-            BH.Engine.Speckle.Query.DispatchBHoMObjects(objectsToBePushed, out bhomObjectsToBePushed, out iObjectsToBePushed);
+            BH.Engine.Speckle.Query.DispatchByBaseInterface(objectsToBePushed, out bhomObjectsToBePushed, out iObjectsToBePushed);
 
             // Receive and dispatch objects already in speckle
             ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
@@ -41,7 +41,7 @@ namespace BH.Adapter.Speckle
             if (response.Resources.Count == 0)
             {
                 objectsToBeCreated = bhomObjectsToBePushed.Concat(iObjectsToBePushed).ToList();
-                if (CreateAnyObject(objectsToBeCreated))
+                if (CreateIObjects(objectsToBeCreated))
                     objectsCreated = objectsToBeCreated;
 
                 return true;
@@ -76,7 +76,7 @@ namespace BH.Adapter.Speckle
             }
 
 
-            if (CreateAnyObject(objectsToBeCreated))
+            if (CreateIObjects(objectsToBeCreated))
                 objectsCreated = objectsToBeCreated;
 
             return true;
