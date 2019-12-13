@@ -22,10 +22,8 @@ namespace BH.Adapter.Speckle
 
         protected override bool Create<T>(IEnumerable<T> objects)
         {
-            // This method gets always called by the base.Push --> objects are always IBHoMObjects
-
-            //IEnumerable<IBHoMObject> bHoMObjects = objects.Cast<IBHoMObject>();
-            return CreateIBHoMObjects(objects as dynamic);
+            // Not used. Override required due to `abstract` in base adapter. To be removed after Refactoring Level 04.
+            return false;
         }
 
         protected bool CreateObjects(IEnumerable<object> objects)
@@ -61,7 +59,10 @@ namespace BH.Adapter.Speckle
             int i = 0;
             foreach (var o in SpeckleStream.Objects)
             {
-                SpeckleStream.Objects[i].Name = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
+                // Set `speckleObject.Name` as the BHoMObject type name.
+                //SpeckleStream.Objects[i].Name = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
+
+                // Set the speckleObject type as the BHoMObject type name.
                 //SpeckleStream.Objects[i].Type = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
                 i++;
             }

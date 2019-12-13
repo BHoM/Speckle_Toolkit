@@ -40,7 +40,8 @@ namespace BH.Engine.Speckle
             SpeckleObject speckleObject = FromBHoM(geom as dynamic); // This will be our "wrapper" object for the rest of the BHoM stuff.
 
             // Serialise the BHoMobject into a Json and append it to the Properties Dictionary of the SpeckleObject. Key is "BHoMData".
-            speckleObject.Properties = new Dictionary<string, object>() { { "BHoMData", BH.Engine.Serialiser.Convert.ToJson(bhomObject) } };
+            string BHoMDataJson = BH.Engine.Serialiser.Convert.ToJson(bhomObject);
+            speckleObject.Properties = new Dictionary<string, object>() { { "BHoMData", BHoMDataJson } };
 
             return speckleObject;
         }
