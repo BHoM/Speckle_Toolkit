@@ -12,6 +12,9 @@ using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
+using BH.oM.Structure.Elements;
+using BH.Engine.Structure;
+using BH.Engine.Rhinoceros;
 
 namespace BH.Engine.Speckle
 {
@@ -72,6 +75,27 @@ namespace BH.Engine.Speckle
 
             speckleMesh.GenerateHash();
             return speckleMesh;
+        }
+
+        public static SpeckleObject FromBHoM(this Bar bar, bool extrudeSimple = false)
+        {
+            if (bar.SectionProperty == null)
+                return bar.Centreline().FromBHoM();
+
+            if (extrudeSimple)
+            {
+                IGeometry simpleExtrusion = bar.Extrude(true).First();
+                return IFromBHoM(simpleExtrusion as dynamic);
+            }
+
+            // Gets the BH.oM.Geometry.Extrusion out of the Bar. If the profile is made of two curves (e.g. I section), selects only the outermost.
+            var barOutermostExtrusion = bar.Extrude(false).Cast<Extrusion>().OrderBy(extr => extr.Curve.IArea()).First();
+
+            // Obtains the Rhino extrusion.
+            var rhinoExtrusion = Rhino.Geometry.Extrusion.CreateExtrusion(barOutermostExtrusion.Curve.IToRhino(), (Rhino.Geometry.Vector3d)barOutermostExtrusion.Direction.IToRhino());
+            Rhino.Geometry.Mesh mesh = Rhino.Geometry.Mesh.CreateFromSurface(rhinoExtrusion, Rhino.Geometry.MeshingParameters.Minimal);
+
+            return (SpeckleObject)SpeckleCore.Converter.Serialise(mesh);
         }
 
 
