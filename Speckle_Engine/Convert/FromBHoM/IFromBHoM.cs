@@ -12,6 +12,10 @@ using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
+using BH.oM.Structure.Elements;
+using BH.Engine.Structure;
+using Rhino;
+using BH.Engine.Rhinoceros;
 
 namespace BH.Engine.Speckle
 {
@@ -24,20 +28,34 @@ namespace BH.Engine.Speckle
         [Description("Wraps the content of a BHoMObject into a SpeckleObject.\n" +
             "Its geometry (if any) is exposed in the top level, so it can be visualised in Speckle.\n" +
             "All BHoMObject properties are json-serialised and saved into the `speckleObject.Properties` field.")]
-        public static SpeckleObject FromBHoM(this IBHoMObject bhomObject)
+        public static SpeckleObject IFromBHoM(this IBHoMObject bhomObject)
         {
-            // Retrieve the BHoM geometry to represent the object in SpeckleViewer.
-            IGeometry geom = bhomObject.IGeometry();
+            // This will be our return object.
+            // On the higher level, it will contain geometry to be represented in SpeckleViewer.
+            // Nested into its `.Properties` it will also "wrap" any other BHoM data.
+            SpeckleObject speckleObject = null;
 
-            if (geom == null)
+            // See if BHoMObject has a direct convertion to a SpeckleObject
+            speckleObject = FromBHoM(bhomObject as dynamic, false);
+
+            if (speckleObject == null)
             {
-                // BHoMObject does not have a geometrical representation in BHoM.
-                // It must be converted to an "Abstract" SpeckleObject.
-                return (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
-            }
+                // Else, see if we can get a BHoM geometry out of the BHoMObject to represent the object in SpeckleViewer.
+                IGeometry geom = null;
+                geom = bhomObject.IGeometry();
 
-            // Creates the SpeckleObject with the BHoM Geometry, dynamically dispatching to the method for the right type.
-            SpeckleObject speckleObject = FromBHoM(geom as dynamic); // This will be our "wrapper" object for the rest of the BHoM stuff.
+                if (geom != null)
+                {
+                    // Converts the BHoM Geometry into a SpeckleObject, dynamically dispatching to the method for the right type.
+                    speckleObject = IFromBHoM(geom as dynamic); 
+                }
+                else
+                {
+                    // BHoMObject does not have a geometrical representation in BHoM.
+                    // It must be converted to an "Abstract" SpeckleObject.
+                    speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
+                }
+            }
 
             // Serialise the BHoMobject into a Json and append it to the Properties Dictionary of the SpeckleObject. Key is "BHoMData".
             string BHoMDataJson = BH.Engine.Serialiser.Convert.ToJson(bhomObject);
@@ -49,7 +67,7 @@ namespace BH.Engine.Speckle
         [Description("Wraps the content of a BHoM IGeometry into a SpeckleObject.\n" +
            "A Rhino geometry representation is extracted and exposed in the top level, so it can be visualised in Speckle.\n" +
            "All the other IGeometry properties are json-serialised and saved into the `speckleObject.Properties` field.")]
-        public static SpeckleObject FromBHoM(this IGeometry iGeometry)
+        public static SpeckleObject IFromBHoM(this IGeometry iGeometry)
         {
             var rhinoGeom = Engine.Rhinoceros.Convert.IToRhino(iGeometry);
 

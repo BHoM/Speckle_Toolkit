@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using BH.Engine.Rhinoceros;
+using BH.Engine.Speckle;
 
 namespace BH.Adapter.Speckle
 {
@@ -48,7 +49,7 @@ namespace BH.Adapter.Speckle
         protected bool CreateIBHoMObjects(IEnumerable<IBHoMObject> BHoMObjects, bool setAssignedId = true)
         {
             // Convert the objects into the appropriate SpeckleObject (Point, Line, etc.) using the available converters.
-            List<SpeckleObject> speckleObjects = BHoMObjects.Select(bhomObj => BH.Engine.Speckle.Convert.FromBHoM(bhomObj)).ToList();
+            List<SpeckleObject> speckleObjects = BHoMObjects.Select(bhomObj => bhomObj.IFromBHoM()).ToList();
 
             // Add objects to the stream
             SpeckleLayer.ObjectCount += BHoMObjects.Count();
@@ -59,8 +60,8 @@ namespace BH.Adapter.Speckle
             int i = 0;
             foreach (var o in SpeckleStream.Objects)
             {
-                // Set `speckleObject.Name` as the BHoMObject type name.
-                //SpeckleStream.Objects[i].Name = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
+                //Set `speckleObject.Name` as the BHoMObject type name.
+                SpeckleStream.Objects[i].Name = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
 
                 // Set the speckleObject type as the BHoMObject type name.
                 //SpeckleStream.Objects[i].Type = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
@@ -107,11 +108,11 @@ namespace BH.Adapter.Speckle
             foreach (var obj in objects)
             {
                 if (typeof(IGeometry).IsAssignableFrom(obj.GetType()))
-                    allObjects.Add(BH.Engine.Speckle.Convert.FromBHoM((IGeometry)obj));
+                    allObjects.Add(BH.Engine.Speckle.Convert.IFromBHoM((IGeometry)obj));
                 else
                     allObjects.Add((SpeckleObject)SpeckleCore.Converter.Serialise(obj)); // These will be exported as `Abstract` Speckle Objects.
             }
-           
+
 
             // Add the speckleObjects to the Stream
             SpeckleLayer.ObjectCount += allObjects.Count();
