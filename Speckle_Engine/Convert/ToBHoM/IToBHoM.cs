@@ -57,7 +57,12 @@ namespace BH.Engine.Speckle
                     // BHoMData which is always a JSON representation of either an IObject, an IBHoMObject or an IGeometry.
                     string jsonBHoMData = response.Resources[i].Properties["BHoMData"].ToString();
 
-                    BHoMData = BH.Engine.Serialiser.Convert.FromJson(jsonBHoMData);
+                    try
+                    {
+                        jsonBHoMData = BH.Engine.Serialiser.Convert.FromZip(jsonBHoMData); //unzip
+                        BHoMData = BH.Engine.Serialiser.Convert.FromJson(jsonBHoMData); //deserialise
+                    }
+                    catch { }
 
                     if (BHoMData == null)
                     {
