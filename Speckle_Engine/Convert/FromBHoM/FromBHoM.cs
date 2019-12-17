@@ -56,6 +56,7 @@ namespace BH.Engine.Speckle
                 );
 
             speckleLine.GenerateHash();
+
             return speckleLine;
         }
 
@@ -77,10 +78,25 @@ namespace BH.Engine.Speckle
             return speckleMesh;
         }
 
-        public static SpeckleObject FromBHoM(this Bar bar, bool extrudeSimple = false)
+        public static SpeckleObject FromBHoM(this Node node)
+        {
+            var mesh = node.MeshRepresentation();
+
+            var speckleMesh = (SpeckleMesh)SpeckleCore.Converter.Serialise(mesh);
+            speckleMesh.Colors = new List<int>() { 0, 0, 0 };
+
+            return speckleMesh;
+        }
+
+        public static SpeckleObject FromBHoM(this Bar bar)
         {
             if (bar.SectionProperty == null)
-                return bar.Centreline().FromBHoM();
+            {
+                IGeometry geom = bar.IGeometry();
+                return FromBHoM(geom);
+            }
+
+            bool extrudeSimple = true; // to be exposed within config options.
 
             if (extrudeSimple)
             {
@@ -95,9 +111,41 @@ namespace BH.Engine.Speckle
             var rhinoExtrusion = Rhino.Geometry.Extrusion.CreateExtrusion(barOutermostExtrusion.Curve.IToRhino(), (Rhino.Geometry.Vector3d)barOutermostExtrusion.Direction.IToRhino());
             Rhino.Geometry.Mesh mesh = Rhino.Geometry.Mesh.CreateFromSurface(rhinoExtrusion, Rhino.Geometry.MeshingParameters.Minimal);
 
+            // Add the endnodes representations.
+            mesh.Append(bar.StartNode.MeshRepresentation());
+            mesh.Append(bar.EndNode.MeshRepresentation());
+
             return (SpeckleObject)SpeckleCore.Converter.Serialise(mesh);
         }
 
+        public static SpeckleObject FromBHoM(this IBHoMObject bhomObject)
+        {
+            SpeckleObject speckleObject = null;
+
+            // See if we can get a BHoM geometry out of the BHoMObject to represent the object in SpeckleViewer.
+            IGeometry geom = null;
+            geom = bhomObject.IGeometry();
+
+            if (geom != null)
+            {
+                // Converts the BHoM Geometry into a SpeckleObject, dynamically dispatching to the method for the right type.
+                speckleObject = IFromBHoM(geom as dynamic);
+            }
+            else
+            {
+                // BHoMObject does not have a geometrical representation in BHoM.
+                // It must be converted to an "Abstract" SpeckleObject,
+                // which won't have any visualisation in the SpeckleAdmin Viewer.
+                speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
+            }
+
+            return speckleObject;
+        }
+
+        public static SpeckleObject FromBHoM(this IGeometry geom)
+        {
+            return IFromBHoM(geom);
+        }
 
         /// <summary>
         /// Extension method to convert bhom meshes to speckle meshes. 

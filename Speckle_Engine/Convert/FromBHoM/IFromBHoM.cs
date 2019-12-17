@@ -35,31 +35,18 @@ namespace BH.Engine.Speckle
             // Nested into its `.Properties` it will also "wrap" any other BHoM data.
             SpeckleObject speckleObject = null;
 
-            // See if BHoMObject has a direct convertion to a SpeckleObject
-            speckleObject = FromBHoM(bhomObject as dynamic, false);
+            // Dynamically dispatch to the most appropriate method
+            speckleObject = FromBHoM(bhomObject as dynamic);
 
-            if (speckleObject == null)
-            {
-                // Else, see if we can get a BHoM geometry out of the BHoMObject to represent the object in SpeckleViewer.
-                IGeometry geom = null;
-                geom = bhomObject.IGeometry();
+            speckleObject.Properties = new Dictionary<string, object>();
 
-                if (geom != null)
-                {
-                    // Converts the BHoM Geometry into a SpeckleObject, dynamically dispatching to the method for the right type.
-                    speckleObject = IFromBHoM(geom as dynamic); 
-                }
-                else
-                {
-                    // BHoMObject does not have a geometrical representation in BHoM.
-                    // It must be converted to an "Abstract" SpeckleObject.
-                    speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
-                }
-            }
+            // Add the BHoMObject to the SpeckleObject Properties Dictionary via the Speckle "Serialisation"
+            speckleObject.Properties.Add("BHoM", SpeckleCore.Converter.Serialise(bhomObject));
 
             // Serialise the BHoMobject into a Json and append it to the Properties Dictionary of the SpeckleObject. Key is "BHoMData".
-            string BHoMDataJson = BH.Engine.Serialiser.Convert.ToJson(bhomObject);
-            speckleObject.Properties = new Dictionary<string, object>() { { "BHoMData", BHoMDataJson } };
+            string BHoMDataJson = BH.Engine.Serialiser.Convert.ToJson(bhomObject); //serialize
+            BHoMDataJson = BH.Engine.Serialiser.Convert.ToZip(BHoMDataJson); //zip 
+            speckleObject.Properties.Add("BHoMData", BHoMDataJson);
 
             return speckleObject;
         }
