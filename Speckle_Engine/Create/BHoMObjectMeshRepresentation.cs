@@ -29,7 +29,7 @@ namespace BH.Engine.Speckle
         public static Rhino.Geometry.Mesh MeshRepresentation(this Node node)
         {
             var point = (Rhino.Geometry.Point3d)node.Position.IToRhino();
-            double scale = 1;
+            double scale = 2;
 
             // Mesh to represent the node constraint
             Rhino.Geometry.Mesh mesh = null;
