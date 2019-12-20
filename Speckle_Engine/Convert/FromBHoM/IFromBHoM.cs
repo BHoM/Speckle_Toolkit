@@ -40,7 +40,7 @@ namespace BH.Engine.Speckle
 
             speckleObject.Properties = new Dictionary<string, object>();
 
-            // Add the BHoMObject to the SpeckleObject Properties Dictionary via the Speckle "Serialisation"
+            // Add the BHoMObject to the SpeckleObject Properties Dictionary via the Speckle Serialisation
             speckleObject.Properties.Add("BHoM", SpeckleCore.Converter.Serialise(bhomObject));
 
             // Serialise the BHoMobject into a Json and append it to the Properties Dictionary of the SpeckleObject. Key is "BHoMData".

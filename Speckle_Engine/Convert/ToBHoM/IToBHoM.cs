@@ -39,6 +39,7 @@ namespace BH.Engine.Speckle
                         continue;
 
                 object resource = SpeckleCore.Converter.Deserialise(response.Resources[i]);
+                object resource2 = SpeckleCore.Converter.Deserialise((SpeckleObject)response.Resources[i].Properties.First().Value);
 
                 // BHoMData is always saved into the resource `Properties` Dictionary.
                 if (response.Resources[i].Properties == null)

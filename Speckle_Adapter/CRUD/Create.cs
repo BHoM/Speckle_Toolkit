@@ -60,6 +60,8 @@ namespace BH.Adapter.Speckle
             int i = 0;
             foreach (var o in SpeckleStream.Objects)
             {
+                if (objList.Count() <= i)
+                    break;
                 //Set `speckleObject.Name` as the BHoMObject type name.
                 SpeckleStream.Objects[i].Name = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
 

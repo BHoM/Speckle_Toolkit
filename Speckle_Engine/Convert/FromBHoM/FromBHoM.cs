@@ -85,6 +85,9 @@ namespace BH.Engine.Speckle
             var speckleMesh = (SpeckleMesh)SpeckleCore.Converter.Serialise(mesh);
             speckleMesh.Colors = new List<int>() { 0, 0, 0 };
 
+            var def = (SpeckleAbstract)SpeckleCore.Converter.Serialise(node);
+            def.Properties["displayValue"] = speckleMesh;
+
             return speckleMesh;
         }
 
@@ -96,7 +99,7 @@ namespace BH.Engine.Speckle
                 return FromBHoM(geom);
             }
 
-            bool extrudeSimple = true; // to be exposed within config options.
+            bool extrudeSimple = false; // to be exposed within config options.
 
             if (extrudeSimple)
             {
