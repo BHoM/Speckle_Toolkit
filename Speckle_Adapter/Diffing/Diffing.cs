@@ -35,7 +35,7 @@ namespace BH.Adapter.Speckle
             List<IObject> iObjectsInSpeckle = null;
             List<object> reminderObjectsInSpeckle = null;
 
-            BH.Engine.Speckle.Convert.ToBHoM(response, out bhomObjectsInSpeckle, out iObjectsInSpeckle, out reminderObjectsInSpeckle, false);
+            BH.Engine.Speckle.Convert.ToBHoM(response.Resources, out bhomObjectsInSpeckle, out iObjectsInSpeckle, out reminderObjectsInSpeckle, false);
 
             // If speckle doesn't contain anything, push everything
             if (response.Resources.Count == 0)

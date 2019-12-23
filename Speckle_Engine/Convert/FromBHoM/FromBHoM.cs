@@ -81,6 +81,8 @@ namespace BH.Engine.Speckle
         public static SpeckleObject FromBHoM(this Node node)
         {
             var mesh = node.MeshRepresentation();
+            if (mesh == null)
+                return null;
 
             var speckleMesh = (SpeckleMesh)SpeckleCore.Converter.Serialise(mesh);
             speckleMesh.Colors = new List<int>() { 0, 0, 0 };

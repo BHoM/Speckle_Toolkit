@@ -28,7 +28,7 @@ namespace BH.Adapter.Speckle
             List<IObject> iObjects = new List<IObject>();
             List<object> reminder = new List<object>();
 
-            if (!BH.Engine.Speckle.Convert.ToBHoM(response, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects))
+            if (!BH.Engine.Speckle.Convert.ToBHoM(response.Resources, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects))
                 BH.Engine.Reflection.Compute.RecordError("Failed to deserialize and cast the Server response into BHoM objects.");
 
             return bHoMObjects.Concat(iObjects).Concat(reminder);
@@ -43,7 +43,7 @@ namespace BH.Adapter.Speckle
             speckleIds = speckleIds?.Count != 0 ? speckleIds : null;
 
             // Convert the response to the appropriate object types.
-            BH.Engine.Speckle.Convert.ToBHoM(response, out bHoMObjects, out iObjects, out reminder, speckleIds?.Count != 0, speckleIds);
+            BH.Engine.Speckle.Convert.ToBHoM(response.Resources, out bHoMObjects, out iObjects, out reminder, speckleIds?.Count != 0, speckleIds);
 
             // Filter by tag if any 
             bHoMObjects = filterRequest.Tag == "" ? bHoMObjects : bHoMObjects.Where(x => x.Tags.Contains(filterRequest.Tag)).ToList();

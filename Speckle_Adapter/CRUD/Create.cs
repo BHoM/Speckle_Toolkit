@@ -51,6 +51,9 @@ namespace BH.Adapter.Speckle
             // Convert the objects into the appropriate SpeckleObject (Point, Line, etc.) using the available converters.
             List<SpeckleObject> speckleObjects = BHoMObjects.Select(bhomObj => bhomObj.IFromBHoM()).ToList();
 
+            if (speckleObjects.Where(obj => obj == null).Count() == speckleObjects.Count())
+                return false;
+
             // Add objects to the stream
             SpeckleLayer.ObjectCount += BHoMObjects.Count();
             SpeckleStream.Objects.AddRange(speckleObjects);
@@ -70,6 +73,8 @@ namespace BH.Adapter.Speckle
                 i++;
             }
 
+            //SpeckleStream.Layers.Add(new SpeckleCore.Layer()
+
             // Send the objects
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
@@ -82,7 +87,7 @@ namespace BH.Adapter.Speckle
 
                 ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
-                IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
+                IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response.Resources, true);
 
                 //VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(BHoMObjects, objectsInSpeckle, new IBHoMGUIDComparer());
 
@@ -131,7 +136,7 @@ namespace BH.Adapter.Speckle
                 ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
                 List<IBHoMObject> bHoMObjects_inSpeckle = new List<IBHoMObject>();
-                IEnumerable<IBHoMObject> iBhomObjsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
+                IEnumerable<IBHoMObject> iBhomObjsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response.Resources, true);
 
                 VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(objects.Where(o => o as IBHoMObject != null).Cast<IBHoMObject>(), iBhomObjsInSpeckle, new IBHoMGUIDComparer());
 
