@@ -28,6 +28,12 @@ namespace BH.Engine.Speckle
         [Description("Returns a mesh representation for the Node based on its DOF, e.g. a box for fully fixed, a cone with sphere on top for pin.")]
         public static Rhino.Geometry.Mesh MeshRepresentation(this Node node)
         {
+            if (node.Position == null)
+            {
+                Reflection.Compute.RecordError("Specified Node does not have a position defined.");
+                return null;
+            }
+
             var point = (Rhino.Geometry.Point3d)node.Position.IToRhino();
             double scale = 2;
 

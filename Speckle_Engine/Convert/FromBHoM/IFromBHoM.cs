@@ -38,6 +38,9 @@ namespace BH.Engine.Speckle
             // Dynamically dispatch to the most appropriate method
             speckleObject = FromBHoM(bhomObject as dynamic);
 
+            if (speckleObject == null)
+                return null;
+
             speckleObject.Properties = new Dictionary<string, object>();
 
             // Add the BHoMObject to the SpeckleObject Properties Dictionary via the Speckle Serialisation

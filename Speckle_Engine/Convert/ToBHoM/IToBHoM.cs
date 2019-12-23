@@ -12,18 +12,18 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        public static IEnumerable<IBHoMObject> ToBHoM(ResponseObject response, bool setAssignedId = true, List<string> speckleIds = null)
+        public static IEnumerable<IBHoMObject> ToBHoM(List<SpeckleObject> speckleObjects, bool setAssignedId = true, List<string> speckleIds = null)
         {
             List<IBHoMObject> bhomObjects = new List<IBHoMObject>();
             List<IObject> iObjects;
             List<object> reminder;
 
-            ToBHoM(response, out bhomObjects, out iObjects, out reminder, setAssignedId, speckleIds);
+            ToBHoM(speckleObjects, out bhomObjects, out iObjects, out reminder, setAssignedId, speckleIds);
 
             return bhomObjects;
         }
 
-        public static bool ToBHoM(ResponseObject response,
+        public static bool ToBHoM(List<SpeckleObject> speckleObjects,
                                     out List<IBHoMObject> bHoMObjects, out List<IObject> iObjects, out List<object> nonBHoM,
                                     bool assignSpeckleIdToBHoMObjects = true, List<string> speckleIds = null)
         {
@@ -31,68 +31,71 @@ namespace BH.Engine.Speckle
             iObjects = new List<IObject>();
             nonBHoM = new List<object>();
 
-            for (int i = 0; i < response.Resources.Count; i++)
+            for (int i = 0; i < speckleObjects.Count; i++)
             {
                 // If we are filtering by speckleId, skip the object if its SpeckleId doesn't match.
                 if (speckleIds != null && speckleIds.Count > 0)
-                    if (!speckleIds.Any(id => id == response.Resources[i]._id)) // note: slow, o(n²)
+                    if (!speckleIds.Any(id => id == speckleObjects[i]._id)) // note: slow, o(n²)
                         continue;
 
-                object resource = SpeckleCore.Converter.Deserialise(response.Resources[i]);
-                object resource2 = SpeckleCore.Converter.Deserialise((SpeckleObject)response.Resources[i].Properties.First().Value);
-
-                // BHoMData is always saved into the resource `Properties` Dictionary.
-                if (response.Resources[i].Properties == null)
-                {
-                    // This is not a BHoM-related object.
-                    nonBHoM.Add(resource);
-                    continue;
-                }
-
-                // Otherwise, there might be BHoMData in this resource.
                 object BHoMData = null;
+                object deserialisedBHoMData = null;
 
-                if (response.Resources[i].Properties.ContainsKey("BHoMData"))
+                if (speckleObjects[i].Properties.Count() != 0)
                 {
-                    // There is BHoMData.
-                    // BHoMData which is always a JSON representation of either an IObject, an IBHoMObject or an IGeometry.
-                    string jsonBHoMData = response.Resources[i].Properties["BHoMData"].ToString();
+                    speckleObjects[i].Properties.TryGetValue("BHoM", out BHoMData);
 
-                    try
+
+                    if (BHoMData is SpeckleObject)
+                        deserialisedBHoMData = SpeckleCore.Converter.Deserialise((SpeckleObject)BHoMData);
+
+
+                    // Check if Speckle deserialisation was indeed successful.
+                    if (deserialisedBHoMData as IBHoMObject == null && deserialisedBHoMData as IObject == null)
                     {
-                        jsonBHoMData = BH.Engine.Serialiser.Convert.FromZip(jsonBHoMData); //unzip
-                        BHoMData = BH.Engine.Serialiser.Convert.FromJson(jsonBHoMData); //deserialise
+                        try
+                        {
+                            object jsonBHoMDataObj = null;
+                            speckleObjects[i].Properties.TryGetValue("BHoMData", out jsonBHoMDataObj);
+
+                            if (jsonBHoMDataObj != null)
+                            {
+                                var jsonBHoMData = BH.Engine.Serialiser.Convert.FromZip(jsonBHoMDataObj.ToString()); //unzip
+                                deserialisedBHoMData = BH.Engine.Serialiser.Convert.FromJson(jsonBHoMData); //deserialise
+                            }
+                        }
+                        catch { }
                     }
-                    catch { }
 
-                    if (BHoMData == null)
+
+                    // Check if it's a BHoMObject.
+                    IBHoMObject iBHoMObject = deserialisedBHoMData as IBHoMObject;
+                    if (iBHoMObject != null)
                     {
-                        BH.Engine.Reflection.Compute.RecordError("There was a problem deserialising BHoM data from a pulled Speckle resource");
+                        if (assignSpeckleIdToBHoMObjects)
+                            iBHoMObject.CustomData[AdapterId] = speckleObjects[i]._id;
+
+                        bHoMObjects.Add(iBHoMObject);
+                        continue;
+                    }
+
+                    // Check if it's a IObject (which includes IGeometry).
+                    IObject iObject = deserialisedBHoMData as IObject;
+                    if (iObject != null)
+                    {
+                        iObjects.Add(iObject);
                         continue;
                     }
                 }
 
-                // Check if it's a BHoMObject.
-                IBHoMObject iBHoMObject = BHoMData as IBHoMObject;
-                if (iBHoMObject != null)
-                {
-                    if (assignSpeckleIdToBHoMObjects)
-                        iBHoMObject.CustomData[AdapterId] = response.Resources[i]._id;
+                deserialisedBHoMData = speckleObjects[i];
+                if (deserialisedBHoMData as SpeckleObject != null)
+                    deserialisedBHoMData = SpeckleCore.Converter.Deserialise((SpeckleObject)deserialisedBHoMData);
+                    if (deserialisedBHoMData != null)
+                        nonBHoM.Add(deserialisedBHoMData);
 
-                    bHoMObjects.Add(iBHoMObject);
-                    continue;
-                }
 
-                // Check if it's a IObject (which includes IGeometry).
-                IObject iObject = BHoMData as IObject;
-                if (iObject != null)
-                {
-                    iObjects.Add(iObject);
-                    continue;
-                }
-
-                // If got to here, it's neither.
-                nonBHoM.Add(resource);
+               
             }
 
             return true;
