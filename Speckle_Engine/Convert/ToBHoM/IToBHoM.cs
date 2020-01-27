@@ -95,7 +95,7 @@ namespace BH.Engine.Speckle
                     if (iBHoMObject != null)
                     {
                         if (assignSpeckleIdToBHoMObjects)
-                            iBHoMObject.CustomData[AdapterId] = speckleObjects[i]._id;
+                            iBHoMObject.CustomData[AdapterIdName] = speckleObjects[i]._id;
 
                         bHoMObjects.Add(iBHoMObject);
                         continue;

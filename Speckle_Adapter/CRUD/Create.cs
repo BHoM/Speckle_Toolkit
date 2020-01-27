@@ -43,12 +43,6 @@ namespace BH.Adapter.Speckle
         /**** Adapter overload method                   ****/
         /***************************************************/
 
-        protected override bool Create<T>(IEnumerable<T> objects)
-        {
-            // Not used. Override required due to `abstract` in base adapter. To be removed after Refactoring Level 04.
-            return false;
-        }
-
         protected bool CreateObjects(IEnumerable<object> objects)
         {
             // Convert the objects into "Abstract" SpeckleObjects 
@@ -119,7 +113,7 @@ namespace BH.Adapter.Speckle
                 //    return false;
                 //}
 
-                //correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterId] = o.Item2.CustomData[AdapterId]);
+                //correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterIdName] = o.Item2.CustomData[AdapterIdName]);
 
             }
 
@@ -168,7 +162,7 @@ namespace BH.Adapter.Speckle
                     //return false;
                 }
 
-                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterId] = o.Item2.CustomData[AdapterId]);
+                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterIdName] = o.Item2.CustomData[AdapterIdName]);
             }
 
             return true;

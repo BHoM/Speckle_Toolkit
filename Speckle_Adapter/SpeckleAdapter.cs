@@ -14,16 +14,13 @@ namespace BH.Adapter.Speckle
     {
         public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId)
         {
-            Config.UseAdapterId = false;
-
-            AdapterId = BH.Engine.Speckle.Convert.AdapterId;
+            AdapterIdName = BH.Engine.Speckle.Convert.AdapterId;
 
             SpeckleAccount = speckleAccount;
             SpeckleStream = new SpeckleStream() { StreamId = SpeckleStreamId };
 
             SpeckleClient = new SpeckleApiClient() { BaseUrl = SpeckleAccount.RestApi, AuthToken = SpeckleAccount.Token, Stream = SpeckleStream }; // hacky, but i don't want to rebuild stuff and fiddle dll loading etc.
             SpeckleClient.SetupWebsocket();
-
 
             SpeckleStreamId = speckleStreamId;
         }

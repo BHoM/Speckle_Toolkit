@@ -33,13 +33,13 @@ using SpeckleCore;
 
 namespace BH.Adapter.Speckle
 {
-    public partial class SpeckleAdapter : BHoMAdapter
+    public partial class SpeckleAdapter
     {
         /***************************************************/
         /**** Private Helper Methods                    ****/
         /***************************************************/
 
-        private void BasePushRewritten(List<IObject> objectsToPush, string pushType, string tag, bool setAssignedId, ref bool success)
+        private void PushByType(List<IObject> objectsToPush, string pushType, string tag, bool setAssignedId, ref bool success)
         {
             // // - Base push rewritten to allow some additional CustomData to go in.
             MethodInfo miToList = typeof(Enumerable).GetMethod("Cast");
