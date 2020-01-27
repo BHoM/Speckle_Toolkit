@@ -4,24 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using BH.oM.Adapter;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using SpeckleCore;
+using BH.oM.Speckle;
+using System.ComponentModel;
+using BH.Engine.Base;
 
 namespace BH.Adapter.Speckle
 {
-    public partial class SpeckleAdapter : BHoMAdapter
+    public partial class SpeckleAdapter
     {
-        public override List<IObject> Push(IEnumerable<IObject> objects, string tag = "", Dictionary<string, object> config = null)
+        public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
         {
-            //var gna = SpeckleClient.StreamsGetAllAsync("").Result;
-
-            //gna.Resources[0].StreamId
-
-
-            objects = objects.ToList(); // to avoid modifying the original objects
-            List<IObject> IBHoMObjectsToPush = new List<IObject>(); //has to be IObject even if it's going to collect IBHoMObjects
-            List<IObject> IObjectsToPush = new List<IObject>();
+            // Clone objects for immutability in the UI
+            List<object> objectsToPush = objects.Select(x => x.DeepClone()).ToList();
 
             // Initialize Speckle Layer if not existing
             if (SpeckleLayer == null)
@@ -41,49 +39,37 @@ namespace BH.Adapter.Speckle
             /// -------------------
 
             // //- Read config
-            object configObj;
+            SpeckleActionConfig config = actionConfig as SpeckleActionConfig;
+            if (config == null)
+                BH.Engine.Reflection.Compute.RecordError($"The specified ActionConfig is not compatible with {this.GetType().Name}.");
+            
 
-            string pushType = "Replace";
-            if (config != null && config.TryGetValue("PushType", out configObj))
-                pushType = configObj.ToString();
-
-            bool useGUIDS = false;
-            if (config != null && config.TryGetValue("UseGUIDS", out configObj))
-                if (configObj is bool)
-                    useGUIDS = (bool)configObj;
-
-            bool setAssignedId = true;
-            if (config != null && config.TryGetValue("SetAssignedId", out configObj))
-                if (configObj is bool)
-                    setAssignedId = (bool)configObj;
-
-            // //- Configure history. By default it's enabled, and it produces a new stream at every push that correspond to versions.
-            configureHistory(config);
-
-            // //- Clone objects
-            List<IObject> objectsToPush = Config.CloneBeforePush ? objects.Select(x => x is BHoMObject ? ((BHoMObject)x).GetShallowClone() : x).ToList() : objects.ToList(); //ToList() necessary for the return collection to function properly for cloned objects
+            // //- Use "Speckle" history: produces a new stream at every push that corresponds to the old version. Enabled by default.
+            if (config.EnableHistory)
+                SetupHistory();
 
             bool success = true;
-            List<IBHoMObject> bHoMObjects = new List<IBHoMObject>();
-            List<IObject> iobjects = new List<IObject>();
+            List<IBHoMObject> bHoMObjects = null;
+            List<IObject> iobjects = null;
+            List<object> reminder = null;
 
-            if (useGUIDS)
+            if (config.UseGUIDS)
             {
                 // This part works using IBHoMObjects GUID.
-                Engine.Speckle.Query.DispatchBHoMObjects(objectsToPush, out bHoMObjects, out iobjects);
+                Engine.Speckle.Query.DispatchBHoMObjects(objectsToPush, out bHoMObjects, out iobjects, out reminder);
 
-                List<IObject> objectsCreated = null;
-                success = DiffingByBHoMGuid(objectsToPush, out objectsCreated);
+                List<object> objectsCreated = null;
+                success = CreateUsingDiffingByBHoMGuid(objectsToPush, out objectsCreated);
 
-                objectsToPush = objectsCreated.Count > 0 ? objectsCreated : objectsToPush;
+                objectsToPush = objectsCreated.Count > 0 ? objectsCreated.Cast<object>().ToList() : objectsToPush;
             }
             else
             {
                 // // - Base push rewritten to allow some additional CustomData to go in.
-                BasePushRewritten(objectsToPush, pushType, tag, setAssignedId, ref success);
+                PushByType(objectsToPush, tag, config.SetAssignedId, ref success);
             }
 
-            return success ? objectsToPush : new List<IObject>();
+            return success ? objectsToPush : new List<object>();
         }
 
 
@@ -91,7 +77,7 @@ namespace BH.Adapter.Speckle
         /**** Private Helper Methods                    ****/
         /***************************************************/
 
-        private void BasePushRewritten(List<IObject> objectsToPush, string pushType, string tag, bool setAssignedId, ref bool success)
+        private bool PushByType(List<object> objectsToPush, string tag, bool setAssignedId, ref bool success)
         {
             // // - Base push rewritten to allow some additional CustomData to go in.
             Type iBHoMObjectType = typeof(IBHoMObject);
@@ -116,24 +102,17 @@ namespace BH.Adapter.Speckle
                 else
                 {
                     // They are IObjects
-                    CreateIObjects(list as dynamic);
+                    success &= CreateIObjects(list as dynamic);
                 }
             }
+            return success;
         }
 
-        private void configureHistory(Dictionary<string, object> config = null)
+        [Description("Creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.")]
+        private void SetupHistory()
         {
             ResponseStreamClone response = null;
             Task<ResponseStreamClone> respStreamClTask = null;
-
-            object enableHistoryObj = null;
-
-            if (config != null)
-                config.TryGetValue("EnableHistory", out enableHistoryObj);
-
-            bool? enableHistory = enableHistoryObj as bool?;
-            if (enableHistory != null && !(bool)enableHistory)
-                return;
 
             // The following line creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.
             // The streamId of the cloned "backup" is saved among the main Stream "children" field,
@@ -147,7 +126,7 @@ namespace BH.Adapter.Speckle
             catch (Exception e) { }
 
             if (response == null)
-                BH.Engine.Reflection.Compute.RecordWarning($"Could not set the EnableHistory option. Task status: {respStreamClTask.Status.ToString()}");
+                BH.Engine.Reflection.Compute.RecordWarning($"Failed configuring Speckle History. Task status: {respStreamClTask.Status.ToString()}");
         }
     }
 }

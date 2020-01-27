@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using BH.oM.Adapter;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using SpeckleCore;
@@ -14,23 +15,8 @@ namespace BH.Adapter.Speckle
         /***************************************************/
         /**** Adapter overload method                   ****/
         /***************************************************/
-        protected override IEnumerable<IBHoMObject> Read(Type type, IList ids)
+        protected override IEnumerable<IBHoMObject> IRead(Type type, IList ids, ActionConfig actionConfig = null)
         {
-            // // - This method will only be called from the BHoM_Adapter by either: 1) The Replace method 2) The Read overload with the query stuff in it
-
-            ////Choose what to pull out depending on the type. Also see example methods below for pulling out bars and dependencies
-            //if (type == typeof(Node))
-            //    return ReadNodes(ids as dynamic);
-            //else if (type == typeof(Bar))
-            //    return ReadBars(ids as dynamic);
-            //else if (type == typeof(ISectionProperty) || type.GetInterfaces().Contains(typeof(ISectionProperty)))
-            //    return ReadSectionProperties(ids as dynamic);
-            //else if (type == typeof(Material))
-            //    return ReadMaterials(ids as dynamic);
-
-            ///------
-            ///
-
             List<string> speckleGuids = new List<string>();
 
             for (int i = 0; i < ids?.Count; i++)

@@ -14,16 +14,28 @@ namespace BH.Engine.Speckle
         /**** Public Methods                            ****/
         /***************************************************/
 
-        public static IEnumerable<IBHoMObject> ToBHoM(ResponseObject response, bool setAssignedId = true, List<string> speckleIds = null)
+        public static IEnumerable<IBHoMObject> ToBHoM_onlyBHoMObjects(ResponseObject response, bool setAssignedId = true, List<string> speckleIds = null)
         {
             List<IBHoMObject> bhomObjects = new List<IBHoMObject>();
-
             List<IObject> iObjects;
             List<object> reminder;
+
             ToBHoM(response, out bhomObjects, out iObjects, out reminder, setAssignedId, speckleIds);
 
             return bhomObjects;
         }
+
+        public static IEnumerable<object> ToBHoM(ResponseObject response, bool setAssignedId = true, List<string> speckleIds = null)
+        {
+            List<IBHoMObject> bhomObjects = new List<IBHoMObject>();
+            List<IObject> iObjects;
+            List<object> reminder;
+
+            ToBHoM(response, out bhomObjects, out iObjects, out reminder, setAssignedId, speckleIds);
+
+            return bhomObjects.Cast<object>().Concat(iObjects.Cast<object>()).Concat(reminder);
+        }
+
 
         public static bool ToBHoM(ResponseObject response, out List<IBHoMObject> bHoMObjects, out List<IObject> iObjects, out List<object> reminder, bool assignSpeckleIdToBHoMObjects = true, List<string> speckleIds = null)
         {
@@ -45,7 +57,7 @@ namespace BH.Engine.Speckle
                 if (iBHoMObject != null)
                 {
                     if (assignSpeckleIdToBHoMObjects)
-                        iBHoMObject.CustomData[AdapterId] = response.Resources[i]._id;
+                        iBHoMObject.CustomData[AdapterIdName] = response.Resources[i]._id;
 
                     bHoMObjects.Add(iBHoMObject);
                     continue;

@@ -17,14 +17,6 @@ namespace BH.Adapter.Speckle
         /**** Adapter overload method                   ****/
         /***************************************************/
 
-        protected override bool Create<T>(IEnumerable<T> objects)
-        {
-            // This method gets always called by the base.Push --> objects are always IBHoMObjects
-
-            //IEnumerable<IBHoMObject> bHoMObjects = objects.Cast<IBHoMObject>();
-            return CreateIBHoMObjects(objects as dynamic);
-        }
-
         protected bool CreateIObjects(IEnumerable<IObject> objects)
         {
             IEnumerable<object> newObjects = (IEnumerable<object>)objects; //hacky; assumes T is always a reference type. Should be no problem anyway
@@ -72,7 +64,7 @@ namespace BH.Adapter.Speckle
 
                 ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
-                IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
+                IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true).OfType<IBHoMObject>();
 
                 VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(objects, objectsInSpeckle, new IBHoMGUIDComparer());
 
@@ -82,7 +74,7 @@ namespace BH.Adapter.Speckle
                     return false;
                 }
 
-                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterId] = o.Item2.CustomData[AdapterId]);
+                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterIdName] = o.Item2.CustomData[AdapterIdName]);
 
             }
 
@@ -92,7 +84,7 @@ namespace BH.Adapter.Speckle
         // Note: setAssignedId is currently not exposed as an option
         //  -- waiting for Adapter refactoring LVL 04 to expose a new CRUDconfig input for the Push 
         // CRUDconfig will become available to all CRUD methods
-        protected bool CreateAnyObject(List<IObject> objects, bool setAssignedId = true)
+        protected bool CreateAnyObject(List<object> objects, bool setAssignedId = true)
         {
             /// Create the objects
             List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(objects);
@@ -126,7 +118,7 @@ namespace BH.Adapter.Speckle
                 ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
                 List<IBHoMObject> bHoMObjects_inSpeckle = new List<IBHoMObject>();
-                IEnumerable<IBHoMObject> iBhomObjsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true);
+                IEnumerable<IBHoMObject> iBhomObjsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response, true).OfType<IBHoMObject>();
 
                 VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(objects.Where(o => o as IBHoMObject != null).Cast<IBHoMObject>(), iBhomObjsInSpeckle, new IBHoMGUIDComparer());
 
@@ -137,7 +129,7 @@ namespace BH.Adapter.Speckle
                     //return false;
                 }
 
-                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterId] = o.Item2.CustomData[AdapterId]);
+                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterIdName] = o.Item2.CustomData[AdapterIdName]);
 
             }
 

@@ -17,16 +17,17 @@ namespace BH.Adapter.Speckle
     {
         /// This method is actually useless -- 
         /// written assuming IBHoMObjects had static GUID (instead they are re-instantiated at any modification).
-        private bool DiffingByBHoMGuid(List<IObject> objectsToBePushed, out List<IObject> objectsCreated)
+        private bool CreateUsingDiffingByBHoMGuid(List<object> objectsToBePushed, out List<object> objectsCreated)
         {
-            objectsCreated = new List<IObject>();
-            List<IObject> objectsToBeCreated = new List<IObject>();
+            objectsCreated = new List<object>();
+            List<object> objectsToBeCreated = new List<object>();
 
             // Dispatch objects to be pushed
             List <IBHoMObject> bhomObjectsToBePushed = null;
             List<IObject> iObjectsToBePushed = null;
+            List<object> reminder = null;
 
-            BH.Engine.Speckle.Query.DispatchBHoMObjects(objectsToBePushed, out bhomObjectsToBePushed, out iObjectsToBePushed);
+            BH.Engine.Speckle.Query.DispatchBHoMObjects(objectsToBePushed, out bhomObjectsToBePushed, out iObjectsToBePushed, out reminder);
 
             // Receive and dispatch objects already in speckle
             ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
@@ -40,7 +41,7 @@ namespace BH.Adapter.Speckle
             // If speckle doesn't contain anything, push everything
             if (response.Resources.Count == 0)
             {
-                objectsToBeCreated = bhomObjectsToBePushed.Concat(iObjectsToBePushed).ToList();
+                objectsToBeCreated = bhomObjectsToBePushed.Cast<object>().Concat(iObjectsToBePushed).Concat(reminder).ToList();
                 if (CreateAnyObject(objectsToBeCreated))
                     objectsCreated = objectsToBeCreated;
 
@@ -65,11 +66,11 @@ namespace BH.Adapter.Speckle
                 BH.Engine.Reflection.Compute.RecordNote("Speckle already contains every BHoM currently being pushed. They have not been pushed.");
             }
 
-            // IObjects always have to be recreated as they have no GUID
+            // `IObject`s and `System.Object`s always have to be recreated as they have no GUID
             List<int> objectsToPushHashes = new List<int>();
             objectsToPushHashes = objectsToBePushed.Select(o => o.ToString().GetHashCode()).ToList();
 
-            foreach (var o in iObjectsToBePushed) //.Concat(reminderObjectsInSpeckle)
+            foreach (var o in iObjectsToBePushed.Concat(reminderObjectsInSpeckle))
             {
                 if (!objectsToPushHashes.Any(hash => hash == o.ToString().GetHashCode()))
                     objectsToBeCreated.Add(o);

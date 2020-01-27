@@ -35,12 +35,21 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Adapter_oM">
+      <HintPath>..\..\BHoM_Adapter\Build\Adapter_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="BHoM">
       <HintPath>..\..\BHoM\Build\BHoM.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="BHoM_Adapter">
       <HintPath>..\..\BHoM_Adapter\Build\BHoM_Adapter.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="BHoM_Engine, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\BHoM_Engine\Build\BHoM_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Countly, Version=19.8.0.0, Culture=neutral, PublicKeyToken=30fd2b3d8bfe4882, processorArchitecture=MSIL">
@@ -130,19 +139,20 @@
     <Compile Include="CRUD\Create.cs" />
     <Compile Include="CRUD\Delete.cs" />
     <Compile Include="CRUD\Read.cs" />
-    <Compile Include="CRUD\Update.cs" />
     <Compile Include="Diffing\Diffing.cs" />
     <Compile Include="SpeckleAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Types\Comparer.cs" />
     <Compile Include="Diffing\ComparerForDiffing.cs" />
-    <Compile Include="Types\DependencyTypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Speckle_Engine\Speckle_Engine.csproj">
       <Project>{94a03de9-c196-49b1-a509-cbafcd63ba3c}</Project>
       <Name>Speckle_Engine</Name>
       <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Speckle_oM\Speckle_oM.csproj">
+      <Project>{0adf9779-2060-438b-83f4-7463f776b248}</Project>
+      <Name>Speckle_oM</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

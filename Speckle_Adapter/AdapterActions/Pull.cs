@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using BH.oM.Adapter;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using SpeckleCore;
@@ -12,7 +13,7 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter : BHoMAdapter
     {
-        public override IEnumerable<object> Pull(IRequest query, Dictionary<string, object> config = null)
+        public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
         {
             var response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
@@ -22,7 +23,7 @@ namespace BH.Adapter.Speckle
 
             bool assignSpeckleIdToBHoMObjects = true;
 
-            if (query == null)
+            if (request == null)
             {
 
                 if (!BH.Engine.Speckle.Convert.ToBHoM(response, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects))
@@ -37,7 +38,7 @@ namespace BH.Adapter.Speckle
                 /// -------------------
 
                 // Make sure this is a FilterQuery
-                FilterRequest filter = query as FilterRequest;
+                FilterRequest filter = request as FilterRequest;
                 if (filter == null)
                 {
                     Engine.Reflection.Compute.RecordWarning("Please specify a FilterQuery");

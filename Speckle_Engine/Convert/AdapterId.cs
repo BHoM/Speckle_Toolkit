@@ -9,6 +9,6 @@ namespace BH.Engine.Speckle
 {
   public static partial class Convert
   {
-    public const string AdapterId = "Speckle_id";
+    public const string AdapterIdName = "Speckle_id";
   }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BH.oM.Adapter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,7 +13,7 @@ namespace BH.Adapter.Speckle
         /**** Adapter overload method                   ****/
         /***************************************************/
 
-        protected override int Delete(Type type, IEnumerable<object> ids)
+        protected override int IDelete(Type type, IEnumerable<object> ids, ActionConfig actionConfig = null)
         {
             IEnumerable<string> speckleGuids = ids as IEnumerable<string>;
 
