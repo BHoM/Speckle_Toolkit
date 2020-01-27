@@ -63,7 +63,7 @@ namespace BH.Adapter.Speckle
             // //- Read config
             SpeckleActionConfig config = actionConfig as SpeckleActionConfig;
             if (config == null)
-                BH.Engine.Reflection.Compute.RecordError($"The specified ActionConfig is not compatible with {this.GetType().Name}.");
+                config = new SpeckleActionConfig();
 
 
             // //- Use "Speckle" history: produces a new stream at every push that corresponds to the old version. Enabled by default.
