@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speckle_Adapter", "Speckle_
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speckle_Engine", "Speckle_Engine\Speckle_Engine.csproj", "{94A03DE9-C196-49B1-A509-CBAFCD63BA3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Speckle_oM", "Speckle_oM\Speckle_oM.csproj", "{0ADF9779-2060-438B-83F4-7463F776B248}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{94A03DE9-C196-49B1-A509-CBAFCD63BA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94A03DE9-C196-49B1-A509-CBAFCD63BA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94A03DE9-C196-49B1-A509-CBAFCD63BA3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ADF9779-2060-438B-83F4-7463F776B248}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ADF9779-2060-438B-83F4-7463F776B248}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ADF9779-2060-438B-83F4-7463F776B248}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ADF9779-2060-438B-83F4-7463F776B248}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
