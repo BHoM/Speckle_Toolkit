@@ -145,7 +145,7 @@
   <ItemGroup>
     <Compile Include="AdapterActions\Pull.cs" />
     <Compile Include="AdapterActions\Push.cs" />
-    <Compile Include="AdapterActions\_PushMethods\BasePushRewritten.cs" />
+    <Compile Include="AdapterActions\_PushMethods\PushByType.cs" />
     <Compile Include="AdapterActions\_PushMethods\ConfigureHistory.cs" />
     <Compile Include="CRUD\Create.cs" />
     <Compile Include="CRUD\Delete.cs" />
@@ -161,6 +161,11 @@
     <ProjectReference Include="..\Speckle_Engine\Speckle_Engine.csproj">
       <Project>{94a03de9-c196-49b1-a509-cbafcd63ba3c}</Project>
       <Name>Speckle_Engine</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Speckle_oM\Speckle_oM.csproj">
+      <Project>{0adf9779-2060-438b-83f4-7463f776b248}</Project>
+      <Name>Speckle_oM</Name>
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
