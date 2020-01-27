@@ -64,34 +64,17 @@ namespace BH.Adapter.Speckle
             SpeckleActionConfig config = actionConfig as SpeckleActionConfig;
             if (config == null)
                 BH.Engine.Reflection.Compute.RecordError($"The specified ActionConfig is not compatible with {this.GetType().Name}.");
-            
+
 
             // //- Use "Speckle" history: produces a new stream at every push that corresponds to the old version. Enabled by default.
             if (config.EnableHistory)
                 SetupHistory();
 
-            bool success = true;
-            List<IBHoMObject> bHoMObjects = null;
-            List<IObject> iobjects = null;
-            List<object> reminder = null;
+            // // - Base push rewritten to allow some additional CustomData to go in.
+            if (PushByType(objectsToPush, tag, config.SetAssignedId))
+                return objectsToPush;
 
-            if (config.UseGUIDS)
-            {
-                // This part works using IBHoMObjects GUID.
-                Engine.Speckle.Query.DispatchBHoMObjects(objectsToPush, out bHoMObjects, out iobjects, out reminder);
-
-                List<object> objectsCreated = null;
-                success = CreateUsingDiffingByBHoMGuid(objectsToPush, out objectsCreated);
-
-                objectsToPush = objectsCreated.Count > 0 ? objectsCreated.Cast<object>().ToList() : objectsToPush;
-            }
-            else
-            {
-                // // - Base push rewritten to allow some additional CustomData to go in.
-                PushByType(objectsToPush, tag, config.SetAssignedId, ref success);
-            }
-
-            return success ? objectsToPush : new List<object>();
+            return new List<object>();
         }
 
 
@@ -99,8 +82,10 @@ namespace BH.Adapter.Speckle
         /**** Private Helper Methods                    ****/
         /***************************************************/
 
-        private bool PushByType(List<object> objectsToPush, string tag, bool setAssignedId, ref bool success)
+        private bool PushByType(List<object> objectsToPush, string tag, bool setAssignedId)
         {
+            bool success = true; 
+
             // // - Base push rewritten to allow some additional CustomData to go in.
             Type iBHoMObjectType = typeof(IBHoMObject);
             MethodInfo miToList = typeof(Enumerable).GetMethod("Cast");
@@ -114,11 +99,11 @@ namespace BH.Adapter.Speckle
                 {
                     // They are IBHoMObjects
 
-                    /// Assign SpeckleStreamId to the CustomData of the IBHoMObjects
+                    // Assign SpeckleStreamId to the CustomData of the IBHoMObjects
                     var iBHoMObjects = list as IEnumerable<IBHoMObject>;
                     iBHoMObjects.ToList().ForEach(o => o.CustomData["Speckle_StreamId"] = SpeckleStreamId);
 
-                    /// Switch push type
+                    // Switch push type
                     success &= CreateIBHoMObjects(iBHoMObjects as dynamic, setAssignedId);//Replace(iBHoMObjects as dynamic, tag);
                 }
                 else
@@ -127,6 +112,7 @@ namespace BH.Adapter.Speckle
                     success &= CreateIObjects(list as dynamic);
                 }
             }
+
             return success;
         }
 
