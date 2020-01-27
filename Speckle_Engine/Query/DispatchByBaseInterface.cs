@@ -36,15 +36,6 @@ namespace BH.Engine.Speckle
 {
     public static partial class Query
     {
-        public static void DispatchByBaseInterface(IEnumerable<IObject> objects, out List<IBHoMObject> ibhomObjects, out List<IObject> iObjects)
-        {
-            ibhomObjects = new List<IBHoMObject>();
-            iObjects = new List<IObject>();
-
-            List<object> reminder;
-            DispatchByBaseInterface(objects, out ibhomObjects, out iObjects, out reminder);
-        }
-
         public static void DispatchByBaseInterface(IEnumerable<object> objects, out List<IBHoMObject> ibhomObjects, out List<IObject> iObjects, out List<object> reminder)
         {
             ibhomObjects = new List<IBHoMObject>();
