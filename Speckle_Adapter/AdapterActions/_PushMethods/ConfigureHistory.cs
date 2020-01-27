@@ -35,7 +35,7 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter : BHoMAdapter
     {
-        private void configureHistory(Dictionary<string, object> config = null)
+        private void SetupHistory(Dictionary<string, object> config = null)
         {
             ResponseStreamClone response = null;
             Task<ResponseStreamClone> respStreamClTask = null;

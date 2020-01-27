@@ -39,7 +39,7 @@ namespace BH.Adapter.Speckle
     {
         /// This method is actually useless -- 
         /// written assuming IBHoMObjects had static GUID (instead they are re-instantiated at any modification).
-        private bool DiffingByBHoMGuid(List<IObject> objectsToBePushed, out List<IObject> objectsCreated)
+        private bool CreateUsingDiffingByBHoMGuid(List<IObject> objectsToBePushed, out List<IObject> objectsCreated)
         {
             objectsCreated = new List<IObject>();
             List<IObject> objectsToBeCreated = new List<IObject>();
