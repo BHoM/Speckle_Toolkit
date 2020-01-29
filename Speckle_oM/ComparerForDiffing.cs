@@ -27,7 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BH.Adapter.Speckle.Types
+namespace BH.oM.Speckle
 {
     public class IBHoMGUIDComparer : IEqualityComparer<IBHoMObject>
     {
