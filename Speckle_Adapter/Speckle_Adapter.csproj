@@ -158,7 +158,6 @@
     <Compile Include="CRUD\Read.cs" />
     <Compile Include="SpeckleAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Diffing\ComparerForDiffing.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Speckle_Engine\Speckle_Engine.csproj">
