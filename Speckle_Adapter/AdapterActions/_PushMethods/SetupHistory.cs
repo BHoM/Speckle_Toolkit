@@ -23,6 +23,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -35,19 +36,11 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter : BHoMAdapter
     {
-        private void SetupHistory(Dictionary<string, object> config = null)
+        [Description("Creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.")]
+        private void SetupHistory()
         {
             ResponseStreamClone response = null;
             Task<ResponseStreamClone> respStreamClTask = null;
-
-            object enableHistoryObj = null;
-
-            if (config != null)
-                config.TryGetValue("EnableHistory", out enableHistoryObj);
-
-            bool? enableHistory = enableHistoryObj as bool?;
-            if (enableHistory != null && !(bool)enableHistory)
-                return;
 
             // The following line creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.
             // The streamId of the cloned "backup" is saved among the main Stream "children" field,
@@ -61,7 +54,7 @@ namespace BH.Adapter.Speckle
             catch (Exception e) { }
 
             if (response == null)
-                BH.Engine.Reflection.Compute.RecordWarning($"Could not set the EnableHistory option. Task status: {respStreamClTask.Status.ToString()}");
+                BH.Engine.Reflection.Compute.RecordWarning($"Failed configuring Speckle History. Task status: {respStreamClTask.Status.ToString()}");
         }
     }
 }

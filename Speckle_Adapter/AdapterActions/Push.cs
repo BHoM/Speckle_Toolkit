@@ -71,70 +71,10 @@ namespace BH.Adapter.Speckle
                 SetupHistory();
 
             // // - Base push rewritten to allow some additional CustomData to go in.
-            if (PushByType(objectsToPush, tag, config.SetAssignedId))
+            if (PushByType(objectsToPush, tag, config))
                 return objectsToPush;
 
             return new List<object>();
-        }
-
-
-        /***************************************************/
-        /**** Private Helper Methods                    ****/
-        /***************************************************/
-
-        private bool PushByType(List<object> objectsToPush, string tag, bool setAssignedId)
-        {
-            bool success = true; 
-
-            // // - Base push rewritten to allow some additional CustomData to go in.
-            Type iBHoMObjectType = typeof(IBHoMObject);
-            MethodInfo miToList = typeof(Enumerable).GetMethod("Cast");
-            foreach (var typeGroup in objectsToPush.GroupBy(x => x.GetType()))
-            {
-                MethodInfo miListObject = miToList.MakeGenericMethod(new[] { typeGroup.Key });
-
-                var list = miListObject.Invoke(typeGroup, new object[] { typeGroup });
-
-                if (iBHoMObjectType.IsAssignableFrom(typeGroup.Key))
-                {
-                    // They are IBHoMObjects
-
-                    // Assign SpeckleStreamId to the CustomData of the IBHoMObjects
-                    var iBHoMObjects = list as IEnumerable<IBHoMObject>;
-                    iBHoMObjects.ToList().ForEach(o => o.CustomData["Speckle_StreamId"] = SpeckleStreamId);
-
-                    // Switch push type
-                    success &= CreateIBHoMObjects(iBHoMObjects as dynamic, setAssignedId);//Replace(iBHoMObjects as dynamic, tag);
-                }
-                else
-                {
-                    // They are IObjects
-                    success &= CreateIObjects(list as dynamic);
-                }
-            }
-
-            return success;
-        }
-
-        [Description("Creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.")]
-        private void SetupHistory()
-        {
-            ResponseStreamClone response = null;
-            Task<ResponseStreamClone> respStreamClTask = null;
-
-            // The following line creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.
-            // The streamId of the cloned "backup" is saved among the main Stream "children" field,
-            // accessible through SpeckleServerAddress/api/v1/streams/streamId
-            respStreamClTask = SpeckleClient.StreamCloneAsync(SpeckleStreamId);
-
-            try
-            {
-                response = respStreamClTask?.Result;
-            }
-            catch (Exception e) { }
-
-            if (response == null)
-                BH.Engine.Reflection.Compute.RecordWarning($"Failed configuring Speckle History. Task status: {respStreamClTask.Status.ToString()}");
         }
     }
 }

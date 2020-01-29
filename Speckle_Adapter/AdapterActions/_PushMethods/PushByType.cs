@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using BH.oM.Base;
 using BH.oM.Data.Requests;
 using BH.oM.Geometry;
+using BH.oM.Speckle;
 using SpeckleCore;
 
 namespace BH.Adapter.Speckle
@@ -39,8 +40,10 @@ namespace BH.Adapter.Speckle
         /**** Private Helper Methods                    ****/
         /***************************************************/
 
-        private void PushByType(List<IObject> objectsToPush, string pushType, string tag, bool setAssignedId, ref bool success)
+        private bool PushByType(List<object> objectsToPush, string tag, SpeckleActionConfig config)
         {
+            bool success = true;
+
             // // - Base push rewritten to allow some additional CustomData to go in.
             MethodInfo miToList = typeof(Enumerable).GetMethod("Cast");
             foreach (var typeGroup in objectsToPush.GroupBy(x => x.GetType()))
@@ -60,26 +63,27 @@ namespace BH.Adapter.Speckle
                         // They are IBHoMObjects
 
                         // Assign SpeckleStreamId to the CustomData of the IBHoMObjects
-                        var iBHoMObjects = list as IEnumerable<IBHoMObject>;
-                        iBHoMObjects.ToList().ForEach(o => o.CustomData["Speckle_StreamId"] = SpeckleStreamId);
+                        var iBHoMObjects = (list as IEnumerable<IBHoMObject>).ToList();
+                        iBHoMObjects.ForEach(o => o.CustomData["Speckle_StreamId"] = SpeckleStreamId);
 
-                        success &= CreateIBHoMObjects(iBHoMObjects as dynamic, setAssignedId);
+                        success &= CreateIBHoMObjects(iBHoMObjects as dynamic, config);
                     }
                     else
                     {
                         // They are simply IObjects.
                         var iObjects = (list as IEnumerable<IObject>).ToList();
-                        success &= CreateIObjects(iObjects as dynamic, setAssignedId);
-
+                        success &= CreateIObjects(iObjects as dynamic, config);
                     }
                 }
                 else
                 {
                     // They are something else.
                     // These objects will be exported as "Abstract" SpeckleObjects.
-                    CreateObjects(list as dynamic);
+                    success &= CreateObjects(list as dynamic, config);
                 }
             }
+
+            return success;
         }
     }
 }
