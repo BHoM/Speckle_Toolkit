@@ -31,10 +31,6 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        /***************************************************/
-        /**** Adapter overload method                   ****/
-        /***************************************************/
-
         protected override int IDelete(Type type, IEnumerable<object> ids, ActionConfig actionConfig = null)
         {
             IEnumerable<string> speckleGuids = ids as IEnumerable<string>;
@@ -49,7 +45,5 @@ namespace BH.Adapter.Speckle
         {
             throw new NotImplementedException();
         }
-
-        /***************************************************/
     }
 }

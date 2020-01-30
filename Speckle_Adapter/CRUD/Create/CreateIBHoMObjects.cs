@@ -51,30 +51,28 @@ namespace BH.Adapter.Speckle
             SpeckleLayer.ObjectCount += BHoMObjects.Count();
             SpeckleStream.Objects.AddRange(speckleObjects);
 
-            /// Assign any other property to the speckle objects before updating the stream
+            // Assign any other property to the speckle objects before updating the stream
             var objList = BHoMObjects.ToList();
-            int i = 0;
-            foreach (var o in SpeckleStream.Objects)
+
+            for (int i = 0; i < SpeckleStream.Objects.Count; i++)
             {
                 if (objList.Count() <= i)
                     break;
-                //Set `speckleObject.Name` as the BHoMObject type name.
+
+                // Set `speckleObject.Name` as the BHoMObject type name.
                 SpeckleStream.Objects[i].Name = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
 
                 // Set the speckleObject type as the BHoMObject type name.
-                //SpeckleStream.Objects[i].Type = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
-                i++;
+                // SpeckleStream.Objects[i].Type = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
             }
-
-            //SpeckleStream.Layers.Add(new SpeckleCore.Layer()
 
             // Send the objects
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
 
-            /// Read the IBHoMobjects as exported in speckle
-            /// so we can assign the Speckle-generated id into the BHoMobjects
+            // Read the IBHoMobjects as exported in speckle
+            // so we can assign the Speckle-generated id into the BHoMobjects
             if (config.SetAssignedId)
             {
 
