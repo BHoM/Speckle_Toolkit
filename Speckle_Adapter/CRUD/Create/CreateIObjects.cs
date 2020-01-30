@@ -60,8 +60,8 @@ namespace BH.Adapter.Speckle
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
-            /// Read the objects as exported in speckle
-            /// so we can assign the Speckle-generated id into the BHoMobjects
+            // Read the objects as exported in speckle
+            // so we can assign the Speckle-generated id into the BHoMobjects
             if (config.SetAssignedId)
             {
                 ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;

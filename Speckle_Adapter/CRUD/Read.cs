@@ -30,6 +30,7 @@ using BH.oM.Data.Requests;
 using SpeckleCore;
 using BH.Engine.Speckle;
 using BH.oM.Adapter;
+using BH.oM.Speckle;
 
 namespace BH.Adapter.Speckle
 {
@@ -37,7 +38,7 @@ namespace BH.Adapter.Speckle
     {
         protected IEnumerable<object> ReadAll(bool assignSpeckleIdToBHoMObjects = true)
         {
-            var response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
+            ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
             List<IBHoMObject> bHoMObjects = new List<IBHoMObject>();
             List<IObject> iObjects = new List<IObject>();
@@ -49,19 +50,24 @@ namespace BH.Adapter.Speckle
             return bHoMObjects.Concat(iObjects).Concat(reminder);
         }
 
-        protected bool Read(FilterRequest filterRequest, out List<IBHoMObject> bHoMObjects, out List<IObject> iObjects, out List<object> reminder)
+        protected bool Read(SpeckleRequest speckleRequest, out List<IBHoMObject> bHoMObjects, out List<IObject> iObjects, out List<object> reminder)
         {
-            var response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
+            ResponseObject response = null;
 
-            // Extract the speckleIds for selection from the FilterRequest.
-            List<string> speckleIds = Query.SpeckleIds(filterRequest);
+            if (!string.IsNullOrEmpty(speckleRequest.SpeckleQuery))
+                response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, speckleRequest.SpeckleQuery).Result;
+
+            response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
+
+            // Extract the speckleIds for selection from the SpeckleRequest.
+            List<string> speckleIds = speckleRequest.SpeckleGUIDs;
             speckleIds = speckleIds?.Count != 0 ? speckleIds : null;
 
             // Convert the response to the appropriate object types.
             BH.Engine.Speckle.Convert.ToBHoM(response.Resources, out bHoMObjects, out iObjects, out reminder, speckleIds?.Count != 0, speckleIds);
 
             // Filter by tag if any 
-            bHoMObjects = filterRequest.Tag == "" ? bHoMObjects : bHoMObjects.Where(x => x.Tags.Contains(filterRequest.Tag)).ToList();
+            bHoMObjects = speckleRequest.Tag == "" ? bHoMObjects : bHoMObjects.Where(x => x.Tags.Contains(speckleRequest.Tag)).ToList();
 
             return true;
         }

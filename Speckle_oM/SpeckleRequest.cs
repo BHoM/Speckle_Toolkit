@@ -20,49 +20,30 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using BH.oM.Base;
 using BH.oM.Data.Requests;
-using SpeckleCore;
-using BH.Engine.Speckle;
-using BH.oM.Adapter;
-using BH.oM.Speckle;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Adapter.Speckle
+namespace BH.oM.Speckle
 {
-    public partial class SpeckleAdapter
+    [Description("Used to Pull only query objects that satifisfy the given conditions.")]
+    public class SpeckleRequest : IRequest
     {
-        public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
-        {
-            if (request == null)
-                return ReadAll();
+        [Description("SpeckleGUID is the id that Speckle assigned to the objects when uploaded. Only objects with the specified SpeckleGUID will be returned by the Pull.")]
+        public List<string> SpeckleGUIDs { get; set; } // e.g. https://hestia.speckle.works/api/v1/streams/s8wPVeeqe/objects?_id=5df9fccf6c95664adc770e4c (does not work)
 
-            // Make sure it's a SpeckleRequest
-            SpeckleRequest speckleRequest = request as SpeckleRequest;
-            if (request!= null && speckleRequest == null)
-            {
-                Engine.Reflection.Compute.RecordError($"SpeckleAdapter supports only {typeof(SpeckleRequest).Name}.");
-                return new List<object>();
-            }
+        [Description("SpeckleHash is the id that Speckle assigned to the objects when uploaded. Only objects with the specified SpeckleGUID will be returned by the Pull.")]
+        public List<string> SpeckleHash { get; set; } // e.g. https://hestia.speckle.works/api/v1/streams/s8wPVeeqe/objects?hash=eea8586e084c18d795d127c65a9b30ca
 
-            List<IBHoMObject> bHoMObjects = new List<IBHoMObject>();
-            List<IObject> iObjects = new List<IObject>();
-            List<object> reminder = new List<object>();
+        [Description("Maximum number of objects downloaded from the Speckle Stream.")]
+        public int? Limit { get; set; } = null;
 
-            Read(speckleRequest, out bHoMObjects, out iObjects, out reminder);
-
-            // Return stuff
-            if (typeof(IBHoMObject).IsAssignableFrom(speckleRequest.Type))
-                return bHoMObjects;
-            else if (typeof(IObject).IsAssignableFrom(speckleRequest.Type))
-                return iObjects;
-            else
-                return bHoMObjects.Concat(iObjects).Concat(reminder);
-        }
+        [Description("String containing any query interpretable by Speckle. See https://speckle.systems/docs/developers/api-specs/ -> Query.\n" +
+            "If specified, this field takes precedence over all others. Empty by default.")]
+        public string SpeckleQuery { get; set; } = "";
     }
 }

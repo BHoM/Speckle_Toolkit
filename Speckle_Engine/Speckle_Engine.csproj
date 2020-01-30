@@ -158,7 +158,6 @@
     <Compile Include="Query\GetOnlyIBHoMObjects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\DispatchByBaseInterface.cs" />
-    <Compile Include="Query\SpeckleIds.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

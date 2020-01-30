@@ -37,6 +37,7 @@ using System.ComponentModel;
 using BH.oM.Structure.Elements;
 using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
+using BH.oM.Speckle;
 
 namespace BH.Engine.Speckle
 {
@@ -45,6 +46,32 @@ namespace BH.Engine.Speckle
         /***************************************************/
         /**** Public Methods                            ****/
         /***************************************************/
+
+
+        [Description("Convert a SpeckleRequest to the corresponding Speckle Query.")]
+        public static string FromBHoM(this SpeckleRequest speckleRequest)
+        {
+            string speckleQuery = "";
+
+            if (!string.IsNullOrEmpty(speckleRequest.SpeckleQuery))
+                return speckleRequest.SpeckleQuery; // just return the included SpeckleQuery.
+            else
+            {
+                // Do the conversion.
+                if (speckleRequest.Limit != null)
+                    speckleQuery += $"&limit={speckleRequest.Limit}";
+
+                if (speckleRequest.SpeckleHash != null)
+                    speckleQuery += $"&hash={string.Join(",",speckleRequest.SpeckleHash)}";
+
+                if (speckleRequest.SpeckleGUIDs != null)
+                    speckleQuery += $"&id={string.Join(",", speckleRequest.SpeckleGUIDs)}";
+            }
+
+            return speckleQuery;
+        }
+
+
 
         [Description("Convert BHoM Point to a Speckle Point")]
         public static SpecklePoint FromBHoM(this BHG.Point bhomPoint)
