@@ -71,20 +71,6 @@ namespace BH.Adapter.Speckle
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
 
-            // Read the IBHoMobjects as exported in speckle
-            // so we can assign the Speckle-generated id into the BHoMobjects
-            // NOTE: This does not work since I switched to BH.Engine deserialisation. 
-            // Issue is that our deserialisation "recreates" the objects without preserving the original GUID.
-            if (config.StoreSpeckleId)
-            {
-                ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
-
-                IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response.Resources, true).OfType<IBHoMObject>().ToList();
-
-                VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(BHoMObjects, objectsInSpeckle, new IBHoMGUIDComparer());
-
-                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterIdName] = o.Item2.CustomData[AdapterIdName]);
-            }
 
             return true;
         }
