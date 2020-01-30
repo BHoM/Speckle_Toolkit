@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -22,29 +22,37 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SpeckleCore;
+using BHG = BH.oM.Geometry;
+using SpeckleCoreGeometryClasses;
+using BH.oM.Base;
+using BH.Engine.Geometry;
+using System.Reflection;
+using BH.oM.Geometry;
+using BH.Engine.Base;
+using System.ComponentModel;
+using BH.oM.Structure.Elements;
+using BH.Engine.Structure;
+using BH.Engine.Rhinoceros;
+using BH.oM.Speckle;
 
-namespace BH.oM.Speckle
+namespace BH.Engine.Speckle
 {
-    public class SpecklePushConfig : BH.oM.Adapter.ActionConfig
+    public static partial class Convert
     {
-        [Description("Enables Speckle history.\n" +
-            "Speckle does history by cloning the stream and saving it between the children of the main stream. The head of the stream is the latest version.")]
-        public bool EnableHistory { get; set; } = true;
+        
+        [Description("Convert BHoM Vector to a Speckle Vector")]
+        public static SpeckleVector FromBHoM(this BHG.Vector bhomVector)
+        {
+            if (bhomVector == null) return default(SpeckleVector);
 
-        [Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
-            "The CustomData dictionary is only available for BHoMObjects.")]
-        // This does not work since I switched to BH.Engine deserialisation. Issue is that our deserialisation "recreates" the objects without preserving the original GUID.
-        public bool StoreSpeckleId { get; set; } = true; 
-    }
+            SpeckleVector speckleVector = new SpeckleVector(bhomVector.X, bhomVector.Y, bhomVector.X);
 
-    public class SpecklePullConfig : BH.oM.Adapter.ActionConfig
-    {
-        [Description("Stores the SpeckleId of the pulled objects in the CustomData.\n" +
-            "The CustomData dictionary is only available for BHoMObjects.")]
-        public bool StoreSpeckleId { get; set; } = true;
+            speckleVector.GenerateHash();
+            return speckleVector;
+        }
     }
 }

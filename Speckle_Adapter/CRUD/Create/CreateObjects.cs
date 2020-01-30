@@ -39,7 +39,7 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        protected bool CreateObjects(IEnumerable<object> objects, SpeckleActionConfig config)
+        protected bool CreateObjects(IEnumerable<object> objects, SpecklePushConfig config)
         {
             // Convert the objects into "Abstract" SpeckleObjects 
             List<SpeckleObject> objs_serialized = SpeckleCore.Converter.Serialise(objects);

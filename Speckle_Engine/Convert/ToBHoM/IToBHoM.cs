@@ -34,20 +34,20 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        public static IEnumerable<IBHoMObject> ToBHoM(List<SpeckleObject> speckleObjects, bool setAssignedId = true, List<string> speckleIds = null)
+        public static List<object> ToBHoM(List<SpeckleObject> speckleObjects, bool storeSpeckleId = true)
         {
             List<IBHoMObject> bhomObjects = new List<IBHoMObject>();
             List<IObject> iObjects;
             List<object> reminder;
 
-            ToBHoM(speckleObjects, out bhomObjects, out iObjects, out reminder, setAssignedId, speckleIds);
+            ToBHoM(speckleObjects, out bhomObjects, out iObjects, out reminder, storeSpeckleId);
 
-            return bhomObjects;
+            return bhomObjects.Concat(iObjects).Concat(reminder).ToList();
         }
 
         public static bool ToBHoM(List<SpeckleObject> speckleObjects,
                                     out List<IBHoMObject> bHoMObjects, out List<IObject> iObjects, out List<object> nonBHoM,
-                                    bool assignSpeckleIdToBHoMObjects = true, List<string> speckleIds = null)
+                                    bool storeSpeckleId = true)
         {
             bHoMObjects = new List<IBHoMObject>();
             iObjects = new List<IObject>();
@@ -55,11 +55,6 @@ namespace BH.Engine.Speckle
 
             for (int i = 0; i < speckleObjects.Count; i++)
             {
-                // If we are filtering by speckleId, skip the object if its SpeckleId doesn't match.
-                if (speckleIds != null && speckleIds.Count > 0)
-                    if (!speckleIds.Any(id => id == speckleObjects[i]._id)) // note: slow, o(n²)
-                        continue;
-
                 object BHoMData = null;
                 object deserialisedBHoMData = null;
 
@@ -89,12 +84,11 @@ namespace BH.Engine.Speckle
                         catch { }
                     }
 
-
                     // Check if it's a BHoMObject.
                     IBHoMObject iBHoMObject = deserialisedBHoMData as IBHoMObject;
                     if (iBHoMObject != null)
                     {
-                        if (assignSpeckleIdToBHoMObjects)
+                        if (storeSpeckleId)
                             iBHoMObject.CustomData[AdapterIdName] = speckleObjects[i]._id;
 
                         bHoMObjects.Add(iBHoMObject);
@@ -115,9 +109,6 @@ namespace BH.Engine.Speckle
                     deserialisedBHoMData = SpeckleCore.Converter.Deserialise((SpeckleObject)deserialisedBHoMData);
                     if (deserialisedBHoMData != null)
                         nonBHoM.Add(deserialisedBHoMData);
-
-
-               
             }
 
             return true;

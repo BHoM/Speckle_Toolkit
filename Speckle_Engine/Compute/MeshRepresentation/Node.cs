@@ -41,7 +41,7 @@ using BH.oM.Structure.Constraints;
 
 namespace BH.Engine.Speckle
 {
-    public static partial class Create
+    public static partial class Compute
     {
         /***************************************************/
         /**** Public Methods                            ****/

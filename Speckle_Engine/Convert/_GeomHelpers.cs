@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -31,44 +31,48 @@ using SpeckleCoreGeometryClasses;
 using BH.oM.Base;
 using BH.Engine.Geometry;
 using System.Reflection;
+using BH.oM.Geometry;
+using BH.Engine.Base;
+using System.ComponentModel;
+using BH.oM.Structure.Elements;
+using BH.Engine.Structure;
+using BH.Engine.Rhinoceros;
+using BH.oM.Speckle;
+using BH.oM.Reflection.Attributes;
 
 namespace BH.Engine.Speckle
 {
-    public static partial class Query
+    public static partial class Convert
     {
-        public static void DispatchByBaseInterface(IEnumerable<object> objects, out List<IBHoMObject> ibhomObjects, out List<IObject> iObjects, out List<object> reminder)
+        /***************************************************/
+        /**** Private Helper Methods                    ****/
+        /***************************************************/
+        // Helper Methods for SpeckleCoreGeometry
+
+        private static double[] ToFlatArray(this IEnumerable<BHG.Point> points)
         {
-            ibhomObjects = new List<IBHoMObject>();
-            iObjects = new List<IObject>();
-            reminder = new List<object>();
+            return points.SelectMany(pt => pt.ToArray()).ToArray();
+        }
 
-            Type iBHoMObjectType = typeof(IBHoMObject);
-            Type iObjectType = typeof(IObject);
+        private static double[] ToArray(this BHG.Point pt)
+        {
+            return new double[] { pt.X, pt.Y, pt.Z };
+        }
 
-            MethodInfo miToList = typeof(Enumerable).GetMethod("Cast");
+        [Description("Mass point converter adapted from SpeckleCoreGeometry. It takes IEnumerable instead of array.")]
+        [Input("arr", "Flat array of coordinates from Speckle")]
+        [Output("List of BHoM Points")]
+        private static List<BHG.Point> ToPoints(this IEnumerable<double> arr)
+        {
+            if (arr.Count() % 3 != 0)
+                throw new Exception("Array malformed: length%3 != 0.");
 
-            foreach (var typeGroup in objects.GroupBy(x => x.GetType()))
-            {
-                MethodInfo miListObject = miToList.MakeGenericMethod(new[] { typeGroup.Key });
+            List<BHG.Point> points = new List<BHG.Point>();
+            var asArray = arr.ToArray();
+            for (int i = 2, k = 0; i < arr.Count(); i += 3)
+                points[k++] = new BHG.Point { X = asArray[i - 2], Y = asArray[i - 1], Z = asArray[i] };
 
-                var castedObjects = miListObject.Invoke(typeGroup, new object[] { typeGroup });
-
-                if (iBHoMObjectType.IsAssignableFrom(typeGroup.Key))
-                {
-                    // They're iBHoMObjects
-                    ibhomObjects.AddRange((IEnumerable<IBHoMObject>)castedObjects);
-                }
-                else if (iObjectType.IsAssignableFrom(typeGroup.Key))
-                {
-                    // They're iObjects
-                    iObjects.AddRange((IEnumerable<IObject>)castedObjects);
-                }
-                else
-                {
-                    // They're something else
-                    reminder.AddRange((IEnumerable<object>)castedObjects);
-                }
-            }
+            return points;
         }
     }
 }

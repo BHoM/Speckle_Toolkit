@@ -57,7 +57,7 @@ namespace BH.Engine.Speckle
             // Nested into its `.Properties` it will also "wrap" any other BHoM data.
             SpeckleObject speckleObject = null;
 
-            // Dynamically dispatch to the most appropriate method
+            // Dynamically dispatch to the most appropriate convert method
             speckleObject = FromBHoM(bhomObject as dynamic);
 
             if (speckleObject == null)

@@ -39,7 +39,7 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        protected bool CreateIBHoMObjects(IEnumerable<IBHoMObject> BHoMObjects, SpeckleActionConfig config)
+        protected bool CreateIBHoMObjects(IEnumerable<IBHoMObject> BHoMObjects, SpecklePushConfig config)
         {
             // Convert the objects into the appropriate SpeckleObject (Point, Line, etc.) using the available converters.
             List<SpeckleObject> speckleObjects = BHoMObjects.Select(bhomObj => bhomObj.IFromBHoM()).ToList();
@@ -62,8 +62,8 @@ namespace BH.Adapter.Speckle
                 // Set `speckleObject.Name` as the BHoMObject type name.
                 SpeckleStream.Objects[i].Name = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
 
-                // Set the speckleObject type as the BHoMObject type name.
-                // SpeckleStream.Objects[i].Type = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name;
+                // Set the speckleObject type as the BHoMObject type name (not working)
+                // SpeckleStream.Objects[i].Type = string.IsNullOrEmpty(objList[i].Name) ? objList[i].GetType().ToString() : objList[i].Name; 
             }
 
             // Send the objects
@@ -73,23 +73,17 @@ namespace BH.Adapter.Speckle
 
             // Read the IBHoMobjects as exported in speckle
             // so we can assign the Speckle-generated id into the BHoMobjects
-            if (config.SetAssignedId)
+            // NOTE: This does not work since I switched to BH.Engine deserialisation. 
+            // Issue is that our deserialisation "recreates" the objects without preserving the original GUID.
+            if (config.StoreSpeckleId)
             {
-
                 ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 
-                IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response.Resources, true);
+                IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response.Resources, true).OfType<IBHoMObject>().ToList();
 
-                //VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(BHoMObjects, objectsInSpeckle, new IBHoMGUIDComparer());
+                VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(BHoMObjects, objectsInSpeckle, new IBHoMGUIDComparer());
 
-                //if (correspondenceDiagram.Intersection.Count != BHoMObjects.Count())
-                //{
-                //    Engine.Reflection.Compute.RecordError("Push failed.\nNumber of objects created in Speckle do not correspond to the number of objects pushed.");
-                //    return false;
-                //}
-
-                //correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterIdName] = o.Item2.CustomData[AdapterIdName]);
-
+                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterIdName] = o.Item2.CustomData[AdapterIdName]);
             }
 
             return true;

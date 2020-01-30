@@ -149,22 +149,34 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Convert\AdapterId.cs" />
-    <Compile Include="Convert\FromBHoM\IFromBHoM.cs" />
+    <Compile Include="Convert\FromBHoM\BHoMObject.cs" />
+    <Compile Include="Convert\FromBHoM\Geometry\IGeometry.cs" />
+    <Compile Include="Convert\ToBHoM\Geometry\Mesh.cs" />
+    <Compile Include="Convert\ToBHoM\Geometry\Line.cs" />
+    <Compile Include="Convert\ToBHoM\Geometry\Vector.cs" />
+    <Compile Include="Convert\ToBHoM\Geometry\Point.cs" />
+    <Compile Include="Convert\_GeomHelpers.cs" />
+    <Compile Include="Convert\FromBHoM\Geometry\Mesh.cs" />
+    <Compile Include="Convert\FromBHoM\Geometry\Line.cs" />
+    <Compile Include="Convert\FromBHoM\Structure\Bar.cs" />
+    <Compile Include="Convert\FromBHoM\Structure\Node.cs" />
+    <Compile Include="Convert\FromBHoM\Request.cs" />
+    <Compile Include="Convert\FromBHoM\Geometry\Vector.cs" />
+    <Compile Include="Convert\FromBHoM\Geometry\Point.cs" />
+    <Compile Include="Convert\FromBHoM\_IFromBHoM.cs" />
     <Compile Include="Convert\ToBHoM\ToBHoM.cs" />
-    <Compile Include="Convert\FromBHoM\FromBHoM.cs" />
     <Compile Include="Convert\ToBHoM\IToBHoM.cs" />
-    <Compile Include="Create\BHoMObjectMeshRepresentation.cs" />
+    <Compile Include="Compute\MeshRepresentation\Node.cs" />
     <Compile Include="Query\FilterBySpeckleGUID.cs" />
     <Compile Include="Query\FilterByBHoMGUID.cs" />
-    <Compile Include="Query\GetOnlyIBHoMObjects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\DispatchByBaseInterface.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Convert\ToBHoM\Structure\" />
     <Folder Include="Modify\" />
   </ItemGroup>
   <ItemGroup>

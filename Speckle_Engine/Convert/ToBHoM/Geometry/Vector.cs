@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -22,29 +22,21 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using BHG = BH.oM.Geometry;
+using System.ComponentModel;
+using SCG = SpeckleCoreGeometryClasses;
 
-namespace BH.oM.Speckle
+
+namespace BH.Engine.Speckle
 {
-    public class SpecklePushConfig : BH.oM.Adapter.ActionConfig
+    public static partial class Convert
     {
-        [Description("Enables Speckle history.\n" +
-            "Speckle does history by cloning the stream and saving it between the children of the main stream. The head of the stream is the latest version.")]
-        public bool EnableHistory { get; set; } = true;
-
-        [Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
-            "The CustomData dictionary is only available for BHoMObjects.")]
-        // This does not work since I switched to BH.Engine deserialisation. Issue is that our deserialisation "recreates" the objects without preserving the original GUID.
-        public bool StoreSpeckleId { get; set; } = true; 
-    }
-
-    public class SpecklePullConfig : BH.oM.Adapter.ActionConfig
-    {
-        [Description("Stores the SpeckleId of the pulled objects in the CustomData.\n" +
-            "The CustomData dictionary is only available for BHoMObjects.")]
-        public bool StoreSpeckleId { get; set; } = true;
+        [Description("Convert Speckle Vector to BHoM Vector")]
+        public static BHG.Vector ToBHoM(this SCG.SpeckleVector speckleVector)
+        {
+            return new BHG.Vector { X = speckleVector.Value[0], Y = speckleVector.Value[1], Z = speckleVector.Value[2] };
+        }
     }
 }

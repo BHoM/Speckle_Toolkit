@@ -39,7 +39,7 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        protected bool CreateIObjects(List<IObject> objects, SpeckleActionConfig config)
+        protected bool CreateIObjects(List<IObject> objects, SpecklePushConfig config)
         {
             List<SpeckleObject> allObjects = new List<SpeckleObject>();
 
@@ -59,26 +59,6 @@ namespace BH.Adapter.Speckle
             // Update the stream
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
-
-            // Read the objects as exported in speckle
-            // so we can assign the Speckle-generated id into the BHoMobjects
-            if (config.SetAssignedId)
-            {
-                ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
-
-                List<IBHoMObject> bHoMObjects_inSpeckle = new List<IBHoMObject>();
-                IEnumerable<IBHoMObject> iBhomObjsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response.Resources, true);
-
-                VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(objects.Where(o => o as IBHoMObject != null).Cast<IBHoMObject>(), iBhomObjsInSpeckle, new IBHoMGUIDComparer());
-
-                if (correspondenceDiagram.Intersection.Count != objects.Count())
-                {
-                    //Engine.Reflection.Compute.RecordError("Push failed.\nNumber of objects created in Speckle do not correspond to the number of objects pushed.");
-                    //return false;
-                }
-
-                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterIdName] = o.Item2.CustomData[AdapterIdName]);
-            }
 
             return true;
         }

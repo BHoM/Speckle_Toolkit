@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -20,39 +20,24 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
+using BHG = BH.oM.Geometry;
+using System.ComponentModel;
+using SCG = SpeckleCoreGeometryClasses;
+
 
 namespace BH.Engine.Speckle
 {
-    public static partial class Query
+    public static partial class Convert
     {
-        public static IEnumerable<IBHoMObject> GetOnlyIBHoMObjects(IEnumerable<object> objects)
+        [Description("Convert Speckle Line to BHoM Line")]
+        public static BHG.Line ToBHoM(this SCG.SpeckleLine speckleLine)
         {
-            List<IBHoMObject> bhomObjects = new List<IBHoMObject>();
-
-            Type iBHoMObjectType = typeof(IBHoMObject);
-
-            MethodInfo miToList = typeof(Enumerable).GetMethod("Cast");
-
-            foreach (var typeGroup in objects.GroupBy(x => x.GetType()))
-            {
-                MethodInfo miListObject = miToList.MakeGenericMethod(new[] { typeGroup.Key });
-
-                var castedObjects = miListObject.Invoke(typeGroup, new object[] { typeGroup });
-
-                if (iBHoMObjectType.IsAssignableFrom(typeGroup.Key))
-                {
-                    bhomObjects.AddRange((IEnumerable<IBHoMObject>)castedObjects);
-                }
-            }
-
-            return bhomObjects;
+            List<BHG.Point> points = speckleLine.Value.ToPoints();
+            return new BHG.Line { Start = points[0], End = points[1] };
         }
     }
 }
