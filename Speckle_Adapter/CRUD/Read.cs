@@ -54,8 +54,7 @@ namespace BH.Adapter.Speckle
         {
             ResponseObject response = null;
 
-            if (!string.IsNullOrEmpty(speckleRequest.SpeckleQuery))
-                response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, speckleRequest.SpeckleQuery).Result;
+            
 
             response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
 

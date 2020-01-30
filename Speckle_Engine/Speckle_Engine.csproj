@@ -154,6 +154,7 @@
     <Compile Include="Convert\FromBHoM\FromBHoM.cs" />
     <Compile Include="Convert\ToBHoM\IToBHoM.cs" />
     <Compile Include="Create\BHoMObjectMeshRepresentation.cs" />
+    <Compile Include="Query\FilterBySpeckleGUID.cs" />
     <Compile Include="Query\FilterByBHoMGUID.cs" />
     <Compile Include="Query\GetOnlyIBHoMObjects.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -165,6 +166,12 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Modify\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Speckle_oM\Speckle_oM.csproj">
+      <Project>{0ADF9779-2060-438B-83F4-7463F776B248}</Project>
+      <Name>Speckle_oM</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
