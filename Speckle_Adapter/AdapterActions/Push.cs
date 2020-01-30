@@ -48,23 +48,16 @@ namespace BH.Adapter.Speckle
             {
                 SpeckleLayer = new Layer() { Name = "Default Layer", OrderIndex = 0, StartIndex = 0, Topology = "", Guid = "c8a58593-7080-450b-96b9-b0158844644b" };
                 SpeckleLayer.ObjectCount = 0;
-
             }
 
             // Initialize the SpeckleStream
             SpeckleStream.Layers = new List<Layer>() { SpeckleLayer };
-            SpeckleStream.Objects = new List<SpeckleObject>(); // --> shit's immutable, yo
-
-
-            /// -------------------
-            /// Base push rewritten
-            /// -------------------
+            SpeckleStream.Objects = new List<SpeckleObject>(); // stream is immutable
 
             // //- Read config
             SpecklePushConfig pushConfig = actionConfig as SpecklePushConfig;
             if (pushConfig == null)
                 pushConfig = new SpecklePushConfig();
-
 
             // //- Use "Speckle" history: produces a new stream at every push that corresponds to the old version. Enabled by default.
             if (pushConfig.EnableHistory)
