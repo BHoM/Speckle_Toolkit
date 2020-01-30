@@ -39,30 +39,15 @@ namespace BH.Adapter.Speckle
     {
         public override IEnumerable<object> Pull(IRequest request, PullType pullType = PullType.AdapterDefault, ActionConfig actionConfig = null)
         {
-            if (request == null)
-                return ReadAll();
-
-            // Make sure it's a SpeckleRequest
+            // If the request exists, make sure it's a SpeckleRequest
             SpeckleRequest speckleRequest = request as SpeckleRequest;
-            if (request!= null && speckleRequest == null)
+            if (request != null && request.GetType() != typeof(FilterRequest) && speckleRequest == null)
             {
                 Engine.Reflection.Compute.RecordError($"SpeckleAdapter supports only {typeof(SpeckleRequest).Name}.");
                 return new List<object>();
             }
 
-            List<IBHoMObject> bHoMObjects = new List<IBHoMObject>();
-            List<IObject> iObjects = new List<IObject>();
-            List<object> reminder = new List<object>();
-
-            Read(speckleRequest, out bHoMObjects, out iObjects, out reminder);
-
-            // Return stuff
-            if (typeof(IBHoMObject).IsAssignableFrom(speckleRequest.Type))
-                return bHoMObjects;
-            else if (typeof(IObject).IsAssignableFrom(speckleRequest.Type))
-                return iObjects;
-            else
-                return bHoMObjects.Concat(iObjects).Concat(reminder);
+            return Read(speckleRequest);
         }
     }
 }

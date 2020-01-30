@@ -30,58 +30,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BHG = BH.oM.Geometry;
-using SCG = SpeckleCoreGeometryClasses;
 
 namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
-        [Description("Convert Speckle Point to BHoM Point")]
-        public static BHG.Point ToBHoM(this SCG.SpecklePoint specklePoint)
-        {
-            return new BHG.Point { X = specklePoint.Value[0], Y = specklePoint.Value[1], Z = specklePoint.Value[2] };
-        }
-
-        [Description("Convert Speckle Vector to BHoM Vector")]
-        public static BHG.Vector ToBHoM(this SCG.SpeckleVector speckleVector)
-        {
-            return new BHG.Vector { X = speckleVector.Value[0], Y = speckleVector.Value[1], Z = speckleVector.Value[2] };
-        }
-
-        [Description("Convert Speckle Line to BHoM Line")]
-        public static BHG.Line ToBHoM(this SCG.SpeckleLine speckleLine)
-        {
-            List<BHG.Point> points = speckleLine.Value.ToPoints();
-            return new BHG.Line { Start = points[0], End = points[1] };
-        }
-
-        [Description("Convert Speckle Mesh to BHoM Mesh")]
-        public static BHG.Mesh ToBHoM(this SCG.SpeckleMesh speckleMesh)
-        {
-            List<BHG.Point> vertices = speckleMesh.Vertices.ToPoints();
-            List<int> sfaces = speckleMesh.Faces;
-            List<BHG.Face> faces = new List<BHG.Face>();
-            for (int i = 0; i < sfaces.Count;)
-            {
-                if (sfaces[i] == 1) // triangle face
-                {
-                    faces.Add(new BHG.Face { A = sfaces[i + 1], B = sfaces[i + 2], C = sfaces[i + 3], D = -1 });
-                    i = i + 4;
-                }
-                if (sfaces[i] == 0) // quad face
-                {
-                    faces.Add(new BHG.Face { A = sfaces[i + 1], B = sfaces[i + 2], C = sfaces[i + 3], D = sfaces[i + 4] });
-                    i = i + 5;
-                }
-            }
-
-            return new BHG.Mesh { Vertices = vertices, Faces = faces };
-        }
-
         /// <summary>
         /// Extension method to convert bhom meshes to speckle meshes. 
         /// Will get called automatically in the speckle "Deserialise" method.
@@ -95,26 +48,5 @@ namespace BH.Engine.Speckle
 
         //    return bhomMesh;
         //}
-
-
-        /***************************************************/
-        /**** Private Helper Methods                    ****/
-        /***************************************************/
-
-        [Description("Mass point converter adapted from SpeckleCoreGeometry. It takes IEnumerable instead of array.")]
-        [Input("arr", "Flat array of coordinates from Speckle")]
-        [Output("List of BHoM Points")]
-        private static List<BHG.Point> ToPoints(this IEnumerable<double> arr)
-        {
-            if (arr.Count() % 3 != 0)
-                throw new Exception("Array malformed: length%3 != 0.");
-
-            List<BHG.Point> points = new List<BHG.Point>();
-            var asArray = arr.ToArray();
-            for (int i = 2, k = 0; i < arr.Count(); i += 3)
-                points[k++] = new BHG.Point { X = asArray[i - 2], Y = asArray[i - 1], Z = asArray[i] };
-
-            return points;
-        }
     }
 }

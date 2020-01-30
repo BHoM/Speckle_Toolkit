@@ -61,17 +61,17 @@ namespace BH.Adapter.Speckle
             /// -------------------
 
             // //- Read config
-            SpeckleActionConfig config = actionConfig as SpeckleActionConfig;
-            if (config == null)
-                config = new SpeckleActionConfig();
+            SpecklePushConfig pushConfig = actionConfig as SpecklePushConfig;
+            if (pushConfig == null)
+                pushConfig = new SpecklePushConfig();
 
 
             // //- Use "Speckle" history: produces a new stream at every push that corresponds to the old version. Enabled by default.
-            if (config.EnableHistory)
+            if (pushConfig.EnableHistory)
                 SetupHistory();
 
             // // - Base push rewritten to allow some additional CustomData to go in.
-            if (PushByType(objectsToPush, tag, config))
+            if (PushByType(objectsToPush, tag, pushConfig))
                 return objectsToPush;
 
             return new List<object>();

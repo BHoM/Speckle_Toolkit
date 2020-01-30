@@ -36,39 +36,29 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        protected IEnumerable<object> ReadAll(bool assignSpeckleIdToBHoMObjects = true)
-        {
-            ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
-
-            List<IBHoMObject> bHoMObjects = new List<IBHoMObject>();
-            List<IObject> iObjects = new List<IObject>();
-            List<object> reminder = new List<object>();
-
-            if (!BH.Engine.Speckle.Convert.ToBHoM(response.Resources, out bHoMObjects, out iObjects, out reminder, assignSpeckleIdToBHoMObjects))
-                BH.Engine.Reflection.Compute.RecordError("Failed to deserialize and cast the Server response into BHoM objects.");
-
-            return bHoMObjects.Concat(iObjects).Concat(reminder);
-        }
-
-        protected bool Read(SpeckleRequest speckleRequest, out List<IBHoMObject> bHoMObjects, out List<IObject> iObjects, out List<object> reminder)
+        protected IEnumerable<object> Read(SpeckleRequest speckleRequest = null, ActionConfig actionConfig = null)
         {
             ResponseObject response = null;
+            string speckleQuery = "";
 
-            
+            if (speckleRequest != null)
+                speckleQuery = BH.Engine.Speckle.Convert.GetSpeckleQuery(speckleRequest);
 
-            response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
+            // Download the objects.
+            response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, speckleQuery).Result;
 
-            // Extract the speckleIds for selection from the SpeckleRequest.
-            List<string> speckleIds = speckleRequest.SpeckleGUIDs;
-            speckleIds = speckleIds?.Count != 0 ? speckleIds : null;
+            // Conversion configuration.
+            bool storeSpeckleId = true;
 
-            // Convert the response to the appropriate object types.
-            BH.Engine.Speckle.Convert.ToBHoM(response.Resources, out bHoMObjects, out iObjects, out reminder, speckleIds?.Count != 0, speckleIds);
+            // Extract the configuations from the ActionConfig.
+            // In this case, only SpecklePullConfig contains an option.
+            SpecklePullConfig config = actionConfig as SpecklePullConfig;
+            if (config != null)
+                storeSpeckleId = config.StoreSpeckleId;
 
-            // Filter by tag if any 
-            bHoMObjects = speckleRequest.Tag == "" ? bHoMObjects : bHoMObjects.Where(x => x.Tags.Contains(speckleRequest.Tag)).ToList();
+            List<object> converted = BH.Engine.Speckle.Convert.ToBHoM(response.Resources, storeSpeckleId);
 
-            return true;
+            return converted;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace BH.Adapter.Speckle
         /**** Private Helper Methods                    ****/
         /***************************************************/
 
-        private bool PushByType(List<object> objectsToPush, string tag, SpeckleActionConfig config)
+        private bool PushByType(List<object> objectsToPush, string tag, SpecklePushConfig config)
         {
             bool success = true;
 
