@@ -60,13 +60,16 @@ namespace BH.Adapter.Speckle
 
                     if (typeof(IBHoMObject).IsAssignableFrom(typeGroup.Key))
                     {
-                        // They are IBHoMObjects
+                        // They are IBHoMObjects.
 
                         // Assign SpeckleStreamId to the CustomData of the IBHoMObjects
                         var iBHoMObjects = (list as IEnumerable<IBHoMObject>).ToList();
                         iBHoMObjects.ForEach(o => o.CustomData["Speckle_StreamId"] = SpeckleStreamId);
 
                         success &= CreateIBHoMObjects(iBHoMObjects as dynamic, config);
+
+                        if (config.StoreSpeckleId)
+                            StoreSpeckleId(iBHoMObjects);
                     }
                     else
                     {
