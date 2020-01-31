@@ -23,6 +23,7 @@
 using BH.oM.Base;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -32,9 +33,16 @@ namespace BH.Engine.Speckle
 {
     public static partial class Query
     {
-        public static IEnumerable<IBHoMObject> FilterBySpeckleGUID(IEnumerable<IBHoMObject> objects, List<string> speckleGUIDs)
+        [Description("Return only BHoMObjects that have the specified Speckle id in their CustomData property; or all objects if no id is specified.")]
+        public static IEnumerable<object> FilterBySpeckleGUID(IEnumerable<object> objects, List<string> speckleIds = null)
         {
-            return objects.Where(o => speckleGUIDs.Any(id => id == o.CustomData[Convert.AdapterIdName].ToString()));
+            // SpeckleGUID is stored in CustomData, which is only available for BHoMObjects.
+            if (speckleIds != null && speckleIds.Count != 0)
+                return objects
+                    .OfType<IBHoMObject>()
+                    .Where(o => speckleIds.Any(id => id == o.CustomData[Convert.AdapterIdName].ToString()));
+            else
+                return objects;
         }
     }
 }
