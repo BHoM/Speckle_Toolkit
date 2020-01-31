@@ -43,19 +43,10 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        public static SpeckleObject FromBHoM(this Node node)
+        // Needed as a fallback case for the dynamic dispatch in IFromBHoM(this IGeometry iGeometry).
+        private static SpeckleObject FromBHoM(this IGeometry geom)
         {
-            var mesh = node.MeshRepresentation();
-            if (mesh == null)
-                return null;
-
-            var speckleMesh = (SpeckleMesh)SpeckleCore.Converter.Serialise(mesh);
-            speckleMesh.Colors = new List<int>() { 0, 0, 0 };
-
-            var def = (SpeckleAbstract)SpeckleCore.Converter.Serialise(node);
-            def.Properties["displayValue"] = speckleMesh;
-
-            return speckleMesh;
+            return IFromBHoM(geom);
         }
     }
 }

@@ -47,8 +47,8 @@ namespace BH.Engine.Speckle
         /**** Public Methods                            ****/
         /***************************************************/
 
-        [Description("Returns a mesh representation for the Node based on its DOF, e.g. a box for fully fixed, a cone with sphere on top for pin.")]
-        public static Rhino.Geometry.Mesh MeshRepresentation(this Node node)
+        [Description("Returns a representation for the Node based on its DOF, e.g. a box for fully fixed, a cone with sphere on top for pin.")]
+        public static Rhino.Geometry.Mesh NodeMesh(this Node node)
         {
             if (node.Position == null)
             {

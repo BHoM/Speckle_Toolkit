@@ -70,8 +70,6 @@ namespace BH.Adapter.Speckle
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
-
-
             return true;
         }
 

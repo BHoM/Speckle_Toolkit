@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -24,26 +24,46 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using SpeckleCore;
 using BHG = BH.oM.Geometry;
+using SpeckleCoreGeometryClasses;
+using BH.oM.Base;
+using BH.Engine.Geometry;
+using System.Reflection;
+using BH.oM.Geometry;
+using BH.Engine.Base;
 using System.ComponentModel;
-using SCG = SpeckleCoreGeometryClasses;
-
+using BH.oM.Structure.Elements;
+using BH.Engine.Structure;
+using BH.Engine.Rhinoceros;
+using BH.oM.Structure.Constraints;
 
 namespace BH.Engine.Speckle
 {
-    public static partial class Convert
+    public static partial class Compute
     {
-        // -------------------------------------------------------------------------------- //
-        // NOTE
-        // These ToBHoM methods are not automatically called by any method in the Toolkit,
-        // as the deserialisation already brings back the BHoM object.
-        // Kept for reference and for manual use in the UI.
-        // -------------------------------------------------------------------------------- //
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
 
-        [Description("Convert Speckle Vector to BHoM Vector")]
-        public static BHG.Vector ToBHoM(this SCG.SpeckleVector speckleVector)
+        [Description("Returns a mesh representation for the BHoM Bar based on its SectionProperty.")]
+        public static Rhino.Geometry.Mesh BarMesh(this Bar bar)
         {
-            return new BHG.Vector { X = speckleVector.Value[0], Y = speckleVector.Value[1], Z = speckleVector.Value[2] };
+            // Gets the BH.oM.Geometry.Extrusion out of the Bar. If the profile is made of two curves (e.g. I section), selects only the outermost.
+            var barOutermostExtrusion = bar.Extrude(false).Cast<Extrusion>().OrderBy(extr => extr.Curve.IArea()).First();
+
+            // Obtains the Rhino extrusion.
+            var rhinoExtrusion = Rhino.Geometry.Extrusion.CreateExtrusion(barOutermostExtrusion.Curve.IToRhino(), (Rhino.Geometry.Vector3d)barOutermostExtrusion.Direction.IToRhino());
+            Rhino.Geometry.Mesh mesh = Rhino.Geometry.Mesh.CreateFromSurface(rhinoExtrusion, Rhino.Geometry.MeshingParameters.Minimal);
+
+            // Add the endnodes representations.
+            mesh.Append(bar.StartNode.NodeMesh());
+            mesh.Append(bar.EndNode.NodeMesh());
+
+            return mesh;
         }
+
     }
 }
+

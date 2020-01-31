@@ -32,6 +32,14 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
+        // -------------------------------------------------------------------------------- //
+        // NOTE
+        // These ToBHoM methods are not automatically called by any method in the Toolkit,
+        // as the deserialisation already brings back the BHoM object.
+        // Kept for reference and for manual use in the UI.
+        // -------------------------------------------------------------------------------- //
+
+
         [Description("Convert Speckle Mesh to BHoM Mesh")]
         public static BHG.Mesh ToBHoM(this SCG.SpeckleMesh speckleMesh)
         {
@@ -54,5 +62,19 @@ namespace BH.Engine.Speckle
 
             return new BHG.Mesh { Vertices = vertices, Faces = faces };
         }
+
+        /// <summary>
+        /// Extension method to convert bhom meshes to speckle meshes. 
+        /// Will get called automatically in the speckle "Deserialise" method.
+        /// https://github.com/speckleworks/SpeckleCore/blob/9545e96f04d85f46203a99c21c76eeea0ea03dae/SpeckleCore/Conversion/ConverterDeserialisation.cs#L64
+        /// </summary>
+        //public static BH.oM.Geometry.Mesh ToNative (this Specklemesh speckleMesh)
+        //{
+        //    BH.oM.Geometry.Mesh bhomMesh = new BH.oM.Geometry.Mesh();
+
+        //    // Conversion stuff
+
+        //    return bhomMesh;
+        //}
     }
 }
