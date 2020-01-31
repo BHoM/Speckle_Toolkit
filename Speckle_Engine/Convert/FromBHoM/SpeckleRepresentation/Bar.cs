@@ -43,7 +43,7 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        public static SpeckleObject FromBHoM(this Bar bar)
+        public static SpeckleObject SpeckleBarRepresentation(this Bar bar)
         {
             if (bar.SectionProperty == null)
             {
@@ -59,18 +59,9 @@ namespace BH.Engine.Speckle
                 return IFromBHoM(simpleExtrusion as dynamic);
             }
 
-            // Gets the BH.oM.Geometry.Extrusion out of the Bar. If the profile is made of two curves (e.g. I section), selects only the outermost.
-            var barOutermostExtrusion = bar.Extrude(false).Cast<Extrusion>().OrderBy(extr => extr.Curve.IArea()).First();
+            var barMesh = bar.BarMesh();
 
-            // Obtains the Rhino extrusion.
-            var rhinoExtrusion = Rhino.Geometry.Extrusion.CreateExtrusion(barOutermostExtrusion.Curve.IToRhino(), (Rhino.Geometry.Vector3d)barOutermostExtrusion.Direction.IToRhino());
-            Rhino.Geometry.Mesh mesh = Rhino.Geometry.Mesh.CreateFromSurface(rhinoExtrusion, Rhino.Geometry.MeshingParameters.Minimal);
-
-            // Add the endnodes representations.
-            mesh.Append(bar.StartNode.MeshRepresentation());
-            mesh.Append(bar.EndNode.MeshRepresentation());
-
-            return (SpeckleObject)SpeckleCore.Converter.Serialise(mesh);
+            return (SpeckleObject)SpeckleCore.Converter.Serialise(barMesh);
         }
     }
 }

@@ -21,32 +21,132 @@
  */
 
 using BH.oM.Base;
-using BH.oM.Reflection.Attributes;
 using SpeckleCore;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BHG = BH.oM.Geometry;
+using SCG = SpeckleCoreGeometryClasses;
 
 namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        /// <summary>
-        /// Extension method to convert bhom meshes to speckle meshes. 
-        /// Will get called automatically in the speckle "Deserialise" method.
-        /// https://github.com/speckleworks/SpeckleCore/blob/9545e96f04d85f46203a99c21c76eeea0ea03dae/SpeckleCore/Conversion/ConverterDeserialisation.cs#L64
-        /// </summary>
-        //public static BH.oM.Geometry.Mesh ToNative (this Specklemesh speckleMesh)
-        //{
-        //    BH.oM.Geometry.Mesh bhomMesh = new BH.oM.Geometry.Mesh();
+        public static List<object> ToBHoM(List<SpeckleObject> speckleObjects, bool storeSpeckleId = true)
+        {
+            List<IBHoMObject> bhomObjects = new List<IBHoMObject>();
+            List<IObject> iObjects;
+            List<object> reminder;
 
-        //    // Conversion stuff
+            ToBHoM(speckleObjects, out bhomObjects, out iObjects, out reminder, storeSpeckleId);
 
-        //    return bhomMesh;
-        //}
+            return bhomObjects.Concat(iObjects).Concat(reminder).ToList();
+        }
+
+        public static bool ToBHoM(List<SpeckleObject> speckleObjects,
+                                    out List<IBHoMObject> bHoMObjects, out List<IObject> iObjects, out List<object> nonBHoM,
+                                    bool storeSpeckleId = true)
+        {
+            bHoMObjects = new List<IBHoMObject>();
+            iObjects = new List<IObject>();
+            nonBHoM = new List<object>();
+
+            // Iterate all retrieved speckle objects
+            for (int i = 0; i < speckleObjects.Count; i++)
+            {
+                object BHoMData = null;
+                object deserialisedBHoMData = null;
+
+                // If present, BHoM data is stored in the SpeckleObject's `Property` Dictionary in the `BHoM` key.
+                if (speckleObjects[i].Properties.Count() != 0)
+                {
+                    // Extract the BHoMData.
+                    speckleObjects[i].Properties.TryGetValue("BHoM", out BHoMData);
+
+                    // The bhom data is always automatically serialised by speckle. Deserialise it using Speckle Deserialiser.
+                    if (BHoMData is SpeckleObject)
+                        deserialisedBHoMData = SpeckleCore.Converter.Deserialise((SpeckleObject)BHoMData);
+
+                    bool receivedBHoMZippedData = CheckZippedData(speckleObjects[i]); // For testing only
+
+                    // Check if the deserialised data is a BHoMObject.
+                    IBHoMObject iBHoMObject = deserialisedBHoMData as IBHoMObject;
+                    if (iBHoMObject != null)
+                    {
+                        if (storeSpeckleId) // store the speckleId in the BHoMObject customData.
+                            iBHoMObject.CustomData[AdapterIdName] = speckleObjects[i]._id;
+
+                        bHoMObjects.Add(iBHoMObject);
+                        continue;
+                    }
+
+                    // Check if the deserialised data is an IObject (which includes IGeometry).
+                    IObject iObject = deserialisedBHoMData as IObject;
+                    if (iObject != null)
+                    {
+                        iObjects.Add(iObject);
+                        continue;
+                    }
+                }
+
+                // If we got to here, the speckleObject is not BHoM.
+                deserialisedBHoMData = speckleObjects[i];
+                if (deserialisedBHoMData as SpeckleObject != null)
+                    deserialisedBHoMData = SpeckleCore.Converter.Deserialise((SpeckleObject)deserialisedBHoMData);
+
+                if (deserialisedBHoMData == null)
+                    continue;
+
+                // Check if it's a Rhino Geometry.
+                Rhino.Geometry.GeometryBase rhinoGeom = deserialisedBHoMData as Rhino.Geometry.GeometryBase;
+                if (rhinoGeom != null)
+                    try
+                    {
+                        // Try to convert that to a BHoM Geometry. 
+                        // This is because BHoM forces the convert of Rhino geometry to BHoMGeometry if any is found.
+                        deserialisedBHoMData = Rhinoceros.Convert.IToBHoM(rhinoGeom);
+                    }
+                    catch (Exception e)
+                    {
+                        BH.Engine.Reflection.Compute.RecordError($"BHoM could not convert some Rhino Geometry to BHoM Geometry: {e}");
+                    }
+
+                nonBHoM.Add(deserialisedBHoMData);
+            }
+
+            return true;
+        }
+
+        // FOR TESTING ONLY
+        private static bool CheckZippedData(SpeckleObject speckleObject)
+        {
+            // -------------------------- //  
+            // For testing only           // 
+            // -------------------------- // 
+
+            // Extract BHoMData from the `BHoMZipped` key.
+            // This data is serialised with our own Mongo Serialiser, and zipped to avoid modification from Speckle.
+
+            object BHoMZippedData = null;
+
+            try
+            {
+                object jsonBHoMDataObj = null;
+                speckleObject.Properties.TryGetValue("BHoMZipped", out jsonBHoMDataObj);
+
+                if (jsonBHoMDataObj != null)
+                {
+                    var jsonBHoMData = BH.Engine.Serialiser.Convert.FromZip(jsonBHoMDataObj.ToString()); //unzip
+                    BHoMZippedData = BH.Engine.Serialiser.Convert.FromJson(jsonBHoMData); //deserialise
+                }
+            }
+            catch { }
+
+            return BHoMZippedData != null ? true : false;
+        }
     }
 }
+
+

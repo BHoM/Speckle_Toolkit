@@ -33,6 +33,13 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
+        // -------------------------------------------------------------------------------- //
+        // NOTE
+        // These ToBHoM methods are not automatically called by any method in the Toolkit,
+        // as the deserialisation already brings back the BHoM object.
+        // Kept for reference and for manual use in the UI.
+        // -------------------------------------------------------------------------------- //
+
         [Description("Convert Speckle Line to BHoM Line")]
         public static BHG.Line ToBHoM(this SCG.SpeckleLine speckleLine)
         {
