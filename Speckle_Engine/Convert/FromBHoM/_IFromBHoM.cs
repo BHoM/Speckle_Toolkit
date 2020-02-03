@@ -43,63 +43,66 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        // ------------------------------------------------------------------------------ //
-        // DYNAMIC DISPATCHERS
-        // These methods take a generic IBHoMObject or IObject
-        // and use a dynamic dispatch to determine the most appropriate FromBHoM convert.
-        // ------------------------------------------------------------------------------ //
-
         [Description("Wraps the content of a BHoMObject into a SpeckleObject.\n" +
             "Its geometry (if any) is exposed in the top level, so it can be visualised in Speckle.\n" +
             "All BHoMObject properties are json-serialised and saved into the `speckleObject.Properties` field.")]
         public static SpeckleObject IFromBHoM(this IBHoMObject bhomObject)
         {
             // This will be our return object.
-            // On the higher level, it will contain geometry to be represented in SpeckleViewer.
-            // Nested into its `.Properties` it will also "wrap" any other BHoM data.
+            // On the highest level, it will simply be a SpeckleObject containing geometry that can be visualised in the SpeckleViewer.
             SpeckleObject speckleObject = null;
-
-            // DYNAMICALLY DISPATCH to the most appropriate convert method
-            speckleObject = FromBHoM(bhomObject as dynamic);
+            speckleObject = SpeckleRepresentation(bhomObject); // Attempts to obtain a Speckle representation.
 
             if (speckleObject == null)
-                return null;
+            {
+                // No Speckle Representation found.
+                // BHoMObject will be sent as "Abstract" SpeckleObject, with no visualisation in the SpeckleAdmin Viewer.
+                speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
+            }
 
+            // Serialise the IBHoMObject data and append it to the `Properties` of the SpeckleObject.
             speckleObject.Properties = new Dictionary<string, object>();
+            speckleObject.Properties.Add("BHoM", SpeckleCore.Converter.Serialise(bhomObject)); // This appends the BHoM data as a "SpeckleAbstract" object.
 
-            // Add the BHoMObject to the SpeckleObject Properties Dictionary via the Speckle Serialisation.
-            // This appends the BHoM data as a "SpeckleAbstract" object.
-            speckleObject.Properties.Add("BHoM", SpeckleCore.Converter.Serialise(bhomObject));
+            if (false) // for testing only
+                AddZippedBHoMData(ref speckleObject, bhomObject);
 
-            // -------------------------- //  
-            // For testing only           // 
-            // -------------------------- // 
-
-            // Serialise the BHoMobject into a Json and append it to the Properties Dictionary of the SpeckleObject. Key is "BHoMZipped".
-            string BHoMDataJson = BH.Engine.Serialiser.Convert.ToJson(bhomObject); //serialize
-            BHoMDataJson = BH.Engine.Serialiser.Convert.ToZip(BHoMDataJson); //zip 
-            speckleObject.Properties.Add("BHoMZipped", BHoMDataJson);
-
-            // -------------------------- //
+            speckleObject.GenerateHash(); // Not sure if needed
 
             return speckleObject;
         }
 
+
         [Description("Wraps the content of a BHoM IGeometry into a SpeckleObject.\n" +
            "A Rhino geometry representation is extracted and exposed in the top level, so it can be visualised in Speckle.\n" +
            "All the other IGeometry properties are json-serialised and saved into the `speckleObject.Properties` field.")]
-        public static SpeckleObject IFromBHoM(this IGeometry iGeometry)
+        public static SpeckleObject IFromBHoM(this IObject iObject)
         {
-            var rhinoGeom = Engine.Rhinoceros.Convert.IToRhino(iGeometry);
+            // This will be our return object.
+            // On the highest level, it will simply be a SpeckleObject containing geometry that can be visualised in the SpeckleViewer.
+            SpeckleObject speckleObject = null;
 
-            // Creates the SpeckleObject with the Rhino Geometry. 
-            var speckleObj_rhinoGeom = (SpeckleObject)SpeckleCore.Converter.Serialise(rhinoGeom); // This will be our "wrapper" object for the rest of the IObject stuff.
+            if (typeof(IGeometry).IsAssignableFrom(iObject.GetType()))
+                speckleObject = BH.Engine.Speckle.Convert.FromBHoM((IGeometry)iObject as dynamic); // DYNAMIC DISPATCH
+            else
+                speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(iObject); // These will be exported as `Abstract` Speckle Objects.
 
-            // Serialise the iGeometry into a Json and append it to the additional properties of the SpeckleObject.
-            BH.Engine.Serialiser.Convert.ToJson(iGeometry);
-            speckleObj_rhinoGeom.Properties = new Dictionary<string, object>() { { iGeometry.GetType().Name, BH.Engine.Serialiser.Convert.ToJson(iGeometry) } };
+            // Serialise the IObject data and append it to the `Properties` of the SpeckleObject.
+            speckleObject.Properties = new Dictionary<string, object>() { { "BHoM", SpeckleCore.Converter.Serialise(iObject) } };
 
-            return speckleObj_rhinoGeom;
+            speckleObject.GenerateHash(); // Not sure if needed
+
+            return speckleObject;
+        }
+
+
+        // For testing only
+        private static void AddZippedBHoMData(ref SpeckleObject speckleObject, IBHoMObject bhomObject)
+        {
+            // Serialise the BHoMobject into a Json and append it to the Properties Dictionary of the SpeckleObject. Key is "BHoMZipped".
+            string BHoMDataJson = BH.Engine.Serialiser.Convert.ToJson(bhomObject); //serialize
+            BHoMDataJson = BH.Engine.Serialiser.Convert.ToZip(BHoMDataJson); //zip 
+            speckleObject.Properties.Add("BHoMZipped", BHoMDataJson);
         }
     }
 }

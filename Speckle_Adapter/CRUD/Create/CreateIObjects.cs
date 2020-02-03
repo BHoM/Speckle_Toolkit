@@ -46,10 +46,7 @@ namespace BH.Adapter.Speckle
             // If they are IGeometry, convert them to their Rhino representation that Speckle understands.
             foreach (var obj in objects)
             {
-                if (typeof(IGeometry).IsAssignableFrom(obj.GetType()))
-                    allObjects.Add(BH.Engine.Speckle.Convert.IFromBHoM((IGeometry)obj));
-                else
-                    allObjects.Add((SpeckleObject)SpeckleCore.Converter.Serialise(obj)); // These will be exported as `Abstract` Speckle Objects.
+                allObjects.Add(obj.IFromBHoM());
             }
 
             // Add the speckleObjects to the Stream

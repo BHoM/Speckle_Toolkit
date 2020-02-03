@@ -43,12 +43,14 @@ namespace BH.Engine.Speckle
 {
     public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
+        [Description("Returns a BHoM mesh representation for the BHoM Bar based on its SectionProperty.")]
+        public static BH.oM.Geometry.Mesh MeshRepresentation(this Bar bar)
+        {
+            return RhinoMeshRepresentation(bar).IToBHoM() as BH.oM.Geometry.Mesh;
+        }
 
-        [Description("Returns a mesh representation for the BHoM Bar based on its SectionProperty.")]
-        public static Rhino.Geometry.Mesh BarMesh(this Bar bar)
+        [Description("Returns a Rhino mesh representation for the BHoM Bar based on its SectionProperty.")]
+        private static Rhino.Geometry.Mesh RhinoMeshRepresentation(this Bar bar)
         {
             // Gets the BH.oM.Geometry.Extrusion out of the Bar. If the profile is made of two curves (e.g. I section), selects only the outermost.
             var barOutermostExtrusion = bar.Extrude(false).Cast<Extrusion>().OrderBy(extr => extr.Curve.IArea()).First();
@@ -58,12 +60,11 @@ namespace BH.Engine.Speckle
             Rhino.Geometry.Mesh mesh = Rhino.Geometry.Mesh.CreateFromSurface(rhinoExtrusion, Rhino.Geometry.MeshingParameters.Minimal);
 
             // Add the endnodes representations.
-            mesh.Append(bar.StartNode.NodeMesh());
-            mesh.Append(bar.EndNode.NodeMesh());
+            mesh.Append(bar.StartNode.RhinoMeshRepresentation());
+            mesh.Append(bar.EndNode.RhinoMeshRepresentation());
 
             return mesh;
         }
-
     }
 }
 

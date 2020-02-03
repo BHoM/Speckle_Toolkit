@@ -43,10 +43,16 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        // Needed as a fallback case for the dynamic dispatch in IFromBHoM(this IGeometry iGeometry).
-        private static SpeckleObject FromBHoM(this IGeometry geom)
+        // FallBack case for geometry conversions
+        private static SpeckleObject FromBHoM(this IGeometry iGeometry)
         {
-            return IFromBHoM(geom);
+            // If more appropriate conversions are not found, retrieve the backing Rhino geometry.
+            var rhinoGeom = Engine.Rhinoceros.Convert.IToRhino(iGeometry);
+
+            // Creates the SpeckleObject with the Rhino Geometry. 
+            var speckleObj_rhinoGeom = (SpeckleObject)SpeckleCore.Converter.Serialise(rhinoGeom);
+
+            return speckleObj_rhinoGeom;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -65,29 +65,32 @@ namespace BH.Engine.Speckle
                     // Extract the BHoMData.
                     speckleObjects[i].Properties.TryGetValue("BHoM", out BHoMData);
 
-                    // The bhom data is always automatically serialised by speckle. Deserialise it using Speckle Deserialiser.
-                    if (BHoMData is SpeckleObject)
-                        deserialisedBHoMData = SpeckleCore.Converter.Deserialise((SpeckleObject)BHoMData);
-
-                    bool receivedBHoMZippedData = CheckZippedData(speckleObjects[i]); // For testing only
-
-                    // Check if the deserialised data is a BHoMObject.
-                    IBHoMObject iBHoMObject = deserialisedBHoMData as IBHoMObject;
-                    if (iBHoMObject != null)
+                    if (BHoMData != null)
                     {
-                        if (storeSpeckleId) // store the speckleId in the BHoMObject customData.
-                            iBHoMObject.CustomData[AdapterIdName] = speckleObjects[i]._id;
+                        // The bhom data is always automatically serialised by speckle. Deserialise it using Speckle Deserialiser.
+                        if (BHoMData is SpeckleObject)
+                            deserialisedBHoMData = SpeckleCore.Converter.Deserialise((SpeckleObject)BHoMData);
 
-                        bHoMObjects.Add(iBHoMObject);
-                        continue;
-                    }
+                        bool receivedBHoMZippedData = CheckZippedData(speckleObjects[i]); // For testing only
 
-                    // Check if the deserialised data is an IObject (which includes IGeometry).
-                    IObject iObject = deserialisedBHoMData as IObject;
-                    if (iObject != null)
-                    {
-                        iObjects.Add(iObject);
-                        continue;
+                        // Check if the deserialised data is a BHoMObject.
+                        IBHoMObject iBHoMObject = deserialisedBHoMData as IBHoMObject;
+                        if (iBHoMObject != null)
+                        {
+                            if (storeSpeckleId) // store the speckleId in the BHoMObject customData.
+                                iBHoMObject.CustomData[AdapterIdName] = speckleObjects[i]._id;
+
+                            bHoMObjects.Add(iBHoMObject);
+                            continue;
+                        }
+
+                        // Check if the deserialised data is an IObject (which includes IGeometry).
+                        IObject iObject = deserialisedBHoMData as IObject;
+                        if (iObject != null)
+                        {
+                            iObjects.Add(iObject);
+                            continue;
+                        }
                     }
                 }
 
@@ -104,15 +107,23 @@ namespace BH.Engine.Speckle
                 if (rhinoGeom != null)
                     try
                     {
+                        // Nurbsurface Pull currently doesn't work
+                        //var asd = rhinoGeom as Rhino.Geometry.NurbsSurface;
+
                         // Try to convert that to a BHoM Geometry. 
-                        // This is because BHoM forces the convert of Rhino geometry to BHoMGeometry if any is found.
+                        // This is because, just before Push, BHoM forces the convert of Rhino geometry to BHoMGeometry if any is found.
                         deserialisedBHoMData = Rhinoceros.Convert.IToBHoM(rhinoGeom);
+
+                        // If the convert succeded, this is now an IObject (IGeometry).
+                        iObjects.Add(deserialisedBHoMData as IObject);
+                        continue;
                     }
                     catch (Exception e)
                     {
                         BH.Engine.Reflection.Compute.RecordError($"BHoM could not convert some Rhino Geometry to BHoM Geometry: {e}");
                     }
 
+                // If all else failed, add this to the nonBHoM objects.
                 nonBHoM.Add(deserialisedBHoMData);
             }
 
@@ -148,5 +159,4 @@ namespace BH.Engine.Speckle
         }
     }
 }
-
 

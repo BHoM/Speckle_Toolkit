@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -43,12 +43,14 @@ namespace BH.Engine.Speckle
 {
     public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
 
-        [Description("Returns a representation for the Node based on its DOF, e.g. a box for fully fixed, a cone with sphere on top for pin.")]
-        public static Rhino.Geometry.Mesh NodeMesh(this Node node)
+        [Description("Returns a BHoM Mesh representation for the Node based on its DOF, e.g. a box for fully fixed, a cone with sphere on top for pin.")]
+        public static BH.oM.Geometry.Mesh MeshRepresentation(this Node node)
+        {
+            return RhinoMeshRepresentation(node).IToBHoM() as BH.oM.Geometry.Mesh;
+        }
+       
+        private static Rhino.Geometry.Mesh RhinoMeshRepresentation(this Node node)
         {
             if (node.Position == null)
             {
@@ -109,9 +111,10 @@ namespace BH.Engine.Speckle
                 mesh = Rhino.Geometry.Mesh.CreateFromSphere(rhinoSphere, 8, 4);
             }
 
+            BH.Engine.Structure.Create.Constraint6DOF(false, false, false, false, false, false);
+
             return mesh;
         }
 
     }
 }
-
