@@ -149,9 +149,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\MeshRepresentation\Bar.cs" />
+    <Compile Include="Compute\MeshRepresentation\_Fallback.cs" />
     <Compile Include="Convert\AdapterId.cs" />
-    <Compile Include="Convert\FromBHoM\Other\BHoMObject.cs" />
-    <Compile Include="Convert\FromBHoM\Geometry\_IGeometry.cs" />
+    <Compile Include="Convert\FromBHoM\SpeckleRepresentation.cs" />
+    <Compile Include="Convert\FromBHoM\Geometry\Fallback.cs" />
     <Compile Include="Convert\ToBHoM\Geometry\Mesh.cs" />
     <Compile Include="Convert\ToBHoM\Geometry\Line.cs" />
     <Compile Include="Convert\ToBHoM\Geometry\Vector.cs" />
@@ -159,8 +160,6 @@
     <Compile Include="Convert\_GeomHelpers.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Mesh.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Line.cs" />
-    <Compile Include="Convert\FromBHoM\SpeckleRepresentation\Bar.cs" />
-    <Compile Include="Convert\FromBHoM\SpeckleRepresentation\Node.cs" />
     <Compile Include="Convert\FromBHoM\Other\Request.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Vector.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Point.cs" />

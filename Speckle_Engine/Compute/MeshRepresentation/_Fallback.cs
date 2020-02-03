@@ -1,4 +1,4 @@
-/*
+﻿﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -37,25 +37,16 @@ using System.ComponentModel;
 using BH.oM.Structure.Elements;
 using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
-using BH.oM.Speckle;
+using BH.oM.Structure.Constraints;
 
 namespace BH.Engine.Speckle
 {
-    public static partial class Convert
+    public static partial class Compute
     {
-        public static SpeckleObject SpeckleNodeRepresentation(this Node node)
+        // Fallback case
+        private static Rhino.Geometry.Mesh MeshRepresentation(this IBHoMObject bHoMObject)
         {
-            var nodeRepresentation = node.NodeMesh();
-            if (nodeRepresentation == null)
-                return null;
-
-            var speckleMesh = (SpeckleMesh)SpeckleCore.Converter.Serialise(nodeRepresentation);
-            speckleMesh.Colors = new List<int>() { 0, 0, 0 };
-
-            var def = (SpeckleAbstract)SpeckleCore.Converter.Serialise(node);
-            def.Properties["displayValue"] = speckleMesh;
-
-            return speckleMesh;
+            return null;
         }
     }
 }

@@ -43,25 +43,35 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        public static SpeckleObject SpeckleBarRepresentation(this Bar bar)
+        /***************************************************/
+        /**** Public Methods                            ****/
+        /***************************************************/
+
+        [Description("Attempts to compute a SpeckleObject representation of the BHoMObject, so it can be visualised in the SpeckleViewer.")]
+        public static SpeckleObject SpeckleRepresentation(this IBHoMObject bhomObject)
         {
-            if (bar.SectionProperty == null)
+            SpeckleObject speckleObject = null;
+
+            // See if there is a custom Mesh representation for that BHoMObject
+            var meshRepresentation = Compute.MeshRepresentation(bhomObject as dynamic);
+            speckleObject = meshRepresentation != null ? BH.Engine.Speckle.Convert.FromBHoM(meshRepresentation): null;
+            if (speckleObject != null)
+                return speckleObject;
+
+            // Else, see if we can get some BHoM geometry out of the BHoMObject to represent the object in SpeckleViewer.
+            IGeometry geom = null;
+            geom = bhomObject.IGeometry();
+            if (geom != null)
             {
-                IGeometry geom = bar.IGeometry();
-                return FromBHoM(geom);
+                // Converts the BHoM Geometry into a SpeckleObject, dynamically dispatching to the method for the right type.
+                speckleObject = FromBHoM(geom as dynamic);
+                return speckleObject;
             }
 
-            bool extrudeSimple = false; // to be exposed within config options.
+            
 
-            if (extrudeSimple)
-            {
-                IGeometry simpleExtrusion = bar.Extrude(true).First();
-                return IFromBHoM(simpleExtrusion as dynamic);
-            }
-
-            var barMesh = bar.BarMesh();
-
-            return (SpeckleObject)SpeckleCore.Converter.Serialise(barMesh);
+            return speckleObject;
         }
+
     }
 }

@@ -1,4 +1,4 @@
-﻿/*
+﻿﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -41,7 +41,7 @@ namespace BH.Adapter.Speckle
     {
         protected bool CreateIBHoMObjects(IEnumerable<IBHoMObject> BHoMObjects, SpecklePushConfig config)
         {
-            // Convert the objects into the appropriate SpeckleObject (Point, Line, etc.) using the available converters.
+            // Convert the objects into the appropriate SpeckleObject using the available converters.
             List<SpeckleObject> speckleObjects = BHoMObjects.Select(bhomObj => bhomObj.IFromBHoM()).ToList();
 
             if (speckleObjects.Where(obj => obj == null).Count() == speckleObjects.Count())

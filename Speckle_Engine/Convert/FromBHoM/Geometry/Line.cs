@@ -44,15 +44,13 @@ namespace BH.Engine.Speckle
     public static partial class Convert
     {
         [Description("Convert BHoM Line to a Speckle Line")]
-        public static SpeckleLine FromBHoM(this BHG.Line bhomLine)
+        public static SpeckleLine FromBHoM(this BHG.Line l)
         {
-            if (bhomLine == null) return default(SpeckleLine);
+            if (l == null) return default(SpeckleLine);
 
             SpeckleLine speckleLine = new SpeckleLine(
-                (new BHG.Point[] { bhomLine.Start, bhomLine.End }).ToFlatArray()
+                new double[] { l.Start.X, l.Start.Y, l.Start.Z, l.End.X, l.End.Y, l.End.Z }
                 );
-
-            speckleLine.GenerateHash();
 
             return speckleLine;
         }
