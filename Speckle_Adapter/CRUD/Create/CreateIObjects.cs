@@ -39,23 +39,25 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        protected bool CreateIObjects(List<IObject> objects, SpecklePushConfig config)
+        protected bool Create(IObject iObject, SpecklePushConfig config)
         {
-            List<SpeckleObject> allObjects = new List<SpeckleObject>();
+            // Convert the objects into the appropriate SpeckleObject using the available converters.
+            SpeckleObject speckleObject = null;
 
-            // If they are IGeometry, convert them to their Rhino representation that Speckle understands.
-            foreach (var obj in objects)
-            {
-                allObjects.Add(obj.IFromBHoM(config));
-            }
+            if (typeof(IGeometry).IsAssignableFrom(iObject.GetType()))
+                speckleObject = BH.Engine.Speckle.Convert.FromBHoM((IGeometry)iObject as dynamic); // DYNAMIC DISPATCH
+            else
+                speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(iObject); // These will be exported as `Abstract` Speckle Objects.
 
-            // Add the speckleObjects to the Stream
-            SpeckleLayer.ObjectCount += allObjects.Count();
-            SpeckleStream.Objects.AddRange(allObjects);
+            // Save BHoMObject data inside the speckleObject.
+            Modify.SetBHoMData(speckleObject, iObject);
 
-            // Update the stream
-            var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
-            SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
+            if (speckleObject == null)
+                return false;
+
+            // Add object to the stream
+            SpeckleLayer.ObjectCount += 1;
+            SpeckleStream.Objects.Add(speckleObject);
 
             return true;
         }

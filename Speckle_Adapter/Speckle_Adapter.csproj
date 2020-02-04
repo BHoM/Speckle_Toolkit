@@ -149,7 +149,6 @@
   <ItemGroup>
     <Compile Include="AdapterActions\Pull.cs" />
     <Compile Include="AdapterActions\Push.cs" />
-    <Compile Include="AdapterActions\_PushMethods\PushByType.cs" />
     <Compile Include="AdapterActions\_PushMethods\StoreSpeckleId.cs" />
     <Compile Include="AdapterActions\_PushMethods\SetupHistory.cs" />
     <Compile Include="CRUD\Create\CreateIObjects.cs" />

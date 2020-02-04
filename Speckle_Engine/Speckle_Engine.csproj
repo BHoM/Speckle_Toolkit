@@ -151,7 +151,7 @@
     <Compile Include="Compute\MeshRepresentation\Bar.cs" />
     <Compile Include="Compute\MeshRepresentation\_Fallback.cs" />
     <Compile Include="Convert\AdapterId.cs" />
-    <Compile Include="Convert\FromBHoM\SpeckleRepresentation.cs" />
+    <Compile Include="Compute\SpeckleRepresentation.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Fallback.cs" />
     <Compile Include="Convert\ToBHoM\Geometry\Mesh.cs" />
     <Compile Include="Convert\ToBHoM\Geometry\Line.cs" />
@@ -163,9 +163,9 @@
     <Compile Include="Convert\FromBHoM\Other\Request.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Vector.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Point.cs" />
-    <Compile Include="Convert\FromBHoM\_IFromBHoM.cs" />
     <Compile Include="Convert\ToBHoM\ToBHoM.cs" />
     <Compile Include="Compute\MeshRepresentation\Node.cs" />
+    <Compile Include="Modify\SetBHoMData.cs" />
     <Compile Include="Query\FilterBySpeckleGUID.cs" />
     <Compile Include="Query\FilterByBHoMGUID.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -174,9 +174,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Modify\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Speckle_oM\Speckle_oM.csproj">
       <Project>{0ADF9779-2060-438B-83F4-7463F776B248}</Project>

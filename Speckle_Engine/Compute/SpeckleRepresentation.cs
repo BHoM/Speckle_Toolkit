@@ -41,12 +41,8 @@ using BH.oM.Speckle;
 
 namespace BH.Engine.Speckle
 {
-    public static partial class Convert
+    public static partial class Compute
     {
-        /***************************************************/
-        /**** Public Methods                            ****/
-        /***************************************************/
-
         [Description("Attempts to compute a SpeckleObject representation of the BHoMObject, so it can be visualised in the SpeckleViewer.")]
         public static SpeckleObject SpeckleRepresentation(this IBHoMObject bhomObject, SpeckleDisplayOptions displayOptions)
         {
@@ -54,13 +50,13 @@ namespace BH.Engine.Speckle
             // If so, attempt to convert it to Speckle.
             IGeometry BHoMRepresentation = Compute.BHoMRepresentation(bhomObject as dynamic, displayOptions);
             if (BHoMRepresentation != null)
-                return FromBHoM(BHoMRepresentation as dynamic);
+                return Convert.FromBHoM(BHoMRepresentation as dynamic);
 
             // Else, see if we can get some BHoM geometry out of the BHoMObject to represent the object in SpeckleViewer.
             // If so, convert the IGeometry into a SpeckleObject, dynamically dispatching to the right convert.
             IGeometry geom = bhomObject.IGeometry();
             if (geom != null)
-                return FromBHoM(geom as dynamic);
+                return Convert.FromBHoM(geom as dynamic);
 
             return null;
         }
