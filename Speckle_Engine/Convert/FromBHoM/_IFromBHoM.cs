@@ -38,6 +38,7 @@ using BH.oM.Structure.Elements;
 using BH.Engine.Structure;
 using Rhino;
 using BH.Engine.Rhinoceros;
+using BH.oM.Speckle;
 
 namespace BH.Engine.Speckle
 {
@@ -46,12 +47,12 @@ namespace BH.Engine.Speckle
         [Description("Wraps the content of a BHoMObject into a SpeckleObject.\n" +
             "Its geometry (if any) is exposed in the top level, so it can be visualised in Speckle.\n" +
             "All BHoMObject properties are json-serialised and saved into the `speckleObject.Properties` field.")]
-        public static SpeckleObject IFromBHoM(this IBHoMObject bhomObject)
+        public static SpeckleObject IFromBHoM(this IBHoMObject bhomObject, SpecklePushConfig config)
         {
             // This will be our return object.
             // On the highest level, it will simply be a SpeckleObject containing geometry that can be visualised in the SpeckleViewer.
             SpeckleObject speckleObject = null;
-            speckleObject = SpeckleRepresentation(bhomObject); // Attempts to obtain a Speckle representation.
+            speckleObject = SpeckleRepresentation(bhomObject, config.DisplayOption); // Attempts to obtain a Speckle representation.
 
             if (speckleObject == null)
             {
@@ -76,7 +77,7 @@ namespace BH.Engine.Speckle
         [Description("Wraps the content of a BHoM IGeometry into a SpeckleObject.\n" +
            "A Rhino geometry representation is extracted and exposed in the top level, so it can be visualised in Speckle.\n" +
            "All the other IGeometry properties are json-serialised and saved into the `speckleObject.Properties` field.")]
-        public static SpeckleObject IFromBHoM(this IObject iObject)
+        public static SpeckleObject IFromBHoM(this IObject iObject, SpecklePushConfig config)
         {
             // This will be our return object.
             // On the highest level, it will simply be a SpeckleObject containing geometry that can be visualised in the SpeckleViewer.

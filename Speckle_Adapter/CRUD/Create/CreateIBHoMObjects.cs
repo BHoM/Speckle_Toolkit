@@ -42,7 +42,7 @@ namespace BH.Adapter.Speckle
         protected bool CreateIBHoMObjects(IEnumerable<IBHoMObject> BHoMObjects, SpecklePushConfig config)
         {
             // Convert the objects into the appropriate SpeckleObject using the available converters.
-            List<SpeckleObject> speckleObjects = BHoMObjects.Select(bhomObj => bhomObj.IFromBHoM()).ToList();
+            List<SpeckleObject> speckleObjects = BHoMObjects.Select(bhomObj => bhomObj.IFromBHoM(config)).ToList();
 
             if (speckleObjects.Where(obj => obj == null).Count() == speckleObjects.Count())
                 return false;

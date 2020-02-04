@@ -38,6 +38,7 @@ using BH.oM.Structure.Elements;
 using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
 using BH.oM.Structure.Constraints;
+using BH.oM.Speckle;
 
 namespace BH.Engine.Speckle
 {
@@ -45,12 +46,15 @@ namespace BH.Engine.Speckle
     {
 
         [Description("Returns a BHoM Mesh representation for the Node based on its DOF, e.g. a box for fully fixed, a cone with sphere on top for pin.")]
-        public static BH.oM.Geometry.Mesh MeshRepresentation(this Node node)
+        public static IGeometry BHoMRepresentation(this Node node, SpeckleDisplayOptions displayOptions)
         {
-            return RhinoMeshRepresentation(node).IToBHoM() as BH.oM.Geometry.Mesh;
+            if (displayOptions.DetailedNodes)
+                return RhinoMeshRepresentation(node).IToBHoM();
+            else
+                return node.Position(); // returns the point.
         }
        
-        private static Rhino.Geometry.Mesh RhinoMeshRepresentation(this Node node)
+        private static Rhino.Geometry.Mesh RhinoMeshRepresentation(this Node node, bool detailed = true)
         {
             if (node.Position == null)
             {

@@ -20,41 +20,21 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 using BH.oM.Base;
-using BH.oM.Data.Requests;
-using SpeckleCore;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace BH.Adapter.Speckle
+namespace BH.oM.Speckle
 {
-    public partial class SpeckleAdapter : BHoMAdapter
+    public class SpeckleDisplayOptions : IObject
     {
-        public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId)
-        {
-            AdapterIdName = BH.Engine.Speckle.Convert.AdapterIdName;
-
-            SpeckleAccount = speckleAccount;
-            SpeckleStream = new SpeckleStream() { StreamId = SpeckleStreamId };
-
-            SpeckleClient = new SpeckleApiClient() { BaseUrl = SpeckleAccount.RestApi, AuthToken = SpeckleAccount.Token, Stream = SpeckleStream }; // hacky, but i don't want to rebuild stuff and fiddle dll loading etc.
-            SpeckleClient.SetupWebsocket();
-
-            SpeckleStreamId = speckleStreamId;
-        }
-
-
-        /***************************************************/
-        /**** Public Properties                         ****/
-        /***************************************************/
-        public SpeckleApiClient SpeckleClient { get; private set; }
-        public string SpeckleStreamId { get; private set; }
-        public Account SpeckleAccount { get; private set; }
-        public SpeckleStream SpeckleStream { get; private set; }
-        public SpeckleCore.Layer SpeckleLayer { get; private set; }
+        [Description("If true, the bars are extruded using their Section property. Heavier meshes, significantly slow up/down load times.")]
+        public bool DetailedBars { get; set; } = false;
+        [Description("If true, nodes are meshes representing the support condition. Does not affect significantly the performance.")]
+        public bool DetailedNodes { get; set; } = true;
     }
 }
