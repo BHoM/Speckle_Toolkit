@@ -29,18 +29,6 @@ using System.Threading.Tasks;
 
 namespace BH.oM.Speckle
 {
-    public class SpecklePushConfig : BH.oM.Adapter.ActionConfig
-    {
-        [Description("Enables Speckle history.\n" +
-            "Speckle does history by cloning the stream and saving it between the children of the main stream. The head of the stream is the latest version.")]
-        public bool EnableHistory { get; set; } = true;
-
-        [Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
-            "The CustomData dictionary is only available for BHoMObjects.")]
-        // This does not work since I switched to BH.Engine deserialisation. Issue is that our deserialisation "recreates" the objects without preserving the original GUID.
-        public bool StoreSpeckleId { get; set; } = true; 
-    }
-
     public class SpecklePullConfig : BH.oM.Adapter.ActionConfig
     {
         [Description("Stores the SpeckleId of the pulled objects in the CustomData.\n" +

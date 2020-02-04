@@ -38,13 +38,14 @@ using BH.oM.Structure.Elements;
 using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
 using BH.oM.Structure.Constraints;
+using BH.oM.Speckle;
 
 namespace BH.Engine.Speckle
 {
     public static partial class Compute
     {
         // Fallback case
-        private static Rhino.Geometry.Mesh MeshRepresentation(this IBHoMObject bHoMObject)
+        private static Rhino.Geometry.Mesh MeshRepresentation(this IBHoMObject bHoMObject, SpeckleDisplayOptions displayOptions)
         {
             return null;
         }

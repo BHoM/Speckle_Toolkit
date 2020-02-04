@@ -21,40 +21,26 @@
  */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
-using BH.oM.Base;
-using BH.oM.Data.Requests;
-using SpeckleCore;
 
-namespace BH.Adapter.Speckle
+namespace BH.oM.Speckle
 {
-    public partial class SpeckleAdapter : BHoMAdapter
+    public class SpecklePushConfig : BH.oM.Adapter.ActionConfig
     {
-        public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId)
-        {
-            AdapterIdName = BH.Engine.Speckle.Convert.AdapterIdName;
+        [Description("Decide the level of detail of the geometrical representation of BHoMObjects in the SpeckleViewer. Affects the upload/download time and general performance.")]
+        public SpeckleDisplayOptions DisplayOption { get; set; } = new SpeckleDisplayOptions();
 
-            SpeckleAccount = speckleAccount;
-            SpeckleStream = new SpeckleStream() { StreamId = SpeckleStreamId };
+        [Description("Enables Speckle history.\n" +
+            "Speckle does history by cloning the stream and saving it between the children of the main stream. The head of the stream is the latest version.")]
+        public bool EnableHistory { get; set; } = true;
 
-            SpeckleClient = new SpeckleApiClient() { BaseUrl = SpeckleAccount.RestApi, AuthToken = SpeckleAccount.Token, Stream = SpeckleStream }; // hacky, but i don't want to rebuild stuff and fiddle dll loading etc.
-            SpeckleClient.SetupWebsocket();
-
-            SpeckleStreamId = speckleStreamId;
-        }
-
-
-        /***************************************************/
-        /**** Public Properties                         ****/
-        /***************************************************/
-        public SpeckleApiClient SpeckleClient { get; private set; }
-        public string SpeckleStreamId { get; private set; }
-        public Account SpeckleAccount { get; private set; }
-        public SpeckleStream SpeckleStream { get; private set; }
-        public SpeckleCore.Layer SpeckleLayer { get; private set; }
+        [Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
+            "The CustomData dictionary is only available for BHoMObjects.")]
+        // This does not work since I switched to BH.Engine deserialisation in the Pull. Issue is that our deserialisation "recreates" the objects without preserving the original GUID.
+        public bool StoreSpeckleId { get; set; } = true;
     }
 }

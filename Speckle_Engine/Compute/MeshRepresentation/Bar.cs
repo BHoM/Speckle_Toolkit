@@ -38,18 +38,22 @@ using BH.oM.Structure.Elements;
 using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
 using BH.oM.Structure.Constraints;
+using BH.oM.Speckle;
 
 namespace BH.Engine.Speckle
 {
     public static partial class Compute
     {
-        [Description("Returns a BHoM mesh representation for the BHoM Bar based on its SectionProperty.")]
-        public static BH.oM.Geometry.Mesh MeshRepresentation(this Bar bar)
+        [Description("Returns a BHoM mesh representation for the BHoM Bar.")]
+        public static IGeometry BHoMRepresentation(this Bar bar, SpeckleDisplayOptions displayOptions)
         {
-            return RhinoMeshRepresentation(bar).IToBHoM() as BH.oM.Geometry.Mesh;
+            if (displayOptions.DetailedBars)
+                return RhinoMeshRepresentation(bar).IToBHoM();
+            else 
+                return bar.Centreline(); //returns the centreline.
         }
 
-        [Description("Returns a Rhino mesh representation for the BHoM Bar based on its SectionProperty.")]
+        [Description("Returns a RHINO mesh representation for the BHoM Bar.")]
         private static Rhino.Geometry.Mesh RhinoMeshRepresentation(this Bar bar)
         {
             // Gets the BH.oM.Geometry.Extrusion out of the Bar. If the profile is made of two curves (e.g. I section), selects only the outermost.

@@ -48,30 +48,21 @@ namespace BH.Engine.Speckle
         /***************************************************/
 
         [Description("Attempts to compute a SpeckleObject representation of the BHoMObject, so it can be visualised in the SpeckleViewer.")]
-        public static SpeckleObject SpeckleRepresentation(this IBHoMObject bhomObject)
+        public static SpeckleObject SpeckleRepresentation(this IBHoMObject bhomObject, SpeckleDisplayOptions displayOptions)
         {
-            SpeckleObject speckleObject = null;
-
-            // See if there is a custom Mesh representation for that BHoMObject
-            var meshRepresentation = Compute.MeshRepresentation(bhomObject as dynamic);
-            speckleObject = meshRepresentation != null ? BH.Engine.Speckle.Convert.FromBHoM(meshRepresentation): null;
-            if (speckleObject != null)
-                return speckleObject;
+            // See if there is a custom BHoM Geometry representation for that BHoMObject.
+            // If so, attempt to convert it to Speckle.
+            IGeometry BHoMRepresentation = Compute.BHoMRepresentation(bhomObject as dynamic, displayOptions);
+            if (BHoMRepresentation != null)
+                return FromBHoM(BHoMRepresentation as dynamic);
 
             // Else, see if we can get some BHoM geometry out of the BHoMObject to represent the object in SpeckleViewer.
-            IGeometry geom = null;
-            geom = bhomObject.IGeometry();
+            // If so, convert the IGeometry into a SpeckleObject, dynamically dispatching to the right convert.
+            IGeometry geom = bhomObject.IGeometry();
             if (geom != null)
-            {
-                // Converts the BHoM Geometry into a SpeckleObject, dynamically dispatching to the method for the right type.
-                speckleObject = FromBHoM(geom as dynamic);
-                return speckleObject;
-            }
+                return FromBHoM(geom as dynamic);
 
-            
-
-            return speckleObject;
+            return null;
         }
-
     }
 }

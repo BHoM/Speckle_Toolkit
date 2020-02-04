@@ -56,8 +56,10 @@
   <ItemGroup>
     <Compile Include="ComparerForDiffing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpeckleDisplayOptions.cs" />
+    <Compile Include="SpecklePushConfig.cs" />
     <Compile Include="SpeckleRequest.cs" />
-    <Compile Include="SpeckleActionConfig.cs" />
+    <Compile Include="SpecklePullConfig.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
