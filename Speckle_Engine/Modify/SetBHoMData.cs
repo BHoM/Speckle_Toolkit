@@ -21,37 +21,46 @@
  */
 
 using BH.oM.Base;
-using BH.oM.Data;
-using BH.oM.Data.Collections;
-using BH.oM.Geometry;
 using SpeckleCore;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using BH.Engine.Rhinoceros;
-using BH.Engine.Speckle;
-using BH.oM.Speckle;
 
-namespace BH.Adapter.Speckle
+namespace BH.Engine.Speckle
 {
-    public partial class SpeckleAdapter
+    public static partial class Modify
     {
-        protected bool Create(object obj, SpecklePushConfig config)
+        [Description("Saves all BHoM Data inside the Speckle object.")]
+        public static void SetBHoMData(SpeckleObject speckleObject, IObject bhObject)
         {
-            // Convert the objects into "Abstract" SpeckleObjects 
-            SpeckleObject abstractObj = SpeckleCore.Converter.Serialise(obj) as SpeckleObject;
+            // Serialise the IBHoMObject data and append it to the `Properties` of the SpeckleObject.
+            speckleObject.Properties = new Dictionary<string, object>() {
+                {
+                   "BHoM",
+                   SpeckleCore.Converter.Serialise(bhObject) // This appends the BHoM data as a "SpeckleAbstract" object.
+                }
+            };
 
-            if (abstractObj == null)
-                return false;
+            // Set `speckleObject.Name` as the BHoMObject type name.
+            speckleObject.Name = bhObject.GetType().Name;
 
-            // Add objects to the stream
-            SpeckleLayer.ObjectCount += 1;
-            SpeckleStream.Objects.Add(abstractObj);
+            if (false && bhObject is BHoMObject) // for testing only
+                AddZippedBHoMData(ref speckleObject, bhObject);
 
-            return true;
+            speckleObject.GenerateHash(); // Not sure if needed
+        }
+
+        // For testing only
+        private static void AddZippedBHoMData(ref SpeckleObject speckleObject, IObject bhObject)
+        {
+            // Serialise the BHoMobject into a Json and append it to the Properties Dictionary of the SpeckleObject. Key is "BHoMZipped".
+            string BHoMDataJson = BH.Engine.Serialiser.Convert.ToJson(bhObject); //serialize
+            BHoMDataJson = BH.Engine.Serialiser.Convert.ToZip(BHoMDataJson); //zip 
+            speckleObject.Properties.Add("BHoMZipped", BHoMDataJson);
         }
     }
 }

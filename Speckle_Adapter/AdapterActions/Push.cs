@@ -55,19 +55,21 @@ namespace BH.Adapter.Speckle
             SpeckleStream.Objects = new List<SpeckleObject>(); // stream is immutable
 
             // //- Read config
-            SpecklePushConfig pushConfig = actionConfig as SpecklePushConfig;
-            if (pushConfig == null)
-                pushConfig = new SpecklePushConfig();
+            SpecklePushConfig pushConfig = (actionConfig as SpecklePushConfig) ?? new SpecklePushConfig();
 
             // //- Use "Speckle" history: produces a new stream at every push that corresponds to the old version. Enabled by default.
             if (pushConfig.EnableHistory)
                 SetupHistory();
 
-            // // - Base push rewritten to allow some additional CustomData to go in.
-            if (PushByType(objectsToPush, tag, pushConfig))
-                return objectsToPush;
+            // Actual creation and add to the stream
+            for (int i = 0; i < objectsToPush.Count(); i++)
+                Create(objectsToPush[i] as dynamic, pushConfig); // Dynamic dispatch to most appropriate method
 
-            return new List<object>();
+            // Send the objects
+            var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
+            SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
+
+            return objectsToPush;
         }
     }
 }
