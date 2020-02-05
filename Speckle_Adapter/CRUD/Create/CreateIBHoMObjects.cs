@@ -39,7 +39,7 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        protected bool Create(IBHoMObject bhomObject, SpecklePushConfig config)
+        protected SpeckleObject Create(IBHoMObject bhomObject, SpecklePushConfig config)
         {
             // Assign SpeckleStreamId to the CustomData of the IBHoMObjects
             bhomObject.CustomData["Speckle_StreamId"] = SpeckleStreamId;
@@ -54,14 +54,7 @@ namespace BH.Adapter.Speckle
             // Save BHoMObject data inside the speckleObject.
             Modify.SetBHoMData(speckleObject, bhomObject);
 
-            if (speckleObject == null)
-                return false;
-
-            // Add object to the stream
-            SpeckleLayer.ObjectCount += 1;
-            SpeckleStream.Objects.Add(speckleObject);
-
-            return true;
+            return speckleObject;
         }
 
     }

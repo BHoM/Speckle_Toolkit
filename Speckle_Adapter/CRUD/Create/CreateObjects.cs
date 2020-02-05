@@ -39,19 +39,10 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        protected bool Create(object obj, SpecklePushConfig config)
+        protected SpeckleObject Create(object obj, SpecklePushConfig config)
         {
             // Convert the objects into "Abstract" SpeckleObjects 
-            SpeckleObject abstractObj = SpeckleCore.Converter.Serialise(obj) as SpeckleObject;
-
-            if (abstractObj == null)
-                return false;
-
-            // Add objects to the stream
-            SpeckleLayer.ObjectCount += 1;
-            SpeckleStream.Objects.Add(abstractObj);
-
-            return true;
+            return SpeckleCore.Converter.Serialise(obj) as SpeckleObject;
         }
     }
 }

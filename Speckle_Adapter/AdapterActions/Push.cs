@@ -33,6 +33,7 @@ using SpeckleCore;
 using BH.oM.Speckle;
 using System.ComponentModel;
 using BH.Engine.Base;
+using System.Collections.Concurrent;
 
 namespace BH.Adapter.Speckle
 {
@@ -63,7 +64,13 @@ namespace BH.Adapter.Speckle
 
             // Actual creation and add to the stream
             for (int i = 0; i < objectsToPush.Count(); i++)
-                Create(objectsToPush[i] as dynamic, pushConfig); // Dynamic dispatch to most appropriate method
+            {
+                SpeckleObject speckleObject = Create(objectsToPush[i] as dynamic, pushConfig); // Dynamic dispatch to most appropriate method
+
+                // Add objects to the stream
+                SpeckleLayer.ObjectCount += 1;
+                SpeckleStream.Objects.Add(speckleObject);
+            }
 
             // Send the objects
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
