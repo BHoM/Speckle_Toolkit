@@ -31,16 +31,21 @@ namespace BH.oM.Speckle
 {
     public class SpecklePushConfig : BH.oM.Adapter.ActionConfig
     {
+        [Description("Enables Speckle history.\n" +
+            "Speckle clones the previous version of the stream and saves it in the `children` property of the main stream. The head of the stream is the latest version.")]
+        public bool EnableHistory { get; set; } = false;
+
         [Description("Decide the level of detail of the geometrical representation of BHoMObjects in the SpeckleViewer. Affects the upload/download time and general performance.")]
         public SpeckleDisplayOptions DisplayOption { get; set; } = new SpeckleDisplayOptions();
 
-        [Description("Enables Speckle history.\n" +
-            "Speckle does history by cloning the stream and saving it between the children of the main stream. The head of the stream is the latest version.")]
-        public bool EnableHistory { get; set; } = true;
+        [Description("Using the Speckle Serialiser enables to group the BHoM Object per their properites in the SpeckleViewer." +
+            "However, this is ~100 slower than using our JSON serialiser.\n" +
+            "Enable this only for demonstration purposes.")]
+        public bool UseSpeckleSerialiser { get; set; } = false;
 
-        [Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
-            "The CustomData dictionary is only available for BHoMObjects.")]
-        // This does not work since I switched to BH.Engine deserialisation in the Pull. Issue is that our deserialisation "recreates" the objects without preserving the original GUID.
-        public bool StoreSpeckleId { get; set; } = true;
+        //[Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
+        //    "The CustomData dictionary is only available for BHoMObjects.")]
+        //// This does not work since I switched to BH.Engine deserialisation in the Pull. Issue is that our deserialisation "recreates" the objects without preserving the original GUID.
+        //public bool StoreSpeckleId { get; set; } = true;
     }
 }

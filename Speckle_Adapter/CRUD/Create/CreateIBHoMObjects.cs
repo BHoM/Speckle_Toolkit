@@ -52,7 +52,7 @@ namespace BH.Adapter.Speckle
                 speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
 
             // Save BHoMObject data inside the speckleObject.
-            Modify.SetBHoMData(speckleObject, bhomObject);
+            Modify.SetBHoMData(speckleObject, bhomObject, config.UseSpeckleSerialiser);
 
             return speckleObject;
         }
