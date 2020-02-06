@@ -35,7 +35,7 @@ namespace BH.Engine.Speckle
     public static partial class Modify
     {
         [Description("Saves all BHoM Data inside the Speckle object.")]
-        public static void SetBHoMData(SpeckleObject speckleObject, IObject bhObject)
+        public static void SetBHoMData(ref SpeckleObject speckleObject, IObject bhObject)
         {
             // Serialise the IBHoMObject data and append it to the `Properties` of the SpeckleObject.
             speckleObject.Properties = new Dictionary<string, object>() {

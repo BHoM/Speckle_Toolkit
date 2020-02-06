@@ -51,8 +51,6 @@ namespace BH.Adapter.Speckle
             if (speckleObject == null)
                 speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(bhomObject);
 
-            // Save BHoMObject data inside the speckleObject.
-            Modify.SetBHoMData(speckleObject, bhomObject);
 
             return speckleObject;
         }

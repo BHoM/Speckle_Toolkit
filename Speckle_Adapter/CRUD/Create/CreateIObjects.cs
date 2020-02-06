@@ -49,9 +49,6 @@ namespace BH.Adapter.Speckle
             else
                 speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(iObject); // These will be exported as `Abstract` Speckle Objects.
 
-            // Save BHoMObject data inside the speckleObject.
-            Modify.SetBHoMData(speckleObject, iObject);
-
             return speckleObject;
         }
     }

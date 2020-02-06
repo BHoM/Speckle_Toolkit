@@ -62,17 +62,106 @@ namespace BH.Adapter.Speckle
             if (pushConfig.EnableHistory)
                 SetupHistory();
 
+            List<SpeckleObject> speckleObjects = new List<SpeckleObject>();
+            ConcurrentBag<SpeckleObject> speckleObjectsBag = new ConcurrentBag<SpeckleObject>();
+            ConcurrentStack<Tuple<IObject, SpeckleObject>> dict = new ConcurrentStack<Tuple<IObject, SpeckleObject>>();
+
             // Actual creation and add to the stream
             for (int i = 0; i < objectsToPush.Count(); i++)
             {
-                SpeckleObject speckleObject = Create(objectsToPush[i] as dynamic, pushConfig); // Dynamic dispatch to most appropriate method
+                SpeckleObject sObj = Create(objectsToPush[i] as dynamic, pushConfig); // Dynamic dispatch to most appropriate method
+                dict.Push(new Tuple<IObject, SpeckleObject>(objectsToPush[i] as IObject, sObj));
+                speckleObjects.Add(sObj);
+            }
+
+            List<Task> tasks = new List<Task>();
+
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+
+            sw.Start();
+
+            if (true)
+            {
+                // Save BHoM data inside the speckleObjects.
+                for (int i = 0; i < objectsToPush.Count(); i++)
+                {
+                    Task t = Task.Run(
+                    () =>
+                    {
+                        SpeckleObject so = null;
+                        Tuple<IObject, SpeckleObject> kv = null;
+                        dict.TryPop(out kv);
+
+                        so = kv.Item2;
+
+                        if (typeof(IObject).IsAssignableFrom(kv.Item1.GetType()))
+                        {
+                            Engine.Speckle.Modify.SetBHoMData(ref so, kv.Item1);
+                        }
+
+                        speckleObjectsBag.Add(so);
+                    });
+
+                    tasks.Add(t);
+                }
+
+                Task.WaitAll(tasks.ToArray());
 
                 // Add objects to the stream
                 SpeckleLayer.ObjectCount += 1;
-                SpeckleStream.Objects.Add(speckleObject);
+                speckleObjectsBag.ToList().ForEach(o => SpeckleStream.Objects.Add(o));
             }
 
-            // Send the objects
+            sw.Stop();
+            TimeSpan asd1 = sw.Elapsed;
+
+
+            sw.Reset();
+            sw.Start();
+
+            if (true)
+            {
+                    // Save BHoM data inside the speckleObjects.
+                    Parallel.For(0, objectsToPush.Count(), (int i) =>
+                    {
+                    object obj = objectsToPush[i];
+                    SpeckleObject sObj = speckleObjects[i];
+
+                    if (typeof(IObject).IsAssignableFrom(objectsToPush[i].GetType()))
+                    {
+                        Engine.Speckle.Modify.SetBHoMData(ref sObj, objectsToPush[i] as IObject);
+                    }
+
+                    speckleObjects[i] = sObj;
+                });
+            }
+
+            sw.Stop();
+            TimeSpan asd2 = sw.Elapsed;
+
+
+            sw.Reset();
+            sw.Start();
+            for (int i = 0; i < objectsToPush.Count() - 1; i++)
+            {
+                SpeckleObject sObj = speckleObjects[i];
+
+                if (typeof(IObject).IsAssignableFrom(objectsToPush[i].GetType()))
+                {
+                    Engine.Speckle.Modify.SetBHoMData(ref sObj, objectsToPush[i] as IObject);
+                }
+
+                speckleObjects[i] = sObj;
+            }
+            sw.Stop();
+            TimeSpan asd3 = sw.Elapsed;
+
+
+            // Add objects to the stream
+            SpeckleLayer.ObjectCount += 1;
+            speckleObjects.ForEach(o => SpeckleStream.Objects.Add(o));
+
+            // Send the stream
             var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
 
