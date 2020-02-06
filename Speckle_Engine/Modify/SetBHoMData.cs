@@ -43,7 +43,7 @@ namespace BH.Engine.Speckle
             if (useSpeckleSerialiser)
             {
                 // Speckle "Serialiser" is incredibly slow.
-                object speckleSerialised = SpeckleCore.Converter.Serialise(bhObject); // This "serialises" with Speckle: the BHoM data becomes a "SpeckleAbstract" object
+                object speckleSerialised = Compute.SpeckleSerialisation(bhObject);//SpeckleCore.Converter.Serialise(bhObject); // This "serialises" with Speckle: the BHoM data becomes a "SpeckleAbstract" object
                 //speckleSerialised = BH.Engine.Serialiser.Convert.ToZip(speckleSerialised); // (optional) zip the data
                 speckleObject.Properties.Add("BHoM", speckleSerialised);
             }
