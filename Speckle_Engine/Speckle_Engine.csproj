@@ -150,6 +150,7 @@
   <ItemGroup>
     <Compile Include="Compute\MeshRepresentation\Bar.cs" />
     <Compile Include="Compute\MeshRepresentation\_Fallback.cs" />
+    <Compile Include="Compute\SpeckleSerialisation.cs" />
     <Compile Include="Convert\AdapterId.cs" />
     <Compile Include="Compute\SpeckleRepresentation.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Fallback.cs" />
