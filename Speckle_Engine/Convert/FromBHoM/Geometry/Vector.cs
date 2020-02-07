@@ -51,7 +51,6 @@ namespace BH.Engine.Speckle
 
             SpeckleVector speckleVector = new SpeckleVector(bhomVector.X, bhomVector.Y, bhomVector.X);
 
-            speckleVector.GenerateHash();
             return speckleVector;
         }
     }

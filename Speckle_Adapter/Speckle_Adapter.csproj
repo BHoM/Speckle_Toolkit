@@ -68,6 +68,12 @@
     <Reference Include="DeviceId, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DeviceId.4.3.0\lib\net40\DeviceId.dll</HintPath>
     </Reference>
+    <Reference Include="Diffing_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Diffing_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Diffing_oM">
+      <HintPath>..\..\BHoM\Diffing_oM\obj\Debug\Diffing_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Geometry_oM">
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
     </Reference>

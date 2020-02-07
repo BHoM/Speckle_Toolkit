@@ -50,7 +50,6 @@ namespace BH.Engine.Speckle
 
             SpecklePoint specklePoint = new SpecklePoint(bhomPoint.X, bhomPoint.Y, bhomPoint.Z);
 
-            specklePoint.GenerateHash();
             return specklePoint;
         }
     }

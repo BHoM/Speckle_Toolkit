@@ -32,9 +32,11 @@ namespace BH.oM.Speckle
 {
     public class SpeckleDisplayOptions : IObject
     {
-        [Description("If true, the bars are meshes extruded using their Section property.")]
-        public bool DetailedBars { get; set; } = true;
-        [Description("If true, nodes are meshes representing the support condition (e.g. cone with sphere on top for a Pin).")]
+        [Description("If true, the bars are meshes extruded using their Section property.\n" +
+            "CAREFUL: heavier meshes might increase upload time over the Timeout limit.")]
+        public bool DetailedBars { get; set; } = false;
+        [Description("If true, nodes are meshes representing the support condition (e.g. cone with sphere on top for a Pin).\n" +
+            "CAREFUL: heavier meshes might increase upload time over the Timeout limit.")]
         public bool DetailedNodes { get; set; } = true;
     }
 }

@@ -54,6 +54,12 @@
     <Reference Include="DeviceId, Version=4.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DeviceId.4.3.0\lib\net40\DeviceId.dll</HintPath>
     </Reference>
+    <Reference Include="Diffing_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Diffing_Engine.dll</HintPath>
+    </Reference>
+    <Reference Include="Diffing_oM">
+      <HintPath>..\..\BHoM\Diffing_oM\obj\Debug\Diffing_oM.dll</HintPath>
+    </Reference>
     <Reference Include="Eto, Version=2.5.0.0, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
       <HintPath>..\packages\RhinoCommon.6.21.19351.9141\lib\net45\Eto.dll</HintPath>
     </Reference>

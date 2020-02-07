@@ -29,13 +29,11 @@ using SpeckleCore;
 using BHG = BH.oM.Geometry;
 using SpeckleCoreGeometryClasses;
 using BH.oM.Base;
-using BH.Engine.Geometry;
 using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
 using BH.oM.Structure.Elements;
-using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
 using System.Collections;
@@ -44,21 +42,26 @@ namespace BH.Engine.Speckle
 {
     public static partial class Compute
     {
-        [Description("Attempts to compute a SpeckleObject representation of the BHoMObject, so it can be visualised in the SpeckleViewer.")]
-        public static SpeckleObject SpeckleSerialisation(this IObject bhomObject)
+        [Description("Creates a SpeckleAbstract object that can be used as a container for the actual BHoMData." +
+            "This format is understood by SpeckleViewer and allows for query/grouping in the online interface.")]
+        public static SpeckleAbstract SpeckleAbstract(this IObject bhomObject)
         {
             return Serialise(bhomObject);
         }
 
+        // Speckle Serialise method reduced to the "essential" to suit our needs.
         private static SpeckleAbstract Serialise(object source, int recursionDepth = 0, string path = "")
         {
             SpeckleAbstract result = new SpeckleAbstract();
-            result._type = source.GetType().Name;
-            result._assembly = source.GetType().Assembly.FullName;
+            Type sourceType = source.GetType();
+
+            //result.Type = sourceType.Namespace + "." + sourceType.Name;
+            result._type = sourceType.Namespace + "." + sourceType.Name;
+            //result._assembly = source.GetType().Assembly.GetName().Name;
 
             Dictionary<string, object> dict = new Dictionary<string, object>();
 
-            var properties = source.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            var properties = sourceType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
 
             foreach (var prop in properties)
             {
@@ -72,11 +75,17 @@ namespace BH.Engine.Speckle
                     if (value == null)
                         continue;
 
+                    // Property exclusions
+                    if (prop.Name == nameof(IBHoMObject.BHoM_Guid))
+                        continue;
+
                     dict[prop.Name] = WriteValue(value, recursionDepth, path + "/" + prop.Name);
                 }
                 catch { }
             }
 
+            // // - We generally do not need to be sending also the fields of our BHoM Objects. Properties should be enough in all cases.
+            // // - Leaving this here for future reference in case it's needed.
             //var fields = source.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
             //foreach (var field in fields)
             //{
@@ -93,7 +102,9 @@ namespace BH.Engine.Speckle
             //}
 
             result.Properties = dict;
-            //result.Hash = result.GeometryHash = result.GetMd5FromObject(result.GetMd5FromObject(result._assembly) + result.GetMd5FromObject(result._type) + result.GetMd5FromObject(result.Properties));
+
+            // TODO: See how to set the hash appropriately. Should that be our diffing hash?
+            result.Hash = result.GeometryHash = result.GetMd5FromObject(result.GetMd5FromObject(result._assembly) + result.GetMd5FromObject(result._type) + result.GetMd5FromObject(result.Properties));
 
             return result;
         }
@@ -108,7 +119,9 @@ namespace BH.Engine.Speckle
                 return myObject;
 
             if (myObject is Guid)
+
                 return myObject.ToString();
+
 
             if (myObject is IEnumerable && !(myObject is IDictionary))
             {
