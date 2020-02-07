@@ -46,10 +46,9 @@ namespace BH.Adapter.Speckle
 
             // Initialize Speckle Layer if not existing
             if (SpeckleLayer == null)
-            {
                 SpeckleLayer = new Layer() { Name = "Default Layer", OrderIndex = 0, StartIndex = 0, Topology = "", Guid = "c8a58593-7080-450b-96b9-b0158844644b" };
-                SpeckleLayer.ObjectCount = 0;
-            }
+
+            SpeckleLayer.ObjectCount = 0;
 
             // Initialize the SpeckleStream
             SpeckleStream.Layers = new List<Layer>() { SpeckleLayer };
@@ -73,8 +72,18 @@ namespace BH.Adapter.Speckle
             }
 
             // Send the objects
-            var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
-            SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
+            try
+            {
+                var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
+                SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
+            }
+            catch (Exception e)
+            {
+                BH.Engine.Reflection.Compute.RecordError($"Upload to Speckle failed. Message returned:\n{e.InnerException}");
+                BH.Engine.Reflection.Compute.RecordError($"The server might be busy, or a heavy model upload might have triggered the Timeout.\n" +
+                    $"Try sending again. Try pushing the objects with a SpecklePushConfig having DisplayOptions set to false for some of the objects, e.g. Bars.");
+                return new List<object>();
+            }
 
             return objectsToPush;
         }

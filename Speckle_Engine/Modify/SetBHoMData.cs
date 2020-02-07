@@ -43,7 +43,7 @@ namespace BH.Engine.Speckle
             if (useSpeckleSerialiser)
             {
                 // Speckle "Serialiser" is incredibly slow.
-                object speckleSerialised = Compute.SpeckleSerialisation(bhObject);//SpeckleCore.Converter.Serialise(bhObject); // This "serialises" with Speckle: the BHoM data becomes a "SpeckleAbstract" object
+                object speckleSerialised = Compute.SpeckleAbstract(bhObject);//SpeckleCore.Converter.Serialise(bhObject); // This "serialises" with Speckle: the BHoM data becomes a "SpeckleAbstract" object
                 //speckleSerialised = BH.Engine.Serialiser.Convert.ToZip(speckleSerialised); // (optional) zip the data
                 speckleObject.Properties.Add("BHoM", speckleSerialised);
             }
@@ -54,10 +54,8 @@ namespace BH.Engine.Speckle
                 speckleObject.Properties.Add("BHoM", BHoMDataJson);
             }
 
-            // Set `speckleObject.Name` as the BHoMObject type name.
-            speckleObject.Name = bhObject.GetType().Name;
+           
 
-            speckleObject.GenerateHash(); // Not sure if needed
         }
     }
 }

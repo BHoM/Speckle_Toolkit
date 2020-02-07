@@ -57,7 +57,6 @@ namespace BH.Engine.Speckle
 
             SpeckleMesh speckleMesh = new SpeckleMesh(vertices, faces, colors, null);
 
-            speckleMesh.GenerateHash();
             return speckleMesh;
         }
     }
