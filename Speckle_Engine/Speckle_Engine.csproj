@@ -61,7 +61,7 @@
       <HintPath>..\..\BHoM\Diffing_oM\obj\Debug\Diffing_oM.dll</HintPath>
     </Reference>
     <Reference Include="Eto, Version=2.5.0.0, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.21.19351.9141\lib\net45\Eto.dll</HintPath>
+      <HintPath>..\packages\RhinoCommon.6.12.19029.6381\lib\net45\Eto.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Geometry_Engine.dll</HintPath>
@@ -69,6 +69,16 @@
     <Reference Include="Geometry_oM">
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="GH_IO, Version=6.12.19029.6380, Culture=neutral, PublicKeyToken=6a29997d2e6b4f97, processorArchitecture=MSIL">
+      <HintPath>..\packages\Grasshopper.6.12.19029.6381\lib\net45\GH_IO.dll</HintPath>
+    </Reference>
+    <Reference Include="Graphics_oM">
+      <HintPath>..\..\BHoM\Build\Graphics_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Grasshopper, Version=6.12.19029.6380, Culture=neutral, PublicKeyToken=dda4f5ec2cd80803, processorArchitecture=MSIL">
+      <HintPath>..\packages\Grasshopper.6.12.19029.6381\lib\net45\Grasshopper.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
@@ -91,25 +101,30 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
     </Reference>
-    <Reference Include="Rhino.UI, Version=6.21.19351.9140, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.21.19351.9141\lib\net45\Rhino.UI.dll</HintPath>
+    <Reference Include="Rhino.UI, Version=6.12.19029.6380, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.6.12.19029.6381\lib\net45\Rhino.UI.dll</HintPath>
     </Reference>
     <Reference Include="Rhinoceros_Engine, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Rhinoceros_Toolkit\Build\Rhinoceros_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="RhinoCommon, Version=6.21.19351.9140, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.21.19351.9141\lib\net45\RhinoCommon.dll</HintPath>
+    <Reference Include="RhinoCommon, Version=6.12.19029.6380, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
+      <HintPath>..\packages\RhinoCommon.6.12.19029.6381\lib\net45\RhinoCommon.dll</HintPath>
     </Reference>
     <Reference Include="Serialiser_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Serialiser_Engine.dll</HintPath>
     </Reference>
-    <Reference Include="SpeckleCore, Version=1.6.9.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\packages\SpeckleCore.1.6.9\lib\net45\SpeckleCore.dll</HintPath>
+    <Reference Include="SpeckleCore, Version=1.7.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SpeckleCore.1.7.2.414\lib\netstandard2.0\SpeckleCore.dll</HintPath>
     </Reference>
-    <Reference Include="SpeckleCoreGeometryClasses, Version=1.2.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SpeckleCoreGeometry.1.2.8\lib\net461\SpeckleCoreGeometryClasses.dll</HintPath>
+    <Reference Include="SpeckleCoreGeometryClasses, Version=1.3.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\SpeckleCoreGeometry.1.3.11\lib\netstandard2.0\SpeckleCoreGeometryClasses.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SpeckleCoreGeometryRhino">
+      <HintPath>..\_tempRefs\SpeckleCoreGeometryRhino.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SQLite-net, Version=1.5.231.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\sqlite-net-pcl.1.5.231\lib\netstandard1.1\SQLite-net.dll</HintPath>
@@ -154,12 +169,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\MeshRepresentation\Bar.cs" />
-    <Compile Include="Compute\MeshRepresentation\_Fallback.cs" />
+    <Compile Include="Compute\BHoMRepresentation\Bar.cs" />
+    <Compile Include="Compute\BHoMRepresentation\_Fallback.cs" />
     <Compile Include="Compute\SpeckleSerialisation.cs" />
     <Compile Include="Convert\AdapterId.cs" />
     <Compile Include="Compute\SpeckleRepresentation.cs" />
-    <Compile Include="Convert\FromBHoM\Geometry\Fallback.cs" />
+    <Compile Include="Convert\FromBHoM\Geometry\Surface-Brep.cs" />
+    <Compile Include="Convert\FromBHoM\Geometry\_Fallback.cs" />
     <Compile Include="Convert\ToBHoM\Geometry\Mesh.cs" />
     <Compile Include="Convert\ToBHoM\Geometry\Line.cs" />
     <Compile Include="Convert\ToBHoM\Geometry\Vector.cs" />
@@ -171,7 +187,8 @@
     <Compile Include="Convert\FromBHoM\Geometry\Vector.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Point.cs" />
     <Compile Include="Convert\ToBHoM\ToBHoM.cs" />
-    <Compile Include="Compute\MeshRepresentation\Node.cs" />
+    <Compile Include="Compute\BHoMRepresentation\Node.cs" />
+    <Compile Include="Modify\SetDiffingHash.cs" />
     <Compile Include="Modify\SetBHoMData.cs" />
     <Compile Include="Query\FilterBySpeckleGUID.cs" />
     <Compile Include="Query\FilterByBHoMGUID.cs" />
@@ -201,12 +218,14 @@
     <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.osx.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.e_sqlite3.osx.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.osx.targets'))" />
     <Error Condition="!Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-    <Error Condition="!Exists('..\packages\RhinoCommon.6.21.19351.9141\build\net45\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RhinoCommon.6.21.19351.9141\build\net45\RhinoCommon.targets'))" />
+    <Error Condition="!Exists('..\packages\RhinoCommon.6.12.19029.6381\build\net45\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RhinoCommon.6.12.19029.6381\build\net45\RhinoCommon.targets'))" />
+    <Error Condition="!Exists('..\packages\Grasshopper.6.12.19029.6381\build\net45\Grasshopper.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Grasshopper.6.12.19029.6381\build\net45\Grasshopper.targets'))" />
   </Target>
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.osx.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.osx.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.osx.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.osx.targets')" />
   <Import Project="..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp.targets" Condition="Exists('..\packages\SQLitePCLRaw.lib.e_sqlite3.v110_xp.1.1.11\build\net35\SQLitePCLRaw.lib.e_sqlite3.v110_xp.targets')" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
-  <Import Project="..\packages\RhinoCommon.6.21.19351.9141\build\net45\RhinoCommon.targets" Condition="Exists('..\packages\RhinoCommon.6.21.19351.9141\build\net45\RhinoCommon.targets')" />
+  <Import Project="..\packages\RhinoCommon.6.12.19029.6381\build\net45\RhinoCommon.targets" Condition="Exists('..\packages\RhinoCommon.6.12.19029.6381\build\net45\RhinoCommon.targets')" />
+  <Import Project="..\packages\Grasshopper.6.12.19029.6381\build\net45\Grasshopper.targets" Condition="Exists('..\packages\Grasshopper.6.12.19029.6381\build\net45\Grasshopper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

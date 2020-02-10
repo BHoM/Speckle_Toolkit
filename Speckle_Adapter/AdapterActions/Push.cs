@@ -74,6 +74,8 @@ namespace BH.Adapter.Speckle
             // Send the objects
             try
             {
+                // Issue: with `StreamUpdateAsync` Speckle doesn't seem to send anything if the Stream is initially empty.
+                // You need to Push twice if the Stream is empty.
                 var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
                 SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
             }
