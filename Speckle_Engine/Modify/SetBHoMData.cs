@@ -42,19 +42,24 @@ namespace BH.Engine.Speckle
             // Serialise the IBHoMObject data and append it to the `Properties` of the SpeckleObject.
             if (useSpeckleSerialiser)
             {
-                // Speckle "Serialiser" is incredibly slow.
-                object speckleSerialised = Compute.SpeckleAbstract(bhObject);//SpeckleCore.Converter.Serialise(bhObject); // This "serialises" with Speckle: the BHoM data becomes a "SpeckleAbstract" object
-                //speckleSerialised = BH.Engine.Serialiser.Convert.ToZip(speckleSerialised); // (optional) zip the data
-                speckleObject.Properties.Add("BHoM", speckleSerialised);
+                // Speckle "Serialiser" is very slow with BHoM classes.
+                object serialisedBHoMData = SpeckleCore.Converter.Serialise(bhObject);
+                speckleObject.Properties.Add("BHoM", serialisedBHoMData);
             }
             else
             {
-                // ~100 times faster, but we lose the ability of filtering/grouping objects per property in the SpeckleViewer.
-                string BHoMDataJson = BH.Engine.Serialiser.Convert.ToJson(bhObject); // Serialize with our method.
-                speckleObject.Properties.Add("BHoM", BHoMDataJson);
-            }
+                // Our ad-hoc Speckle Serialiser. Essentially the same with all non-needed Reflection things removed. x~100 faster.
+                object serialisedRepresentation = Compute.SpeckleAbstract(bhObject);
 
-           
+                // You need to add the object "Serialised" representation as Speckle Viewer wants it,
+                // in order for you to have object filtering/grouping/etc in the Viewer.
+                speckleObject.Properties.Add(bhObject.GetType().Name, serialisedRepresentation);
+
+                // This is the actual BHoM data.
+                object serialisedBHoMData = BH.Engine.Serialiser.Convert.ToJson(bhObject);
+                serialisedBHoMData = BH.Engine.Serialiser.Convert.ToZip(serialisedBHoMData as string); // zip the data so speckle doesn't try to process it, altering it.
+                speckleObject.Properties.Add("BHoM", serialisedBHoMData);
+            }
 
         }
     }

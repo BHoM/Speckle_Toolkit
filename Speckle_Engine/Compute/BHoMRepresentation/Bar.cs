@@ -48,7 +48,7 @@ namespace BH.Engine.Speckle
         public static IGeometry BHoMRepresentation(this Bar bar, SpeckleDisplayOptions displayOptions)
         {
             if (displayOptions.DetailedBars)
-                return RhinoMeshRepresentation(bar).IToBHoM();
+                return RhinoSurfaceRepresentation(bar).IToBHoM();
             else 
                 return bar.Centreline(); //returns the centreline.
         }
@@ -60,14 +60,28 @@ namespace BH.Engine.Speckle
             var barOutermostExtrusion = bar.Extrude(false).Cast<Extrusion>().OrderBy(extr => extr.Curve.IArea()).First();
 
             // Obtains the Rhino extrusion.
-            var rhinoExtrusion = Rhino.Geometry.Extrusion.CreateExtrusion(barOutermostExtrusion.Curve.IToRhino(), (Rhino.Geometry.Vector3d)barOutermostExtrusion.Direction.IToRhino());
+            Rhino.Geometry.Surface rhinoExtrusion = Rhino.Geometry.Extrusion.CreateExtrusion(barOutermostExtrusion.Curve.IToRhino(), (Rhino.Geometry.Vector3d)barOutermostExtrusion.Direction.IToRhino());
+            
+            // The mesh here for some reason comes out really bad. It would be better to let speckle handle it.
             Rhino.Geometry.Mesh mesh = Rhino.Geometry.Mesh.CreateFromSurface(rhinoExtrusion, Rhino.Geometry.MeshingParameters.Minimal);
 
-            // Add the endnodes representations.
+            //// Add the endnodes representations.
             mesh.Append(bar.StartNode.RhinoMeshRepresentation());
             mesh.Append(bar.EndNode.RhinoMeshRepresentation());
 
             return mesh;
+        }
+
+        [Description("Returns a RHINO surface representation for the BHoM Bar.")]
+        private static Rhino.Geometry.Surface RhinoSurfaceRepresentation(this Bar bar)
+        {
+            // Gets the BH.oM.Geometry.Extrusion out of the Bar. If the profile is made of two curves (e.g. I section), selects only the outermost.
+            var barOutermostExtrusion = bar.Extrude(false).Cast<Extrusion>().OrderBy(extr => extr.Curve.IArea()).First();
+
+            // Obtains the Rhino extrusion.
+            Rhino.Geometry.Surface rhinoExtrusion = Rhino.Geometry.Extrusion.CreateExtrusion(barOutermostExtrusion.Curve.IToRhino(), (Rhino.Geometry.Vector3d)barOutermostExtrusion.Direction.IToRhino());
+
+            return rhinoExtrusion;
         }
     }
 }

@@ -46,7 +46,12 @@ namespace BH.Engine.Speckle
             "This format is understood by SpeckleViewer and allows for query/grouping in the online interface.")]
         public static SpeckleAbstract SpeckleAbstract(this IObject bhomObject)
         {
-            return Serialise(bhomObject);
+            SpeckleAbstract speckleAbstract = Serialise(bhomObject);
+
+            speckleAbstract.GeometryHash = null;
+            speckleAbstract.Hash = null;
+
+            return speckleAbstract;
         }
 
         // Speckle Serialise method reduced to the "essential" to suit our needs.

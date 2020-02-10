@@ -67,8 +67,12 @@ namespace BH.Engine.Speckle
 
                     if (BHoMData != null)
                     {
-                        if (BHoMData is string) // The bhom data has been serialised using BHoM serialiser and is stored in json string.
-                            deserialisedBHoMData = BH.Engine.Serialiser.Convert.FromJson(BHoMData as string); 
+                        if (BHoMData is string)
+                        {
+                            // The bhom data has been serialised using BHoM serialiser and is stored in a zipped json string.
+                            BHoMData = BH.Engine.Serialiser.Convert.FromZip(BHoMData as string);
+                            deserialisedBHoMData = BH.Engine.Serialiser.Convert.FromJson(BHoMData as string);
+                        }
                         else if (BHoMData is SpeckleObject) // The bhom data has been serialised using speckle and is stored in a "SpeckleAbstract" object.
                             deserialisedBHoMData = SpeckleCore.Converter.Deserialise((SpeckleObject)BHoMData);
 
