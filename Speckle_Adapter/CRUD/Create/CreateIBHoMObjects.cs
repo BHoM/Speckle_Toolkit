@@ -54,12 +54,9 @@ namespace BH.Adapter.Speckle
             // Save BHoMObject data inside the speckleObject.
             Modify.SetBHoMData(speckleObject, bhomObject, config.UseSpeckleSerialiser);
 
-            speckleObject.SetDiffingHash(bhomObject);
+            speckleObject.SetDiffingHash(bhomObject, config);
 
             return speckleObject;
         }
-
-
-
     }
 }

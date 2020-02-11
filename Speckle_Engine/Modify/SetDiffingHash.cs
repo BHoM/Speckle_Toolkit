@@ -21,6 +21,7 @@
  */
 
 using BH.oM.Base;
+using BH.oM.Speckle;
 using SpeckleCore;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace BH.Engine.Speckle
     public static partial class Modify
     {
         [Description("Sets the Speckle Object `Hash` property as the BHoM Diffing hash. See the method's body comments for more information.")]
-        public static void SetDiffingHash(this SpeckleObject speckleObject, IObject sourceObj)
+        public static void SetDiffingHash(this SpeckleObject speckleObject, IObject sourceObj, SpecklePushConfig config)
         {
             // SETTING THE HASH(ES)
             // SpeckleObjects have 2 hash properties: `Hash` and `GeometryHash`.
@@ -55,10 +56,11 @@ namespace BH.Engine.Speckle
 
             // Set the "main" speckle hash equal to the diffing hash, so Speckle can do the diffing as we expect.
             string diffingHash = BH.Engine.Diffing.Compute.DiffingHash(sourceObj, new oM.Diffing.DiffConfig());
-            speckleObject.Hash = Converter.getMd5Hash(diffingHash);
+            speckleObject.Hash = diffingHash;
 
-            // TEMPORARY FOR DEVELOPMENT ONLY:
-            speckleObject.Hash += speckleObject.GeometryHash + System.DateTime.Now.ToShortTimeString();
+            // FOR DEVELOPMENT ONLY:
+            if (config.UniqueRandomHash)
+                speckleObject.Hash += speckleObject.GeometryHash + System.DateTime.Now.Ticks;
 
         }
     }
