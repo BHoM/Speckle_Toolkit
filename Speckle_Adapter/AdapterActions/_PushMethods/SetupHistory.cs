@@ -51,7 +51,10 @@ namespace BH.Adapter.Speckle
             {
                 response = respStreamClTask?.Result;
             }
-            catch (Exception e) { }
+            catch (Exception e)
+            {
+                BH.Engine.Reflection.Compute.RecordWarning($"Failed configuring Speckle History. Error: {e.InnerException}");
+            }
 
             if (response == null)
                 BH.Engine.Reflection.Compute.RecordWarning($"Failed configuring Speckle History. Task status: {respStreamClTask.Status.ToString()}");
