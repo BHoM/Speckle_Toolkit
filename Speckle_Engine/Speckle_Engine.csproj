@@ -45,9 +45,6 @@
       <HintPath>..\..\BHoM_Engine\Build\BHoM_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Countly, Version=19.8.0.0, Culture=neutral, PublicKeyToken=30fd2b3d8bfe4882, processorArchitecture=MSIL">
-      <HintPath>..\packages\Countly.19.8.0\lib\net40-client\Countly.dll</HintPath>
-    </Reference>
     <Reference Include="Data_oM">
       <HintPath>..\..\BHoM\Build\Data_oM.dll</HintPath>
     </Reference>
@@ -59,9 +56,6 @@
     </Reference>
     <Reference Include="Diffing_oM">
       <HintPath>..\..\BHoM\Diffing_oM\obj\Debug\Diffing_oM.dll</HintPath>
-    </Reference>
-    <Reference Include="Eto, Version=2.5.0.0, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
-      <HintPath>..\packages\RhinoCommon.6.12.19029.6381\lib\net45\Eto.dll</HintPath>
     </Reference>
     <Reference Include="Geometry_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Geometry_Engine.dll</HintPath>
@@ -114,13 +108,14 @@
     </Reference>
     <Reference Include="Serialiser_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Serialiser_Engine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SpeckleCore, Version=1.7.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SpeckleCore.1.7.2.414\lib\netstandard2.0\SpeckleCore.dll</HintPath>
     </Reference>
     <Reference Include="SpeckleCoreGeometryClasses, Version=1.3.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SpeckleCoreGeometry.1.3.11\lib\netstandard2.0\SpeckleCoreGeometryClasses.dll</HintPath>
-      <Private>True</Private>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SpeckleCoreGeometryRhino">
       <HintPath>..\_tempRefs\SpeckleCoreGeometryRhino.dll</HintPath>
@@ -203,6 +198,7 @@
     <ProjectReference Include="..\Speckle_oM\Speckle_oM.csproj">
       <Project>{0ADF9779-2060-438B-83F4-7463F776B248}</Project>
       <Name>Speckle_oM</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
