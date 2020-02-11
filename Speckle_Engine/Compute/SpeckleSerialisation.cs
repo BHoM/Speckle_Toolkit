@@ -42,14 +42,11 @@ namespace BH.Engine.Speckle
 {
     public static partial class Compute
     {
-        [Description("Creates a SpeckleAbstract object that can be used as a container for the actual BHoMData." +
+        [Description("Creates a SpeckleAbstract object that is used in the SpeckleViewer to visualise, expand, filter and group the BHoM objects by their properties." +
             "This format is understood by SpeckleViewer and allows for query/grouping in the online interface.")]
         public static SpeckleAbstract SpeckleAbstract(this IObject bhomObject)
         {
             SpeckleAbstract speckleAbstract = Serialise(bhomObject);
-
-            speckleAbstract.GeometryHash = null;
-            speckleAbstract.Hash = null;
 
             return speckleAbstract;
         }
@@ -60,8 +57,14 @@ namespace BH.Engine.Speckle
             SpeckleAbstract result = new SpeckleAbstract();
             Type sourceType = source.GetType();
 
-            //result.Type = sourceType.Namespace + "." + sourceType.Name;
-            result._type = sourceType.Namespace + "." + sourceType.Name;
+            // REMOVE SOME SPECKLE PROPERTIES TO REDUCE BLOATING
+            // We remove the `Type` property to reduce bloating in the Viewer. 
+            // Consider that this will cause Speckle "deserialisation" to fail, if attempted.
+            // (We don't ever deserialise this SpeckleAbstract, as for that we additionally send the zipped JSON of the BHoMObject).
+            result.Type = sourceType.Namespace + "." + sourceType.Name; // will break Speckle deserialisation, if attempted
+
+            // Also we do *not* serialise the following:
+            //result._type = sourceType.Namespace + "." + sourceType.Name;
             //result._assembly = source.GetType().Assembly.GetName().Name;
 
             Dictionary<string, object> dict = new Dictionary<string, object>();
@@ -108,8 +111,13 @@ namespace BH.Engine.Speckle
 
             result.Properties = dict;
 
-            // TODO: See how to set the hash appropriately. Should that be our diffing hash?
-            result.Hash = result.GeometryHash = result.GetMd5FromObject(result.GetMd5FromObject(result._assembly) + result.GetMd5FromObject(result._type) + result.GetMd5FromObject(result.Properties));
+            // HASHING
+            // We never use the SpeckleAbstract serialisation for anything except visualising the properties in the viewer.
+            // Do not bloat the properties with the hash.
+            result.GeometryHash = null; 
+            result.Hash = null;
+            // Original hash generation:
+            //result.Hash = result.GeometryHash = result.GetMd5FromObject(result.GetMd5FromObject(result._assembly) + result.GetMd5FromObject(result._type) + result.GetMd5FromObject(result.Properties));
 
             return result;
         }

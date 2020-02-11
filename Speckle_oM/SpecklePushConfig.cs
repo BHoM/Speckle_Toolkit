@@ -38,9 +38,13 @@ namespace BH.oM.Speckle
         [Description("Decide the level of detail of the geometrical representation of BHoMObjects in the SpeckleViewer. Affects the upload/download time and general performance.")]
         public SpeckleDisplayOptions DisplayOption { get; set; } = new SpeckleDisplayOptions();
 
-        [Description("Using the Speckle Serialiser enables to group the BHoM Object per their properites in the SpeckleViewer." +
-            "However, this is ~100 slower than using our JSON serialiser.\n" +
-            "Enable this only for demonstration purposes.")]
+        [Description("(ONLY FOR TESTING/DEVELOPMENT)\n" +
+            "If true, the objects' hash will be randomly defined and unique, so at every Push will see them as entirely new objects, even if they stay the same.")]
+        public bool UniqueRandomHash { get; set; } = false;
+
+        [Description("(ONLY FOR TESTING/DEVELOPMENT)\n" +
+            "Using the Speckle Serialiser enables to group the BHoM Object per their properites in the SpeckleViewer." +
+            "However, this is ~100 slower than using our JSON serialiser.")]
         public bool UseSpeckleSerialiser { get; set; } = false;
 
         //[Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
