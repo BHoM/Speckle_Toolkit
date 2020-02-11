@@ -38,21 +38,18 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        [Description("Downloads the IBHoMobjects as exported in Speckle, gets their SpeckleID and stores it the BHoMObject CustomData.")]
-        private void StoreSpeckleId(List<IBHoMObject> BHoMObjects)
-        {
-            // NOTE: This used to work; does not work anymore since I switched to BH.Engine deserialisation. Initially I was using Speckle Deserialise. 
-            // The issue is that our deserialisation "recreates" the objects without preserving the original GUID.
+        // NOTE: This used to work; does not work anymore since I switched to BH.Engine deserialisation. Initially I was using Speckle Deserialise. 
+        // The issue is that our deserialisation "recreates" the objects without preserving the original GUID.
+        // Disabled for now.
 
-            // Disabled for now.
-            if (false)
-            {
-                ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
-                IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response.Resources, true).OfType<IBHoMObject>().ToList();
+        //[Description("Downloads the IBHoMobjects as exported in Speckle, gets their SpeckleID and stores it the BHoMObject CustomData.")]
+        //private void StoreSpeckleId(List<IBHoMObject> BHoMObjects)
+        //{
+        //    ResponseObject response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, "").Result;
+        //    IEnumerable<IBHoMObject> objectsInSpeckle = BH.Engine.Speckle.Convert.ToBHoM(response.Resources, true).OfType<IBHoMObject>().ToList();
 
-                VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(BHoMObjects, objectsInSpeckle, new IBHoMGUIDComparer());
-                correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterIdName] = o.Item2.CustomData[AdapterIdName]);
-            }
-        }
+        //    VennDiagram<IBHoMObject> correspondenceDiagram = Engine.Data.Create.VennDiagram(BHoMObjects, objectsInSpeckle, new IBHoMGUIDComparer());
+        //    correspondenceDiagram.Intersection.ForEach(o => o.Item1.CustomData[AdapterIdName] = o.Item2.CustomData[AdapterIdName]);
+        //}
     }
 }
