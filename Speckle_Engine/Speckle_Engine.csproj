@@ -165,9 +165,11 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\RhinoCommon.6.12.19029.6381\build\net45\RhinoCommon.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\RhinoCommon.6.12.19029.6381\build\net45\RhinoCommon.targets'))" />
     <Error Condition="!Exists('..\packages\Grasshopper.6.12.19029.6381\build\net45\Grasshopper.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Grasshopper.6.12.19029.6381\build\net45\Grasshopper.targets'))" />
+    <Error Condition="!Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets'))" />
   </Target>
   <Import Project="..\packages\RhinoCommon.6.12.19029.6381\build\net45\RhinoCommon.targets" Condition="Exists('..\packages\RhinoCommon.6.12.19029.6381\build\net45\RhinoCommon.targets')" />
   <Import Project="..\packages\Grasshopper.6.12.19029.6381\build\net45\Grasshopper.targets" Condition="Exists('..\packages\Grasshopper.6.12.19029.6381\build\net45\Grasshopper.targets')" />
+  <Import Project="..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets" Condition="Exists('..\packages\NETStandard.Library.2.0.0\build\netstandard2.0\NETStandard.Library.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
