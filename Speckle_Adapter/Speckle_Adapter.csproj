@@ -85,6 +85,7 @@
     </Reference>
     <Reference Include="SpeckleCore, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SpeckleCore.1.7.3.417\lib\netstandard2.0\SpeckleCore.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SpeckleCoreGeometryClasses, Version=1.2.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SpeckleCoreGeometry.1.2.8\lib\net461\SpeckleCoreGeometryClasses.dll</HintPath>
