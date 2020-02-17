@@ -61,10 +61,10 @@ namespace BH.Engine.Speckle
             // We remove the `Type` property to reduce bloating in the Viewer. 
             // Consider that this will cause Speckle "deserialisation" to fail, if attempted.
             // (We don't ever deserialise this SpeckleAbstract, as for that we additionally send the zipped JSON of the BHoMObject).
-            result.Type = sourceType.Namespace + "." + sourceType.Name; // will break Speckle deserialisation, if attempted
+            //result.Type = sourceType.Namespace + "." + sourceType.Name; // will break Speckle deserialisation, if attempted
 
             // Also we do *not* serialise the following:
-            //result._type = sourceType.Namespace + "." + sourceType.Name;
+            result._type = sourceType.Namespace + "." + sourceType.Name;
             //result._assembly = source.GetType().Assembly.GetName().Name;
 
             Dictionary<string, object> dict = new Dictionary<string, object>();
