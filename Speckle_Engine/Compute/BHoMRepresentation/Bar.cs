@@ -48,7 +48,7 @@ namespace BH.Engine.Speckle
         public static IGeometry BHoMRepresentation(this Bar bar, SpeckleDisplayOptions displayOptions)
         {
             if (displayOptions.DetailedBars)
-                return RhinoSurfaceRepresentation(bar).IToBHoM();
+                return RhinoSurfaceRepresentation(bar).IFromRhino();
             else 
                 return bar.Centreline(); //returns the centreline.
         }
