@@ -49,7 +49,7 @@ namespace BH.Engine.Speckle
         public static IGeometry BHoMRepresentation(this Node node, SpeckleDisplayOptions displayOptions)
         {
             if (displayOptions.DetailedNodes)
-                return RhinoMeshRepresentation(node).IToBHoM();
+                return RhinoMeshRepresentation(node).IFromRhino();
             else
                 return node.Position(); // returns the point.
         }

@@ -115,7 +115,7 @@ namespace BH.Engine.Speckle
 
                         // Try to convert that to a BHoM Geometry. 
                         // This is because, just before Push, BHoM forces the convert of Rhino geometry to BHoMGeometry if any is found.
-                        deserialisedBHoMData = Rhinoceros.Convert.IToBHoM(rhinoGeom);
+                        deserialisedBHoMData = Rhinoceros.Convert.IFromRhino(rhinoGeom);
 
                         // If the convert succeded, this is now an IObject (IGeometry).
                         iObjects.Add(deserialisedBHoMData as IObject);
