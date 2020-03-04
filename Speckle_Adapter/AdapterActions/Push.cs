@@ -33,7 +33,9 @@ using SpeckleCore;
 using BH.oM.Speckle;
 using System.ComponentModel;
 using BH.Engine.Base;
-using System.Collections.Concurrent;
+using BH.oM.Diffing;
+using BH.Engine.Diffing;
+
 
 namespace BH.Adapter.Speckle
 {
@@ -41,8 +43,34 @@ namespace BH.Adapter.Speckle
     {
         public override List<object> Push(IEnumerable<object> objects, string tag = "", PushType pushType = PushType.AdapterDefault, ActionConfig actionConfig = null)
         {
+            // //- Read config
+            SpecklePushConfig pushConfig = (actionConfig as SpecklePushConfig) ?? new SpecklePushConfig();
+
             // Clone objects for immutability in the UI
             List<object> objectsToPush = objects.Select(x => x.DeepClone()).ToList();
+
+            // AECDeltas variables
+            Revision revision = null;
+            Delta delta = null;
+
+            if (pushConfig.EnableAECDeltas)
+            {
+                // Check if input objects actually contain only one object of a "special" type (Revision, Delta)
+                if (objectsToPush.Count == 1)
+                {
+                    // If input objects contain only a single Revision object, it will be pushed as a revision-based Delta payload
+                    revision = objectsToPush.FirstOrDefault() as Revision;
+                    if (revision != null)
+                        objectsToPush = revision.Objects.Cast<object>().ToList();
+
+                    // If input objects contain only a single Delta object, it will be pushed as a diff-based Delta payload
+                    // (Not yet supported)
+                    delta = objectsToPush.FirstOrDefault() as Delta;
+                    if (delta != null)
+                        BH.Engine.Reflection.Compute.RecordError($"{this.GetType().Name} does not support upload of diff-based Deltas yet.");
+                }
+            }
+
 
             // Initialize Speckle Layer if not existing
             if (SpeckleLayer == null)
@@ -54,29 +82,53 @@ namespace BH.Adapter.Speckle
             SpeckleStream.Layers = new List<Layer>() { SpeckleLayer };
             SpeckleStream.Objects = new List<SpeckleObject>(); // stream is immutable
 
-            // //- Read config
-            SpecklePushConfig pushConfig = (actionConfig as SpecklePushConfig) ?? new SpecklePushConfig();
-
             // //- Use "Speckle" history: produces a new stream at every push that corresponds to the old version. Enabled by default.
             if (pushConfig.EnableHistory)
                 SetupHistory();
 
-            // Actual creation and add to the stream
+            // Actual creation
+            List<SpeckleObject> allSpeckleObjects = new List<SpeckleObject>();
             for (int i = 0; i < objectsToPush.Count(); i++)
             {
                 SpeckleObject speckleObject = Create(objectsToPush[i] as dynamic, pushConfig); // Dynamic dispatch to most appropriate method
 
-                // Add objects to the stream
-                SpeckleLayer.ObjectCount += 1;
-                SpeckleStream.Objects.Add(speckleObject);
+                allSpeckleObjects.Add(speckleObject);
             }
 
-            // Send the objects
+            // Add the objects to the correct Payload type
+            SpeckleDelta speckledeltaPayload = null;
+            if (!pushConfig.EnableAECDeltas)
+            {
+                // Add objects to the stream
+                SpeckleLayer.ObjectCount += allSpeckleObjects.Count;
+                SpeckleStream.Objects.AddRange(allSpeckleObjects);
+            }
+            else
+            {
+                // Add the objects to a revision-based Delta
+                revision = new Revision(allSpeckleObjects, SpeckleStreamId);
+                delta = BH.Engine.Diffing.Create.RevisionBasedDelta(revision, pushConfig.DiffConfig, pushConfig.Comment);
+
+                speckledeltaPayload = new SpeckleDelta(SpeckleStreamId, allSpeckleObjects, null, null, null, null, delta.Timestamp, null, delta.Author, delta.Comment);
+            }
+
+            // Send the payload
             try
             {
-                // Issue: with `StreamUpdateAsync` Speckle doesn't seem to send anything if the Stream is initially empty.
-                // You need to Push twice if the Stream is empty.
-                var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
+                ResponseBase response = null;
+
+                if (!pushConfig.EnableAECDeltas)
+                {
+                    // Issue: with `StreamUpdateAsync` Speckle doesn't seem to send anything if the Stream is initially empty.
+                    // You need to Push twice if the Stream is empty.
+                    response = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
+                }
+                else
+                {
+                    response = SpeckleClient.StreamApplyDeltaAsync(BH.Engine.Speckle.Convert.Delta(delta)).Result;
+                }
+
+                // In all cases, we broadcast the same event (update of a stream)
                 SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
             }
             catch (Exception e)

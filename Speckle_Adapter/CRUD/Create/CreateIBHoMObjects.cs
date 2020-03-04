@@ -41,11 +41,14 @@ namespace BH.Adapter.Speckle
     {
         protected SpeckleObject Create(IBHoMObject bhomObject, SpecklePushConfig config)
         {
+            if (config.EnableAECDeltas)
+                bhomObject = BH.Engine.Diffing.Modify.SetHashFragment(bhomObject, config.DiffConfig);
+
             // Assign SpeckleStreamId to the CustomData of the IBHoMObjects
             bhomObject.CustomData["Speckle_StreamId"] = SpeckleStreamId;
 
             // SpeckleObject "container". Top level has geometry representation of BHoM Object, so it can be visualised in the SpeckleViewer. 
-            SpeckleObject speckleObject = Compute.SpeckleRepresentation(bhomObject, config.DisplayOption);
+            SpeckleObject speckleObject = Engine.Speckle.Compute.SpeckleRepresentation(bhomObject, config.DisplayOption);
 
             // If no Speckle representation is found, it will be sent as an "Abstract" SpeckleObject (no visualisation).
             if (speckleObject == null)

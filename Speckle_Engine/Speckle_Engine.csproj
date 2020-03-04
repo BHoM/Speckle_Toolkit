@@ -99,8 +99,9 @@
       <HintPath>..\..\BHoM_Engine\Build\Serialiser_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SpeckleCore, Version=1.7.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SpeckleCore.1.7.2.414\lib\netstandard2.0\SpeckleCore.dll</HintPath>
+    <Reference Include="SpeckleCore, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\_tempRefs\SpeckleCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SpeckleCoreGeometryClasses, Version=1.3.11.0, Culture=neutral, processorArchitecture=MSIL">
@@ -129,6 +130,7 @@
     <Compile Include="Compute\SpeckleSerialisation.cs" />
     <Compile Include="Convert\AdapterId.cs" />
     <Compile Include="Compute\SpeckleRepresentation.cs" />
+    <Compile Include="Convert\FromBHoM\Delta.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Surface-Brep.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\_Fallback.cs" />
     <Compile Include="Convert\ToBHoM\Geometry\Mesh.cs" />
@@ -138,7 +140,7 @@
     <Compile Include="Convert\_GeomHelpers.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Mesh.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Line.cs" />
-    <Compile Include="Convert\FromBHoM\Other\Request.cs" />
+    <Compile Include="Convert\_Other\Request.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Vector.cs" />
     <Compile Include="Convert\FromBHoM\Geometry\Point.cs" />
     <Compile Include="Convert\ToBHoM\ToBHoM.cs" />

@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,9 +39,23 @@ namespace BH.oM.Speckle
         [Description("Decide the level of detail of the geometrical representation of BHoMObjects in the SpeckleViewer. Affects the upload/download time and general performance.")]
         public SpeckleDisplayOptions DisplayOption { get; set; } = new SpeckleDisplayOptions();
 
+        [Description("Configurations for the Diffing mechanism.")]
+        public DiffConfig DiffConfig { get; set; } = new DiffConfig();
+
+        [Description("Comment that can be added to the specific push.")]
+        public string Comment { get; set; }
+
         [Description("(ONLY FOR TESTING/DEVELOPMENT)\n" +
             "If true, the objects' hash will be randomly defined and unique, so at every Push will see them as entirely new objects, even if they stay the same.")]
         public bool UniqueRandomHash { get; set; } = false;
+
+        [Description("Enables behaviour as per AECDeltas specification:\n" +
+            "If a single Revision objects is input, it will be pushed as a revision-based Delta payload.\n" +
+            "If a single Diff object is input, it will be pushed as a diff-based Delta payload.\n" +
+            "If a generic list of objects is input (e.g. a mix of the above and/or other types), " +
+            "it will be wrapped in a local Revision and pushed as a revision-based Delta payload.")]
+        public bool EnableAECDeltas { get; set; } = true;
+
 
         [Description("(ONLY FOR TESTING/DEVELOPMENT)\n" +
             "Using the Speckle Serialiser enables to group the BHoM Object per their properites in the SpeckleViewer." +
