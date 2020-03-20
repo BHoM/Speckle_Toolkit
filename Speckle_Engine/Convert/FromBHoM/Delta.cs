@@ -51,12 +51,10 @@ namespace BH.Engine.Speckle
         {
             try
             {
-                SpeckleDelta speckleDelta = new SpeckleDelta(bhDelta.StreamId,
-                    bhDelta.Diff.NewObjects.Cast<SpeckleObject>().ToList(),
-                    bhDelta.Diff.ModifiedObjects.Cast<SpeckleObject>().ToList(),
-                    bhDelta.Diff.OldObjects.Cast<SpeckleObject>().ToList(),
-                    bhDelta.Revision_from, bhDelta.Revision_to,
-                    bhDelta.Timestamp, bhDelta.Author, "", bhDelta.Comment);
+                SpeckleDelta speckleDelta = new SpeckleDelta();
+                speckleDelta.Created = bhDelta.Diff.NewObjects.Cast<SpeckleObject>().ToList();
+                speckleDelta.Common = bhDelta.Diff.ModifiedObjects.Select(o => new SpecklePlaceholder() { _id = ((SpeckleObject)o)._id }).ToList();
+                speckleDelta.Deleted = bhDelta.Diff.OldObjects.Select(o => new SpecklePlaceholder() { _id = ((SpeckleObject)o)._id }).ToList();
 
                 return speckleDelta;
             }

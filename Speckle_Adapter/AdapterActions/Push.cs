@@ -106,10 +106,9 @@ namespace BH.Adapter.Speckle
             else
             {
                 // Add the objects to a revision-based Delta
-                revision = new Revision(allSpeckleObjects, SpeckleStreamId);
-                delta = BH.Engine.Diffing.Create.RevisionBasedDelta(revision, pushConfig.DiffConfig, pushConfig.Comment);
-
-                speckledeltaPayload = new SpeckleDelta(SpeckleStreamId, allSpeckleObjects, null, null, null, null, delta.Timestamp, null, delta.Author, delta.Comment);
+                //revision = new Revision(allSpeckleObjects, SpeckleStreamId);
+                //delta = BH.Engine.Diffing.Create.RevisionBasedDelta(revision, pushConfig.DiffConfig, pushConfig.Comment);
+                //SpeckleStream.Objects.Add(delta);
             }
 
             // Send the payload
@@ -125,7 +124,13 @@ namespace BH.Adapter.Speckle
                 }
                 else
                 {
-                    response = SpeckleClient.StreamApplyDeltaAsync(BH.Engine.Speckle.Convert.Delta(delta)).Result;
+                    //response = SpeckleClient.StreamApplyDeltaAsync(SpeckleStreamId, BH.Engine.Speckle.Convert.Delta(delta)).Result;
+                    SpeckleDelta speckledelta = new SpeckleDelta();
+
+                    SpeckleDelta speckleDelta = new SpeckleDelta() { revision_A = SpeckleStreamId };
+                    speckleDelta.Created = allSpeckleObjects;                    
+
+                    response = SpeckleClient.StreamApplyDeltaAsync(SpeckleStreamId, speckleDelta).Result;
                 }
 
                 // In all cases, we broadcast the same event (update of a stream)

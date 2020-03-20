@@ -86,10 +86,8 @@
     <Reference Include="RhinoCommon, Version=5.1.30000.16, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
       <HintPath>..\packages\RhinoCommon.5.12.50810.13095\lib\net35\RhinoCommon.dll</HintPath>
     </Reference>
-    <Reference Include="SpeckleCore, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\_tempRefs\SpeckleCore.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="SpeckleCore">
+      <HintPath>..\..\SpeckleCore\SpeckleCore\bin\Debug\netstandard2.0\SpeckleCore.dll</HintPath>
     </Reference>
     <Reference Include="SpeckleCoreGeometryClasses, Version=1.2.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SpeckleCoreGeometry.1.2.8\lib\net461\SpeckleCoreGeometryClasses.dll</HintPath>
@@ -152,7 +150,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>REM Copy /Y "$(TargetDir)$(TargetName).dll" "$(AppData)\BHoM\Assemblies"</PostBuildEvent>
+    <PostBuildEvent>rem update BHoM Assemblies folder
+call "..\..\BHoM_UI\Build\UI_PostBuild.exe" ..\..\ "$(AppData)\BHoM\Assemblies"
+
+rem copy Grasshopper_UI to BHoM Assemblies folder
+Copy /Y "..\..\Grasshopper_Toolkit\Build\BH.UI.Grasshopper.dll" "$(AppData)\BHoM\Assemblies\BH.UI.Grasshopper.dll"
+Copy /Y "..\..\Grasshopper_Toolkit\Build\BH.UI.Grasshopper.dll" "$(AppData)\BHoM\Assemblies\BH.UI.Grasshopper.gha"
+
+</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
