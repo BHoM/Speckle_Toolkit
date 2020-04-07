@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -33,19 +33,19 @@ namespace BH.oM.Speckle
     {
         [Description("Enables Speckle history.\n" +
             "Speckle clones the previous version of the stream and saves it in the `children` property of the main stream. The head of the stream is the latest version.")]
-        public bool EnableHistory { get; set; } = false;
+        public virtual bool EnableHistory { get; set; } = false;
 
         [Description("Decide the level of detail of the geometrical representation of BHoMObjects in the SpeckleViewer. Affects the upload/download time and general performance.")]
-        public SpeckleDisplayOptions DisplayOption { get; set; } = new SpeckleDisplayOptions();
+        public virtual SpeckleDisplayOptions DisplayOption { get; set; } = new SpeckleDisplayOptions();
 
         [Description("(ONLY FOR TESTING/DEVELOPMENT)\n" +
             "If true, the objects' hash will be randomly defined and unique, so at every Push will see them as entirely new objects, even if they stay the same.")]
-        public bool UniqueRandomHash { get; set; } = false;
+        public virtual bool UniqueRandomHash { get; set; } = false;
 
         [Description("(ONLY FOR TESTING/DEVELOPMENT)\n" +
             "Using the Speckle Serialiser enables to group the BHoM Object per their properites in the SpeckleViewer." +
             "However, this is ~100 slower than using our JSON serialiser.")]
-        public bool UseSpeckleSerialiser { get; set; } = false;
+        public virtual bool UseSpeckleSerialiser { get; set; } = false;
 
         //[Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
         //    "The CustomData dictionary is only available for BHoMObjects.")]
