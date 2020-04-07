@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -34,9 +34,9 @@ namespace BH.oM.Speckle
     {
         [Description("If true, the bars are meshes extruded using their Section property.\n" +
             "CAREFUL: heavier meshes might increase upload time over the Timeout limit.")]
-        public bool DetailedBars { get; set; } = false;
+        public virtual bool DetailedBars { get; set; } = false;
         [Description("If true, nodes are meshes representing the support condition (e.g. cone with sphere on top for a Pin).\n" +
             "CAREFUL: heavier meshes might increase upload time over the Timeout limit.")]
-        public bool DetailedNodes { get; set; } = true;
+        public virtual bool DetailedNodes { get; set; } = true;
     }
 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -34,16 +34,16 @@ namespace BH.oM.Speckle
     public class SpeckleRequest : IRequest
     {
         [Description("SpeckleGUID is the id that Speckle assigned to the objects when uploaded. Only objects with the specified SpeckleGUID will be returned by the Pull.")]
-        public List<string> SpeckleGUIDs { get; set; } // e.g. https://hestia.speckle.works/api/v1/streams/s8wPVeeqe/objects?_id=5df9fccf6c95664adc770e4c (does not work)
+        public virtual List<string> SpeckleGUIDs { get; set; }
 
         [Description("SpeckleHash is the id that Speckle assigned to the objects when uploaded. Only objects with the specified SpeckleGUID will be returned by the Pull.")]
-        public List<string> SpeckleHash { get; set; } // e.g. https://hestia.speckle.works/api/v1/streams/s8wPVeeqe/objects?hash=eea8586e084c18d795d127c65a9b30ca
+        public virtual List<string> SpeckleHash { get; set; }
 
         [Description("Maximum number of objects downloaded from the Speckle Stream.")]
-        public int? Limit { get; set; } = null;
+        public virtual int? Limit { get; set; } = null;
 
         [Description("String containing any query interpretable by Speckle. See https://speckle.systems/docs/developers/api-specs/ -> Query.\n" +
             "If specified, this field takes precedence over all others. Empty by default.")]
-        public string SpeckleQuery { get; set; } = "";
+        public virtual string SpeckleQuery { get; set; } = "";
     }
 }

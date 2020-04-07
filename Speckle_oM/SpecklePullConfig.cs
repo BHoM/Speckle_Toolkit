@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -33,6 +33,6 @@ namespace BH.oM.Speckle
     {
         [Description("Stores the SpeckleId of the pulled objects in the CustomData.\n" +
             "The CustomData dictionary is only available for BHoMObjects.")]
-        public bool StoreSpeckleId { get; set; } = true;
+        public virtual bool StoreSpeckleId { get; set; } = true;
     }
 }
