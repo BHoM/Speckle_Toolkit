@@ -127,7 +127,7 @@ namespace BH.Adapter.Speckle
                     //response = SpeckleClient.StreamApplyDeltaAsync(SpeckleStreamId, BH.Engine.Speckle.Convert.Delta(delta)).Result;
                     SpeckleDelta speckledelta = new SpeckleDelta();
 
-                    SpeckleDelta speckleDelta = new SpeckleDelta() { revision_A = SpeckleStreamId };
+                    SpeckleDelta speckleDelta = new SpeckleDelta() { revisionA = SpeckleStreamId };
                     speckleDelta.Created = allSpeckleObjects;                    
 
                     response = SpeckleClient.StreamApplyDeltaAsync(SpeckleStreamId, speckleDelta).Result;

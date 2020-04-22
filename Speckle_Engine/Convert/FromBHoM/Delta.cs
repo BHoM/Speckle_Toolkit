@@ -52,9 +52,10 @@ namespace BH.Engine.Speckle
             try
             {
                 SpeckleDelta speckleDelta = new SpeckleDelta();
-                speckleDelta.Created = bhDelta.Diff.NewObjects.Cast<SpeckleObject>().ToList();
+                
+                speckleDelta.Created = bhDelta.Diff.AddedObjects.Cast<SpeckleObject>().ToList();
                 speckleDelta.Common = bhDelta.Diff.ModifiedObjects.Select(o => new SpecklePlaceholder() { _id = ((SpeckleObject)o)._id }).ToList();
-                speckleDelta.Deleted = bhDelta.Diff.OldObjects.Select(o => new SpecklePlaceholder() { _id = ((SpeckleObject)o)._id }).ToList();
+                speckleDelta.Deleted = bhDelta.Diff.RemovedObjects.Select(o => new SpecklePlaceholder() { _id = ((SpeckleObject)o)._id }).ToList();
 
                 return speckleDelta;
             }
