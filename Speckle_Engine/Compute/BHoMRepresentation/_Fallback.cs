@@ -45,7 +45,7 @@ namespace BH.Engine.Speckle
     public static partial class Compute
     {
         // Fallback case
-        private static Rhino.Geometry.Mesh MeshRepresentation(this IBHoMObject bHoMObject, SpeckleDisplayOptions displayOptions)
+        private static Rhino.Geometry.Mesh BHoMRepresentation(this IBHoMObject bHoMObject, SpeckleDisplayOptions displayOptions)
         {
             return null;
         }
