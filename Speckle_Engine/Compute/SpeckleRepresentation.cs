@@ -57,7 +57,7 @@ namespace BH.Engine.Speckle
             // Else, see if we can get some BHoM geometry out of the BHoMObject to represent the object in SpeckleViewer.
             // If so, convert the IGeometry into a SpeckleObject, dynamically dispatching to the right convert.
             IGeometry geom = bhomObject.IGeometry();
-            if (geom != null)
+            if (geom != null || (geom as CompositeGeometry).Elements.Count > 0)
                 speckleRepresentation = Convert.FromBHoM(geom as dynamic);
 
             return speckleRepresentation;
