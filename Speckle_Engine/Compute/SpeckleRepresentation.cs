@@ -48,6 +48,9 @@ namespace BH.Engine.Speckle
         {
             SpeckleObject speckleRepresentation = null;
 
+            if (bhomObject is CustomObject)
+                return null;
+
             // See if there is a custom BHoM Geometry representation for that BHoMObject.
             // If so, attempt to convert it to Speckle.
             IGeometry BHoMRepresentation = Compute.BHoMRepresentation(bhomObject as dynamic, displayOptions);
