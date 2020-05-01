@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="Dimensional_oM">
       <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
     </Reference>
@@ -57,6 +58,7 @@
     <Reference Include="BHoM_Engine, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\BHoM_Engine\Build\BHoM_Engine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Data_Engine, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -69,12 +71,15 @@
     </Reference>
     <Reference Include="Diffing_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Diffing_Engine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Diffing_oM">
       <HintPath>..\..\BHoM\Diffing_oM\obj\Debug\Diffing_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Geometry_oM">
       <HintPath>..\..\BHoM\Build\Geometry_oM.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Reflection_Engine">
       <HintPath>..\..\BHoM_Engine\Build\Reflection_Engine.dll</HintPath>
@@ -82,9 +87,11 @@
     </Reference>
     <Reference Include="Rhinoceros_Engine">
       <HintPath>..\..\Rhinoceros_Toolkit\Build\Rhinoceros_Engine.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="RhinoCommon, Version=5.1.30000.16, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
       <HintPath>..\packages\RhinoCommon.5.12.50810.13095\lib\net35\RhinoCommon.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="SpeckleCore, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SpeckleCore.1.7.3.417\lib\netstandard2.0\SpeckleCore.dll</HintPath>
