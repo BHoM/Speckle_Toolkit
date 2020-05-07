@@ -38,6 +38,8 @@ using BH.oM.Structure.Elements;
 using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
+using BH.oM.Graphics;
+using BH.Engine.Representation;
 
 namespace BH.Engine.Speckle
 {
@@ -50,6 +52,38 @@ namespace BH.Engine.Speckle
 
             if (bhomObject is CustomObject)
                 return null;
+
+            // See if the object contains a custom Mesh Representation in its CustomData.
+            Mesh meshRepresentation = null;
+            RenderMesh renderMesh = null;
+            if (bhomObject != null)
+            {
+                object renderMeshObj = null;
+                bhomObject.CustomData.TryGetValue(displayOptions.CustomRendermeshKey, out renderMeshObj);
+                renderMesh = renderMeshObj as RenderMesh;
+                meshRepresentation = renderMeshObj as Mesh;
+
+                if (typeof(IEnumerable<object>).IsAssignableFrom(renderMeshObj.GetType()))
+                {
+                    List<object> objects = renderMeshObj as List<object>;
+                    List<RenderMesh> renderMeshes = objects.OfType<RenderMesh>().ToList();
+                    if (renderMeshes.Count > 0)
+                        renderMesh = Representation.Compute.JoinRenderMeshes(renderMeshes);
+
+                    List<Mesh> meshes = objects.OfType<Mesh>().ToList();
+                    if (meshes.Count > 0)
+                        meshRepresentation = Representation.Compute.JoinMeshes(meshes);
+                }
+            }
+
+            if (renderMesh != null)
+            {
+                meshRepresentation = new Mesh() { Faces = renderMesh.Faces, Vertices = renderMesh.Vertices.Select(v => new oM.Geometry.Point() { X = v.Point.X, Y = v.Point.Y, Z = v.Point.Z }).ToList() };
+                return meshRepresentation.FromBHoM();
+            }
+
+            if (meshRepresentation != null)
+                return meshRepresentation.FromBHoM();
 
             // See if there is a custom BHoM Geometry representation for that BHoMObject.
             // If so, attempt to convert it to Speckle.

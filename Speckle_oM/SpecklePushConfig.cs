@@ -20,6 +20,7 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Diffing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,14 +39,18 @@ namespace BH.oM.Speckle
         [Description("Decide the level of detail of the geometrical representation of BHoMObjects in the SpeckleViewer. Affects the upload/download time and general performance.")]
         public virtual SpeckleDisplayOptions DisplayOption { get; set; } = new SpeckleDisplayOptions();
 
-        [Description("(ONLY FOR TESTING/DEVELOPMENT)\n" +
+        [Description("(ADVANCED FEATURE)\n" +
+            "Using the Speckle Serialiser enables to group the BHoM Object per their properties in the SpeckleViewer." +
+            "However, this is ~100 slower than using our JSON serialiser.")]
+        public virtual bool UseSpeckleSerialiser { get; set; } = false;
+
+        [Description("(ADVANCED FEATURE)\n" +
             "If true, the objects' hash will be randomly defined and unique, so at every Push will see them as entirely new objects, even if they stay the same.")]
         public virtual bool UniqueRandomHash { get; set; } = false;
 
-        [Description("(ONLY FOR TESTING/DEVELOPMENT)\n" +
-            "Using the Speckle Serialiser enables to group the BHoM Object per their properites in the SpeckleViewer." +
-            "However, this is ~100 slower than using our JSON serialiser.")]
-        public virtual bool UseSpeckleSerialiser { get; set; } = false;
+        [Description("(ADVANCED FEATURE)\n" +
+           "DiffConfig for the Hash calculation. The objects' hash in Speckle is set based on these configurations.")]
+        public virtual DiffConfig DiffConfig { get; set; } = new DiffConfig();
 
         //[Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
         //    "The CustomData dictionary is only available for BHoMObjects.")]

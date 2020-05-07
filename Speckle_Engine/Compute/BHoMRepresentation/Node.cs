@@ -48,7 +48,7 @@ namespace BH.Engine.Speckle
         [Description("Returns a BHoM Mesh representation for the Node based on its DOF, e.g. a box for fully fixed, a cone with sphere on top for pin.")]
         public static IGeometry BHoMRepresentation(this Node node, SpeckleDisplayOptions displayOptions)
         {
-            if (displayOptions.DetailedNodes)
+            if (displayOptions.Detailed0DElements)
                 return RhinoMeshRepresentation(node).FromRhino();
             else
                 return node.Position(); // returns the point.

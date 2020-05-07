@@ -55,7 +55,7 @@ namespace BH.Engine.Speckle
             speckleObject.GeometryHash = speckleObject.Hash; // this is unfortunately useless; Speckle doesn't use it.
 
             // Set the "main" speckle hash equal to the diffing hash, so Speckle can do the diffing as we expect.
-            string diffingHash = BH.Engine.Diffing.Compute.DiffingHash(sourceObj, new oM.Diffing.DiffConfig());
+            string diffingHash = BH.Engine.Diffing.Compute.DiffingHash(sourceObj, config.DiffConfig);
             speckleObject.Hash = diffingHash;
 
             // FOR DEVELOPMENT ONLY:
