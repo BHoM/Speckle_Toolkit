@@ -136,6 +136,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="TriangleNet_Engine">
+      <HintPath>..\..\TriangleNet_Toolkit\Build\TriangleNet_Engine.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compute\BHoMRepresentation\Bar.cs" />
