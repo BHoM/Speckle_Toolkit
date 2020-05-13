@@ -35,13 +35,13 @@ namespace BH.Engine.Speckle
     {
         // -------------------------------------------------------------------------------- //
         // NOTE
-        // These ToBHoM methods are not automatically called by any method in the Toolkit,
+        // These FromSpeckle methods are not automatically called by any method in the Toolkit,
         // as the deserialisation already brings back the BHoM object.
         // Kept for reference and for manual use in the UI.
         // -------------------------------------------------------------------------------- //
 
         [Description("Convert Speckle Vector to BHoM Vector")]
-        public static BHG.Vector ToBHoM(this SCG.SpeckleVector speckleVector)
+        public static BHG.Vector FromSpeckle(this SCG.SpeckleVector speckleVector)
         {
             return new BHG.Vector { X = speckleVector.Value[0], Y = speckleVector.Value[1], Z = speckleVector.Value[2] };
         }

@@ -34,18 +34,18 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        public static List<object> ToBHoM(List<SpeckleObject> speckleObjects, bool storeSpeckleId = true)
+        public static List<object> FromSpeckle(List<SpeckleObject> speckleObjects, bool storeSpeckleId = true)
         {
             List<IBHoMObject> bhomObjects = new List<IBHoMObject>();
             List<IObject> iObjects;
             List<object> reminder;
 
-            ToBHoM(speckleObjects, out bhomObjects, out iObjects, out reminder, storeSpeckleId);
+            FromSpeckle(speckleObjects, out bhomObjects, out iObjects, out reminder, storeSpeckleId);
 
             return bhomObjects.Concat(iObjects).Concat(reminder).ToList();
         }
 
-        public static bool ToBHoM(List<SpeckleObject> speckleObjects,
+        public static bool FromSpeckle(List<SpeckleObject> speckleObjects,
                                     out List<IBHoMObject> bHoMObjects, out List<IObject> iObjects, out List<object> nonBHoM,
                                     bool storeSpeckleId = true)
         {
