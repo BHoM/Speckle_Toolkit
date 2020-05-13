@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BH.oM.Graphics;
 
 namespace BH.oM.Speckle
 {
@@ -36,8 +37,8 @@ namespace BH.oM.Speckle
             "Speckle clones the previous version of the stream and saves it in the `children` property of the main stream. The head of the stream is the latest version.")]
         public virtual bool EnableHistory { get; set; } = false;
 
-        [Description("Decide the level of detail of the geometrical representation of BHoMObjects in the SpeckleViewer. Affects the upload/download time and general performance.")]
-        public virtual SpeckleDisplayOptions DisplayOption { get; set; } = new SpeckleDisplayOptions();
+        [Description("Decides the level of detail of the geometrical representations of BHoMObjects in the SpeckleViewer. Affects the upload/download time and general performance.")]
+        public virtual RenderMeshOptions RendermeshOptions { get; set; } = new RenderMeshOptions();
 
         [Description("(ADVANCED FEATURE)\n" +
             "Using the Speckle Serialiser enables to group the BHoM Object per their properties in the SpeckleViewer." +
