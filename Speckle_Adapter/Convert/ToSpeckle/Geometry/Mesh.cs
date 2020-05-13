@@ -34,12 +34,10 @@ using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
-using BH.oM.Structure.Elements;
-using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -24,12 +24,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using BHG = BH.oM.Geometry;
+using System.ComponentModel;
+using SCG = SpeckleCoreGeometryClasses;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
-  public static partial class Convert
-  {
-    public const string AdapterIdName = "Speckle_id";
-  }
+    public static partial class Convert
+    {
+        // -------------------------------------------------------------------------------- //
+        // NOTE
+        // These FromSpeckle methods are not automatically called by any method in the Toolkit,
+        // as the deserialisation already brings back the BHoM object.
+        // Kept for reference and for manual use in the UI.
+        // -------------------------------------------------------------------------------- //
+
+        [Description("Convert Speckle Point to BHoM Point")]
+        public static BHG.Point FromSpeckle(this SCG.SpecklePoint specklePoint)
+        {
+            return new BHG.Point { X = specklePoint.Value[0], Y = specklePoint.Value[1], Z = specklePoint.Value[2] };
+        }
+    }
 }

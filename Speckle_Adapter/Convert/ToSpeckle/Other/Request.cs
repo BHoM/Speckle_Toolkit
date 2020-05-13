@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -20,29 +20,49 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using SpeckleCore;
+using BHG = BH.oM.Geometry;
+using SpeckleCoreGeometryClasses;
+using BH.oM.Base;
+using BH.Engine.Geometry;
+using System.Reflection;
+using BH.oM.Geometry;
+using BH.Engine.Base;
+using System.ComponentModel;
+using BH.Engine.Rhinoceros;
+using BH.oM.Speckle;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
-    public static partial class Query
+    public static partial class Convert
     {
-        [Description("Return only BHoMObjects that have the specified Speckle id in their CustomData property; or all objects if no id is specified.")]
-        public static IEnumerable<object> FilterBySpeckleGUID(IEnumerable<object> objects, List<string> speckleIds = null, string speckleAdapterIdName = "Speckle_id")
+        [Description("Convert a SpeckleRequest to the corresponding Speckle Query.")]
+        public static string ToSpeckleQuery(SpeckleRequest speckleRequest)
         {
-            // SpeckleGUID is stored in CustomData, which is only available for BHoMObjects.
-            if (speckleIds != null && speckleIds.Count != 0)
-                return objects
-                    .OfType<IBHoMObject>()
-                    .Where(o => speckleIds.Any(id => id == o.CustomData[speckleAdapterIdName].ToString()));
+            string speckleQuery = "";
+
+            if (!string.IsNullOrEmpty(speckleRequest.SpeckleQuery))
+                return speckleRequest.SpeckleQuery; // just return the included SpeckleQuery.
             else
-                return objects;
+            {
+                // Do the conversion.
+                if (speckleRequest.Limit != null)
+                    speckleQuery += $"&limit={speckleRequest.Limit}";
+
+                if (speckleRequest.SpeckleHash != null)
+                    speckleQuery += $"&hash={string.Join(",", speckleRequest.SpeckleHash)}";
+
+                if (speckleRequest.SpeckleGUIDs != null)
+                    speckleQuery += $"&id={string.Join(",", speckleRequest.SpeckleGUIDs)}";
+            }
+
+            return speckleQuery;
         }
+
     }
 }

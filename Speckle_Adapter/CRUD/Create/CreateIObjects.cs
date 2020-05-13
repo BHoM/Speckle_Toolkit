@@ -45,7 +45,7 @@ namespace BH.Adapter.Speckle
             SpeckleObject speckleObject = null;
 
             if (typeof(IGeometry).IsAssignableFrom(iObject.GetType()))
-                speckleObject = BH.Engine.Speckle.Convert.ToSpeckle((IGeometry)iObject as dynamic); // DYNAMIC DISPATCH
+                speckleObject = Convert.ToSpeckle((IGeometry)iObject as dynamic); // DYNAMIC DISPATCH
             else
                 speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(iObject); // These will be exported as `Abstract` Speckle Objects.
 

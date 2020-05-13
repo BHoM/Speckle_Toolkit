@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -25,31 +25,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SpeckleCore;
-using BHG = BH.oM.Geometry;
-using SpeckleCoreGeometryClasses;
-using BH.oM.Base;
-using BH.Engine.Geometry;
-using System.Reflection;
-using BH.oM.Geometry;
-using BH.Engine.Base;
-using System.ComponentModel;
-using BH.oM.Structure.Elements;
-using BH.Engine.Structure;
-using BH.Engine.Rhinoceros;
-using BH.oM.Speckle;
-using SpeckleCoreGeometryRhino;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
-        [Description("Convert BHoM Mesh to a Speckle Mesh")]
-        public static SpeckleObject ToSpeckle(this BHG.ISurface surface)
-        {
-            Rhino.Geometry.NurbsSurface rhinoSurface = BH.Engine.Rhinoceros.Convert.IToRhino(surface) as Rhino.Geometry.NurbsSurface;
-
-            return SpeckleCoreGeometryRhino.Conversions.ToSpeckle(rhinoSurface.ToBrep() as dynamic);
-        }
+        public const string AdapterIdName = "Speckle_id";
     }
 }

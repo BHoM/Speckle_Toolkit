@@ -36,7 +36,7 @@ namespace BH.Adapter.Speckle
     {
         public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId)
         {
-            AdapterIdName = BH.Engine.Speckle.Convert.AdapterIdName;
+            AdapterIdName = BH.Adapter.Speckle.Convert.AdapterIdName;
 
             SpeckleAccount = speckleAccount;
             SpeckleStream = new SpeckleStream() { StreamId = SpeckleStreamId };

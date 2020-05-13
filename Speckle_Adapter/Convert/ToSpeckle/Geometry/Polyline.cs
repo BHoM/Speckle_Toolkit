@@ -29,35 +29,24 @@ using SpeckleCore;
 using BHG = BH.oM.Geometry;
 using SpeckleCoreGeometryClasses;
 using BH.oM.Base;
-using BH.Engine.Geometry;
 using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
-using BH.oM.Structure.Elements;
-using BH.Engine.Structure;
-using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
-        [Description("Convert BHoM RenderMesh to a Speckle Mesh")]
-        public static SpeckleMesh ToSpeckle(this BH.oM.Graphics.RenderMesh renderMesh)
+        [Description("Convert BHoM Line to a Speckle Line")]
+        public static SpecklePolyline ToSpeckle(this BHG.Polyline polyline)
         {
-            double[] vertices = renderMesh.Vertices.Select(v => v.Point).ToFlatArray();
-            int[] faces = renderMesh.Faces.SelectMany(face =>
-            {
-                if (face.D != -1) return new int[] { 1, face.A, face.B, face.C, face.D };
-                return new int[] { 0, face.A, face.B, face.C };
-            }).ToArray();
-            var defaultColour = System.Drawing.Color.FromArgb(255, 100, 100, 100);
-            var colors = Enumerable.Repeat(defaultColour.ToArgb(), vertices.Count()).ToArray();
+            if (polyline == null) return default(SpecklePolyline);
 
-            SpeckleMesh speckleMesh = new SpeckleMesh(vertices, faces, colors, null);
+            SpecklePolyline specklePolyline = new SpecklePolyline(polyline.ControlPoints.SelectMany(p => new List<double> { p.X, p.Y, p.Z }));
 
-            return speckleMesh;
+            return specklePolyline;
         }
     }
 }

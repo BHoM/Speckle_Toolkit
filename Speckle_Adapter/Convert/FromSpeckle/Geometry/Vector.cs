@@ -24,33 +24,26 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using SpeckleCore;
 using BHG = BH.oM.Geometry;
-using SpeckleCoreGeometryClasses;
-using BH.oM.Base;
-using BH.Engine.Geometry;
-using System.Reflection;
-using BH.oM.Geometry;
-using BH.Engine.Base;
 using System.ComponentModel;
-using BH.oM.Structure.Elements;
-using BH.Engine.Structure;
-using BH.Engine.Rhinoceros;
-using BH.oM.Speckle;
+using SCG = SpeckleCoreGeometryClasses;
 
-namespace BH.Engine.Speckle
+
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
-        [Description("Convert BHoM Line to a Speckle Line")]
-        public static SpecklePolyline ToSpeckle(this BHG.Polyline polyline)
+        // -------------------------------------------------------------------------------- //
+        // NOTE
+        // These FromSpeckle methods are not automatically called by any method in the Toolkit,
+        // as the deserialisation already brings back the BHoM object.
+        // Kept for reference and for manual use in the UI.
+        // -------------------------------------------------------------------------------- //
+
+        [Description("Convert Speckle Vector to BHoM Vector")]
+        public static BHG.Vector FromSpeckle(this SCG.SpeckleVector speckleVector)
         {
-            if (polyline == null) return default(SpecklePolyline);
-
-            SpecklePolyline specklePolyline = new SpecklePolyline(polyline.ControlPoints.SelectMany(p => new List<double> { p.X, p.Y, p.Z }));
-
-            return specklePolyline;
+            return new BHG.Vector { X = speckleVector.Value[0], Y = speckleVector.Value[1], Z = speckleVector.Value[2] };
         }
     }
 }

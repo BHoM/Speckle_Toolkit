@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 using BHG = BH.oM.Geometry;
 using SCG = SpeckleCoreGeometryClasses;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
@@ -105,26 +105,26 @@ namespace BH.Engine.Speckle
                 if (deserialisedBHoMData == null)
                     continue;
 
-                // Check if it's a Rhino Geometry.
-                Rhino.Geometry.GeometryBase rhinoGeom = deserialisedBHoMData as Rhino.Geometry.GeometryBase;
-                if (rhinoGeom != null)
-                    try
-                    {
-                        // Nurbsurface Pull currently doesn't work
-                        //var asd = rhinoGeom as Rhino.Geometry.NurbsSurface;
+                //// Check if it's a Rhino Geometry.
+                //Rhino.Geometry.GeometryBase rhinoGeom = deserialisedBHoMData as Rhino.Geometry.GeometryBase;
+                //if (rhinoGeom != null)
+                //    try
+                //    {
+                //        // Nurbsurface Pull currently doesn't work
+                //        //var asd = rhinoGeom as Rhino.Geometry.NurbsSurface;
 
-                        // Try to convert that to a BHoM Geometry. 
-                        // This is because, just before Push, BHoM forces the convert of Rhino geometry to BHoMGeometry if any is found.
-                        deserialisedBHoMData = Rhinoceros.Convert.FromRhino(rhinoGeom);
+                //        // Try to convert that to a BHoM Geometry. 
+                //        // This is because, just before Push, BHoM forces the convert of Rhino geometry to BHoMGeometry if any is found.
+                //        deserialisedBHoMData = Rhinoceros.Convert.FromRhino(rhinoGeom);
 
-                        // If the convert succeded, this is now an IObject (IGeometry).
-                        iObjects.Add(deserialisedBHoMData as IObject);
-                        continue;
-                    }
-                    catch (Exception e)
-                    {
-                        BH.Engine.Reflection.Compute.RecordError($"BHoM could not convert some Rhino Geometry to BHoM Geometry: {e}");
-                    }
+                //        // If the convert succeded, this is now an IObject (IGeometry).
+                //        iObjects.Add(deserialisedBHoMData as IObject);
+                //        continue;
+                //    }
+                //    catch (Exception e)
+                //    {
+                //        BH.Engine.Reflection.Compute.RecordError($"BHoM could not convert some Rhino Geometry to BHoM Geometry: {e}");
+                //    }
 
                 // If all else failed, add this to the nonBHoM objects.
                 nonBHoM.Add(deserialisedBHoMData);

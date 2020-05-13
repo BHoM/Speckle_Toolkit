@@ -24,26 +24,53 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using SpeckleCore;
 using BHG = BH.oM.Geometry;
+using SpeckleCoreGeometryClasses;
+using BH.oM.Base;
+using BH.Engine.Geometry;
+using System.Reflection;
+using BH.oM.Geometry;
+using BH.Engine.Base;
 using System.ComponentModel;
-using SCG = SpeckleCoreGeometryClasses;
+using BH.Engine.Rhinoceros;
+using BH.oM.Speckle;
+using BH.oM.Reflection.Attributes;
 
-
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
-        // -------------------------------------------------------------------------------- //
-        // NOTE
-        // These FromSpeckle methods are not automatically called by any method in the Toolkit,
-        // as the deserialisation already brings back the BHoM object.
-        // Kept for reference and for manual use in the UI.
-        // -------------------------------------------------------------------------------- //
+        /***************************************************/
+        /**** Private Helper Methods                    ****/
+        /***************************************************/
+        // Helper Methods for SpeckleCoreGeometry
 
-        [Description("Convert Speckle Vector to BHoM Vector")]
-        public static BHG.Vector FromSpeckle(this SCG.SpeckleVector speckleVector)
+        private static double[] ToFlatArray(this IEnumerable<BHG.Point> points)
         {
-            return new BHG.Vector { X = speckleVector.Value[0], Y = speckleVector.Value[1], Z = speckleVector.Value[2] };
+            return points.SelectMany(pt => pt.ToArray()).ToArray();
+        }
+
+        private static double[] ToArray(this BHG.Point pt)
+        {
+            return new double[] { pt.X, pt.Y, pt.Z };
+        }
+
+        [Description("Mass point converter adapted from SpeckleCoreGeometry. It takes IEnumerable instead of array.")]
+        [Input("arr", "Flat array of coordinates from Speckle")]
+        [Output("List of BHoM Points")]
+        private static List<BHG.Point> ToPoints(this IEnumerable<double> arr)
+        {
+            if (arr.Count() % 3 != 0)
+                throw new Exception("Array malformed: length%3 != 0.");
+
+            List<BHG.Point> points = new List<BHG.Point>();
+            var asArray = arr.ToArray();
+            for (int i = 2, k = 0; i < arr.Count(); i += 3)
+                points[k++] = new BHG.Point { X = asArray[i - 2], Y = asArray[i - 1], Z = asArray[i] };
+
+            return points;
         }
     }
 }

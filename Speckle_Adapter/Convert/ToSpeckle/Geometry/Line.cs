@@ -24,27 +24,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using SpeckleCore;
 using BHG = BH.oM.Geometry;
+using SpeckleCoreGeometryClasses;
+using BH.oM.Base;
+using BH.Engine.Geometry;
+using System.Reflection;
+using BH.oM.Geometry;
+using BH.Engine.Base;
 using System.ComponentModel;
-using SCG = SpeckleCoreGeometryClasses;
+using BH.Engine.Rhinoceros;
+using BH.oM.Speckle;
 
-
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
-        // -------------------------------------------------------------------------------- //
-        // NOTE
-        // These FromSpeckle methods are not automatically called by any method in the Toolkit,
-        // as the deserialisation already brings back the BHoM object.
-        // Kept for reference and for manual use in the UI.
-        // -------------------------------------------------------------------------------- //
-
-        [Description("Convert Speckle Line to BHoM Line")]
-        public static BHG.Line FromSpeckle(this SCG.SpeckleLine speckleLine)
+        [Description("Convert BHoM Line to a Speckle Line")]
+        public static SpeckleLine ToSpeckle(this BHG.Line l)
         {
-            List<BHG.Point> points = speckleLine.Value.ToPoints();
-            return new BHG.Line { Start = points[0], End = points[1] };
+            if (l == null) return default(SpeckleLine);
+
+            SpeckleLine speckleLine = new SpeckleLine(
+                new double[] { l.Start.X, l.Start.Y, l.Start.Z, l.End.X, l.End.Y, l.End.Z }
+                );
+
+            return speckleLine;
         }
     }
 }
