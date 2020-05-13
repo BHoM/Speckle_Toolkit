@@ -56,7 +56,7 @@ namespace BH.Adapter.Speckle
             if (config != null)
                 storeSpeckleId = config.StoreSpeckleId;
 
-            List<object> converted = BH.Engine.Speckle.Convert.ToBHoM(response.Resources, storeSpeckleId);
+            List<object> converted = BH.Engine.Speckle.Convert.FromSpeckle(response.Resources, storeSpeckleId);
 
             return converted;
         }

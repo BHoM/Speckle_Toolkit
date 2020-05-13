@@ -28,23 +28,21 @@ using BHG = BH.oM.Geometry;
 using System.ComponentModel;
 using SCG = SpeckleCoreGeometryClasses;
 
-
 namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
         // -------------------------------------------------------------------------------- //
         // NOTE
-        // These ToBHoM methods are not automatically called by any method in the Toolkit,
+        // These FromSpeckle methods are not automatically called by any method in the Toolkit,
         // as the deserialisation already brings back the BHoM object.
         // Kept for reference and for manual use in the UI.
         // -------------------------------------------------------------------------------- //
 
-        [Description("Convert Speckle Line to BHoM Line")]
-        public static BHG.Line ToBHoM(this SCG.SpeckleLine speckleLine)
+        [Description("Convert Speckle Point to BHoM Point")]
+        public static BHG.Point FromSpeckle(this SCG.SpecklePoint specklePoint)
         {
-            List<BHG.Point> points = speckleLine.Value.ToPoints();
-            return new BHG.Line { Start = points[0], End = points[1] };
+            return new BHG.Point { X = specklePoint.Value[0], Y = specklePoint.Value[1], Z = specklePoint.Value[2] };
         }
     }
 }
