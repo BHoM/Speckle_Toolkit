@@ -33,7 +33,6 @@ using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
-using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
 using BH.oM.Graphics;
 using BH.Engine.Representation;

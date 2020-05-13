@@ -33,12 +33,12 @@ namespace BH.oM.Speckle
 {
     public class SpecklePushConfig : BH.oM.Adapter.ActionConfig
     {
-        [Description("Enables Speckle history.\n" +
-            "Speckle clones the previous version of the stream and saves it in the `children` property of the main stream. The head of the stream is the latest version.")]
-        public virtual bool EnableHistory { get; set; } = false;
-
         [Description("Decides the level of detail of the geometrical representations of BHoMObjects in the SpeckleViewer. Affects the upload/download time and general performance.")]
         public virtual RenderMeshOptions RendermeshOptions { get; set; } = new RenderMeshOptions();
+
+        [Description("Enables Speckle history.\n" +
+            "Speckle clones the previous version of the stream and saves it in the `children` property of the main stream. The head of the stream is the latest version.")]
+        public virtual bool EnableHistory { get; set; } = true;
 
         [Description("(ADVANCED FEATURE)\n" +
             "Using the Speckle Serialiser enables to group the BHoM Object per their properties in the SpeckleViewer." +
