@@ -43,16 +43,28 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        // FallBack case for geometry conversions
-        private static SpeckleObject FromBHoM(this IGeometry iGeometry)
+        [Description("Convert a SpeckleRequest to the corresponding Speckle Query.")]
+        public static string ToSpeckleQuery(SpeckleRequest speckleRequest)
         {
-            // If more appropriate conversions are not found, retrieve the backing Rhino geometry.
-            var rhinoGeom = Engine.Rhinoceros.Convert.IToRhino(iGeometry);
+            string speckleQuery = "";
 
-            // Creates the SpeckleObject with the Rhino Geometry. 
-            var speckleObj_rhinoGeom = (SpeckleObject)SpeckleCore.Converter.Serialise(rhinoGeom);
+            if (!string.IsNullOrEmpty(speckleRequest.SpeckleQuery))
+                return speckleRequest.SpeckleQuery; // just return the included SpeckleQuery.
+            else
+            {
+                // Do the conversion.
+                if (speckleRequest.Limit != null)
+                    speckleQuery += $"&limit={speckleRequest.Limit}";
 
-            return speckleObj_rhinoGeom;
+                if (speckleRequest.SpeckleHash != null)
+                    speckleQuery += $"&hash={string.Join(",", speckleRequest.SpeckleHash)}";
+
+                if (speckleRequest.SpeckleGUIDs != null)
+                    speckleQuery += $"&id={string.Join(",", speckleRequest.SpeckleGUIDs)}";
+            }
+
+            return speckleQuery;
         }
+
     }
 }

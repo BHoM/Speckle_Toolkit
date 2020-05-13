@@ -43,11 +43,11 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        [Description("Convert BHoM Mesh to a Speckle Mesh")]
-        public static SpeckleMesh FromBHoM(this BHG.Mesh bhomMesh)
+        [Description("Convert BHoM RenderMesh to a Speckle Mesh")]
+        public static SpeckleMesh ToSpeckle(this BH.oM.Graphics.RenderMesh renderMesh)
         {
-            double[] vertices = bhomMesh.Vertices.ToFlatArray();
-            int[] faces = bhomMesh.Faces.SelectMany(face =>
+            double[] vertices = renderMesh.Vertices.Select(v => v.Point).ToFlatArray();
+            int[] faces = renderMesh.Faces.SelectMany(face =>
             {
                 if (face.D != -1) return new int[] { 1, face.A, face.B, face.C, face.D };
                 return new int[] { 0, face.A, face.B, face.C };

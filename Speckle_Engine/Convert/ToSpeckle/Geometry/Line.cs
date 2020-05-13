@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -20,41 +20,39 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data;
-using BH.oM.Data.Collections;
-using BH.oM.Geometry;
-using SpeckleCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using SpeckleCore;
+using BHG = BH.oM.Geometry;
+using SpeckleCoreGeometryClasses;
+using BH.oM.Base;
+using BH.Engine.Geometry;
+using System.Reflection;
+using BH.oM.Geometry;
+using BH.Engine.Base;
+using System.ComponentModel;
+using BH.oM.Structure.Elements;
+using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
-using BH.Engine.Speckle;
 using BH.oM.Speckle;
 
-namespace BH.Adapter.Speckle
+namespace BH.Engine.Speckle
 {
-    public partial class SpeckleAdapter
+    public static partial class Convert
     {
-        protected SpeckleObject Create(IObject iObject, SpecklePushConfig config)
+        [Description("Convert BHoM Line to a Speckle Line")]
+        public static SpeckleLine ToSpeckle(this BHG.Line l)
         {
-            // Convert the objects into the appropriate SpeckleObject using the available converters.
-            SpeckleObject speckleObject = null;
+            if (l == null) return default(SpeckleLine);
 
-            if (typeof(IGeometry).IsAssignableFrom(iObject.GetType()))
-                speckleObject = BH.Engine.Speckle.Convert.ToSpeckle((IGeometry)iObject as dynamic); // DYNAMIC DISPATCH
-            else
-                speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(iObject); // These will be exported as `Abstract` Speckle Objects.
+            SpeckleLine speckleLine = new SpeckleLine(
+                new double[] { l.Start.X, l.Start.Y, l.Start.Z, l.End.X, l.End.Y, l.End.Z }
+                );
 
-            // Save BHoMObject data inside the speckleObject.
-            Modify.SetBHoMData(speckleObject, iObject, config.UseSpeckleSerialiser);
-
-            speckleObject.SetDiffingHash(iObject, config);
-
-            return speckleObject;
+            return speckleLine;
         }
     }
 }

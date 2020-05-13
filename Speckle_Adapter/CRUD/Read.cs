@@ -42,7 +42,7 @@ namespace BH.Adapter.Speckle
             string speckleQuery = "";
 
             if (speckleRequest != null)
-                speckleQuery = BH.Engine.Speckle.Convert.GetSpeckleQuery(speckleRequest);
+                speckleQuery = BH.Engine.Speckle.Convert.ToSpeckleQuery(speckleRequest);
 
             // Download the objects.
             response = SpeckleClient.StreamGetObjectsAsync(SpeckleStreamId, speckleQuery).Result;

@@ -38,20 +38,18 @@ using BH.oM.Structure.Elements;
 using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
+using SpeckleCoreGeometryRhino;
 
 namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        
-        [Description("Convert BHoM Vector to a Speckle Vector")]
-        public static SpeckleVector FromBHoM(this BHG.Vector bhomVector)
+        [Description("Convert BHoM Mesh to a Speckle Mesh")]
+        public static SpeckleObject ToSpeckle(this BHG.ISurface surface)
         {
-            if (bhomVector == null) return default(SpeckleVector);
+            Rhino.Geometry.NurbsSurface rhinoSurface = BH.Engine.Rhinoceros.Convert.IToRhino(surface) as Rhino.Geometry.NurbsSurface;
 
-            SpeckleVector speckleVector = new SpeckleVector(bhomVector.X, bhomVector.Y, bhomVector.X);
-
-            return speckleVector;
+            return SpeckleCoreGeometryRhino.Conversions.ToSpeckle(rhinoSurface.ToBrep() as dynamic);
         }
     }
 }
