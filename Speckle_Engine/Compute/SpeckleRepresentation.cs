@@ -46,8 +46,10 @@ namespace BH.Engine.Speckle
     public static partial class Compute
     {
         [Description("Attempts to compute a SpeckleObject representation of the BHoMObject, so it can be visualised in the SpeckleViewer.")]
-        public static SpeckleObject SpeckleRepresentation(this IBHoMObject bhomObject, SpeckleDisplayOptions displayOptions)
+        public static SpeckleObject SpeckleRepresentation(this IBHoMObject bhomObject, RenderMeshOptions renderMeshOptions = null)
         {
+            renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
+
             SpeckleObject speckleRepresentation = null;
 
             if (bhomObject is CustomObject)
@@ -59,7 +61,7 @@ namespace BH.Engine.Speckle
             if (bhomObject != null)
             {
                 object renderMeshObj = null;
-                bhomObject.CustomData.TryGetValue(displayOptions.CustomRendermeshKey, out renderMeshObj);
+                bhomObject.CustomData.TryGetValue(renderMeshOptions.CustomRendermeshKey, out renderMeshObj);
                 renderMesh = renderMeshObj as RenderMesh;
                 meshRepresentation = renderMeshObj as Mesh;
 
@@ -87,15 +89,21 @@ namespace BH.Engine.Speckle
 
             // See if there is a custom BHoM Geometry representation for that BHoMObject.
             // If so, attempt to convert it to Speckle.
-            IGeometry BHoMRepresentation = Compute.BHoMRepresentation(bhomObject as dynamic, displayOptions);
-            if (BHoMRepresentation != null)
-                speckleRepresentation = Convert.FromBHoM(BHoMRepresentation as dynamic);
+            IGeometry geometricalRepresentation = Representation.Compute.IGeometricalRepresentation(bhomObject, renderMeshOptions.RepresentationOptions);
 
-            // Else, see if we can get some BHoM geometry out of the BHoMObject to represent the object in SpeckleViewer.
-            // If so, convert the IGeometry into a SpeckleObject, dynamically dispatching to the right convert.
-            IGeometry geom = bhomObject.IGeometry();
-            if (geom != null && (geom as CompositeGeometry).Elements.Count > 0)
-                speckleRepresentation = Convert.FromBHoM(geom as dynamic);
+            if (geometricalRepresentation == null)
+                return null;
+
+            // If found, attempt to convert the BHoM Geometrical representation of the object to Speckle geometry.
+            speckleRepresentation = geometricalRepresentation.IToSpeckle();
+
+            if (speckleRepresentation != null)
+                return speckleRepresentation;
+
+            // Else, mesh the BHoMObject's geometrical representation, and convert the resulting RenderMesh to Speckle's mesh.
+            renderMesh = geometricalRepresentation.IRenderMesh();
+            if (renderMesh != null)
+                Convert.ToSpeckle(renderMesh);
 
             return speckleRepresentation;
         }
