@@ -27,16 +27,13 @@ using System.Text;
 using System.Threading.Tasks;
 using SpeckleCore;
 using BHG = BH.oM.Geometry;
-using SpeckleCoreGeometryClasses;
 using BH.oM.Base;
 using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
-using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
 using System.Collections;
-using BH.Engine.Representation;
 
 
 namespace BH.Engine.Speckle

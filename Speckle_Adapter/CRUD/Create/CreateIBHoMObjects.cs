@@ -31,7 +31,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using BH.Engine.Rhinoceros;
 using BH.Engine.Speckle;
 using BH.oM.Speckle;
 
