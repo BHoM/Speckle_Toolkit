@@ -43,16 +43,15 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        [Description("Convert BHoM Line to a Speckle Line")]
-        public static SpeckleLine FromBHoM(this BHG.Line l)
+        
+        [Description("Convert BHoM Vector to a Speckle Vector")]
+        public static SpeckleVector ToSpeckle(this BHG.Vector bhomVector)
         {
-            if (l == null) return default(SpeckleLine);
+            if (bhomVector == null) return default(SpeckleVector);
 
-            SpeckleLine speckleLine = new SpeckleLine(
-                new double[] { l.Start.X, l.Start.Y, l.Start.Z, l.End.X, l.End.Y, l.End.Z }
-                );
+            SpeckleVector speckleVector = new SpeckleVector(bhomVector.X, bhomVector.Y, bhomVector.X);
 
-            return speckleLine;
+            return speckleVector;
         }
     }
 }

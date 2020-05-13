@@ -43,28 +43,14 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        [Description("Convert a SpeckleRequest to the corresponding Speckle Query.")]
-        public static string GetSpeckleQuery(SpeckleRequest speckleRequest)
+        [Description("Convert BHoM Line to a Speckle Line")]
+        public static SpecklePolyline ToSpeckle(this BHG.Polyline polyline)
         {
-            string speckleQuery = "";
+            if (polyline == null) return default(SpecklePolyline);
 
-            if (!string.IsNullOrEmpty(speckleRequest.SpeckleQuery))
-                return speckleRequest.SpeckleQuery; // just return the included SpeckleQuery.
-            else
-            {
-                // Do the conversion.
-                if (speckleRequest.Limit != null)
-                    speckleQuery += $"&limit={speckleRequest.Limit}";
+            SpecklePolyline specklePolyline = new SpecklePolyline(polyline.ControlPoints.SelectMany(p => new List<double> { p.X, p.Y, p.Z }));
 
-                if (speckleRequest.SpeckleHash != null)
-                    speckleQuery += $"&hash={string.Join(",", speckleRequest.SpeckleHash)}";
-
-                if (speckleRequest.SpeckleGUIDs != null)
-                    speckleQuery += $"&id={string.Join(",", speckleRequest.SpeckleGUIDs)}";
-            }
-
-            return speckleQuery;
+            return specklePolyline;
         }
-
     }
 }

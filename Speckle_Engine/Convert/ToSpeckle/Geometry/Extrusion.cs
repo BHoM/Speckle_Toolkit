@@ -1,4 +1,4 @@
-﻿﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -37,17 +37,19 @@ using System.ComponentModel;
 using BH.oM.Structure.Elements;
 using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
-using BH.oM.Structure.Constraints;
 using BH.oM.Speckle;
+using SpeckleCoreGeometryRhino;
 
 namespace BH.Engine.Speckle
 {
-    public static partial class Compute
+    public static partial class Convert
     {
-        // Fallback case
-        private static Rhino.Geometry.Mesh BHoMRepresentation(this IBHoMObject bHoMObject, SpeckleDisplayOptions displayOptions)
+        [Description("Convert BHoM Extrusion to a Speckle Extrusion")]
+        public static SpeckleExtrusion ToSpeckle(this BHG.Extrusion extrusion)
         {
-            return null;
+            SpeckleExtrusion extr = new SpeckleExtrusion(extrusion.Curve.IToSpeckle(), extrusion.Direction.Length(), extrusion.Capped);
+
+            return null; // Extrusion not tested properly yet
         }
     }
 }

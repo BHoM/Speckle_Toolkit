@@ -81,11 +81,11 @@ namespace BH.Engine.Speckle
             if (renderMesh != null)
             {
                 meshRepresentation = new Mesh() { Faces = renderMesh.Faces, Vertices = renderMesh.Vertices.Select(v => new oM.Geometry.Point() { X = v.Point.X, Y = v.Point.Y, Z = v.Point.Z }).ToList() };
-                return meshRepresentation.FromBHoM();
+                return meshRepresentation.ToSpeckle();
             }
 
             if (meshRepresentation != null)
-                return meshRepresentation.FromBHoM();
+                return meshRepresentation.ToSpeckle();
 
             // See if there is a custom BHoM Geometry representation for that BHoMObject.
             // If so, attempt to convert it to Speckle.

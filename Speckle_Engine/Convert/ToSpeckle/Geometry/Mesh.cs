@@ -43,14 +43,21 @@ namespace BH.Engine.Speckle
 {
     public static partial class Convert
     {
-        [Description("Convert BHoM Point to a Speckle Point")]
-        public static SpecklePoint FromBHoM(this BHG.Point bhomPoint)
+        [Description("Convert BHoM Mesh to a Speckle Mesh")]
+        public static SpeckleMesh ToSpeckle(this BHG.Mesh bhomMesh)
         {
-            if (bhomPoint == null) return default(SpecklePoint);
+            double[] vertices = bhomMesh.Vertices.ToFlatArray();
+            int[] faces = bhomMesh.Faces.SelectMany(face =>
+            {
+                if (face.D != -1) return new int[] { 1, face.A, face.B, face.C, face.D };
+                return new int[] { 0, face.A, face.B, face.C };
+            }).ToArray();
+            var defaultColour = System.Drawing.Color.FromArgb(255, 100, 100, 100);
+            var colors = Enumerable.Repeat(defaultColour.ToArgb(), vertices.Count()).ToArray();
 
-            SpecklePoint specklePoint = new SpecklePoint(bhomPoint.X, bhomPoint.Y, bhomPoint.Z);
+            SpeckleMesh speckleMesh = new SpeckleMesh(vertices, faces, colors, null);
 
-            return specklePoint;
+            return speckleMesh;
         }
     }
 }
