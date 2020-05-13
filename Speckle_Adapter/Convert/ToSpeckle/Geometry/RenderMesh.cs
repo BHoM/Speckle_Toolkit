@@ -34,37 +34,27 @@ using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
-using BH.oM.Structure.Elements;
-using BH.Engine.Structure;
-using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
-        [Description("Convert a SpeckleRequest to the corresponding Speckle Query.")]
-        public static string ToSpeckleQuery(SpeckleRequest speckleRequest)
+        [Description("Convert BHoM RenderMesh to a Speckle Mesh")]
+        public static SpeckleMesh ToSpeckle(this BH.oM.Graphics.RenderMesh renderMesh)
         {
-            string speckleQuery = "";
-
-            if (!string.IsNullOrEmpty(speckleRequest.SpeckleQuery))
-                return speckleRequest.SpeckleQuery; // just return the included SpeckleQuery.
-            else
+            double[] vertices = renderMesh.Vertices.Select(v => v.Point).ToFlatArray();
+            int[] faces = renderMesh.Faces.SelectMany(face =>
             {
-                // Do the conversion.
-                if (speckleRequest.Limit != null)
-                    speckleQuery += $"&limit={speckleRequest.Limit}";
+                if (face.D != -1) return new int[] { 1, face.A, face.B, face.C, face.D };
+                return new int[] { 0, face.A, face.B, face.C };
+            }).ToArray();
+            var defaultColour = System.Drawing.Color.FromArgb(255, 100, 100, 100);
+            var colors = Enumerable.Repeat(defaultColour.ToArgb(), vertices.Count()).ToArray();
 
-                if (speckleRequest.SpeckleHash != null)
-                    speckleQuery += $"&hash={string.Join(",", speckleRequest.SpeckleHash)}";
+            SpeckleMesh speckleMesh = new SpeckleMesh(vertices, faces, colors, null);
 
-                if (speckleRequest.SpeckleGUIDs != null)
-                    speckleQuery += $"&id={string.Join(",", speckleRequest.SpeckleGUIDs)}";
-            }
-
-            return speckleQuery;
+            return speckleMesh;
         }
-
     }
 }

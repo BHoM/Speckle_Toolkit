@@ -33,10 +33,11 @@ using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
-using BH.oM.Structure.Elements;
 using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
 using System.Collections;
+using BH.Engine.Representation;
+
 
 namespace BH.Engine.Speckle
 {

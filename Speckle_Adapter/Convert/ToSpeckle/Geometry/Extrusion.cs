@@ -34,24 +34,18 @@ using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
-using BH.oM.Structure.Elements;
-using BH.Engine.Structure;
-using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
-        
-        [Description("Convert BHoM Vector to a Speckle Vector")]
-        public static SpeckleVector ToSpeckle(this BHG.Vector bhomVector)
+        [Description("Convert BHoM Extrusion to a Speckle Extrusion")]
+        public static SpeckleExtrusion ToSpeckle(this BHG.Extrusion extrusion)
         {
-            if (bhomVector == null) return default(SpeckleVector);
+            SpeckleExtrusion extr = new SpeckleExtrusion(extrusion.Curve.IToSpeckle(), extrusion.Direction.Length(), extrusion.Capped);
 
-            SpeckleVector speckleVector = new SpeckleVector(bhomVector.X, bhomVector.Y, bhomVector.X);
-
-            return speckleVector;
+            return null; // Extrusion not tested properly yet
         }
     }
 }

@@ -40,6 +40,10 @@
       <HintPath>..\..\BHoM\Build\Dimensional_oM.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Geometry_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Geometry_Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Graphics_oM">
       <HintPath>..\..\BHoM\Build\Graphics_oM.dll</HintPath>
       <Private>False</Private>
@@ -89,12 +93,20 @@
       <HintPath>..\..\BHoM_Engine\Build\Reflection_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Reflection_oM">
+      <HintPath>..\..\BHoM\Build\Reflection_oM.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Rhinoceros_Engine">
       <HintPath>..\..\Rhinoceros_Toolkit\Build\Rhinoceros_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="RhinoCommon, Version=5.1.30000.16, Culture=neutral, PublicKeyToken=552281e97c755530, processorArchitecture=MSIL">
       <HintPath>..\packages\RhinoCommon.5.12.50810.13095\lib\net35\RhinoCommon.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Serialiser_Engine">
+      <HintPath>..\..\BHoM_Engine\Build\Serialiser_Engine.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SpeckleCore, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
@@ -110,6 +122,7 @@
     <Reference Include="System.Core">
       <Private>False</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Net" />
     <Reference Include="System.Xml.Linq">
@@ -130,17 +143,40 @@
     <Reference Include="System.Xml">
       <Private>False</Private>
     </Reference>
+    <Reference Include="TriangleNet_Engine, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\TriangleNet_Toolkit\Build\TriangleNet_Engine.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AdapterActions\Pull.cs" />
     <Compile Include="AdapterActions\Push.cs" />
     <Compile Include="AdapterActions\_PushMethods\StoreSpeckleId.cs" />
     <Compile Include="AdapterActions\_PushMethods\SetupHistory.cs" />
+    <Compile Include="Convert\AdapterId.cs" />
+    <Compile Include="Convert\FromSpeckle\FromSpeckle.cs" />
+    <Compile Include="Convert\FromSpeckle\Geometry\Line.cs" />
+    <Compile Include="Convert\FromSpeckle\Geometry\Mesh.cs" />
+    <Compile Include="Convert\FromSpeckle\Geometry\Point.cs" />
+    <Compile Include="Convert\FromSpeckle\Geometry\Vector.cs" />
+    <Compile Include="Convert\ToSpeckle\Geometry\Extrusion.cs" />
+    <Compile Include="Convert\ToSpeckle\Geometry\Line.cs" />
+    <Compile Include="Convert\ToSpeckle\Geometry\Mesh.cs" />
+    <Compile Include="Convert\ToSpeckle\Geometry\Point.cs" />
+    <Compile Include="Convert\ToSpeckle\Geometry\Polyline.cs" />
+    <Compile Include="Convert\ToSpeckle\Geometry\RenderMesh.cs" />
+    <Compile Include="Convert\ToSpeckle\Geometry\Surface-Brep.cs" />
+    <Compile Include="Convert\ToSpeckle\Geometry\Vector.cs" />
+    <Compile Include="Convert\ToSpeckle\Geometry\_IToSpeckle.cs" />
+    <Compile Include="Convert\ToSpeckle\Other\Request.cs" />
+    <Compile Include="Convert\_GeomHelpers.cs" />
     <Compile Include="CRUD\Create\CreateIObjects.cs" />
     <Compile Include="CRUD\Create\CreateIBHoMObjects.cs" />
     <Compile Include="CRUD\Create\CreateObjects.cs" />
     <Compile Include="CRUD\Delete.cs" />
     <Compile Include="CRUD\Read.cs" />
+    <Compile Include="Extra\SpeckleRepresentation.cs" />
     <Compile Include="SpeckleAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

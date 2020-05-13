@@ -29,24 +29,21 @@ using SpeckleCore;
 using BHG = BH.oM.Geometry;
 using SpeckleCoreGeometryClasses;
 using BH.oM.Base;
-using BH.Engine.Geometry;
 using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
-using BH.oM.Structure.Elements;
-using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
 using BH.oM.Graphics;
 using BH.Engine.Representation;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
-    public static partial class Compute
+    public partial class SpeckleAdapter
     {
         [Description("Attempts to compute a SpeckleObject representation of the BHoMObject, so it can be visualised in the SpeckleViewer.")]
-        public static SpeckleObject SpeckleRepresentation(this IBHoMObject bhomObject, RenderMeshOptions renderMeshOptions = null)
+        public static SpeckleObject SpeckleRepresentation(IBHoMObject bhomObject, RenderMeshOptions renderMeshOptions = null)
         {
             renderMeshOptions = renderMeshOptions ?? new RenderMeshOptions();
 
@@ -62,19 +59,23 @@ namespace BH.Engine.Speckle
             {
                 object renderMeshObj = null;
                 bhomObject.CustomData.TryGetValue(renderMeshOptions.CustomRendermeshKey, out renderMeshObj);
-                renderMesh = renderMeshObj as RenderMesh;
-                meshRepresentation = renderMeshObj as Mesh;
 
-                if (typeof(IEnumerable<object>).IsAssignableFrom(renderMeshObj.GetType()))
+                if (renderMeshObj != null)
                 {
-                    List<object> objects = renderMeshObj as List<object>;
-                    List<RenderMesh> renderMeshes = objects.OfType<RenderMesh>().ToList();
-                    if (renderMeshes.Count > 0)
-                        renderMesh = Representation.Compute.JoinRenderMeshes(renderMeshes);
+                    renderMesh = renderMeshObj as RenderMesh;
+                    meshRepresentation = renderMeshObj as Mesh;
 
-                    List<Mesh> meshes = objects.OfType<Mesh>().ToList();
-                    if (meshes.Count > 0)
-                        meshRepresentation = Representation.Compute.JoinMeshes(meshes);
+                    if (typeof(IEnumerable<object>).IsAssignableFrom(renderMeshObj.GetType()))
+                    {
+                        List<object> objects = renderMeshObj as List<object>;
+                        List<RenderMesh> renderMeshes = objects.OfType<RenderMesh>().ToList();
+                        if (renderMeshes.Count > 0)
+                            renderMesh = BH.Engine.Representation.Compute.JoinRenderMeshes(renderMeshes);
+
+                        List<Mesh> meshes = objects.OfType<Mesh>().ToList();
+                        if (meshes.Count > 0)
+                            meshRepresentation = BH.Engine.Representation.Compute.JoinMeshes(meshes);
+                    }
                 }
             }
 
@@ -89,7 +90,7 @@ namespace BH.Engine.Speckle
 
             // See if there is a custom BHoM Geometry representation for that BHoMObject.
             // If so, attempt to convert it to Speckle.
-            IGeometry geometricalRepresentation = Representation.Compute.IGeometricalRepresentation(bhomObject, renderMeshOptions.RepresentationOptions);
+            IGeometry geometricalRepresentation = BH.Engine.Representation.Compute.IGeometricalRepresentation(bhomObject, renderMeshOptions.RepresentationOptions);
 
             if (geometricalRepresentation == null)
                 return null;

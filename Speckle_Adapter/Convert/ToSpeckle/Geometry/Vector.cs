@@ -34,45 +34,22 @@ using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
-using BH.oM.Structure.Elements;
-using BH.Engine.Structure;
 using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
-using BH.oM.Reflection.Attributes;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
-        /***************************************************/
-        /**** Private Helper Methods                    ****/
-        /***************************************************/
-        // Helper Methods for SpeckleCoreGeometry
-
-        private static double[] ToFlatArray(this IEnumerable<BHG.Point> points)
+        
+        [Description("Convert BHoM Vector to a Speckle Vector")]
+        public static SpeckleVector ToSpeckle(this BHG.Vector bhomVector)
         {
-            return points.SelectMany(pt => pt.ToArray()).ToArray();
-        }
+            if (bhomVector == null) return default(SpeckleVector);
 
-        private static double[] ToArray(this BHG.Point pt)
-        {
-            return new double[] { pt.X, pt.Y, pt.Z };
-        }
+            SpeckleVector speckleVector = new SpeckleVector(bhomVector.X, bhomVector.Y, bhomVector.X);
 
-        [Description("Mass point converter adapted from SpeckleCoreGeometry. It takes IEnumerable instead of array.")]
-        [Input("arr", "Flat array of coordinates from Speckle")]
-        [Output("List of BHoM Points")]
-        private static List<BHG.Point> ToPoints(this IEnumerable<double> arr)
-        {
-            if (arr.Count() % 3 != 0)
-                throw new Exception("Array malformed: length%3 != 0.");
-
-            List<BHG.Point> points = new List<BHG.Point>();
-            var asArray = arr.ToArray();
-            for (int i = 2, k = 0; i < arr.Count(); i += 3)
-                points[k++] = new BHG.Point { X = asArray[i - 2], Y = asArray[i - 1], Z = asArray[i] };
-
-            return points;
+            return speckleVector;
         }
     }
 }

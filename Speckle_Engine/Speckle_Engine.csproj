@@ -141,25 +141,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Compute\SpeckleSerialisation.cs" />
-    <Compile Include="Convert\AdapterId.cs" />
-    <Compile Include="Compute\SpeckleRepresentation.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\Extrusion.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\RenderMesh.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\Polyline.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\Surface-Brep.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\_IToSpeckle.cs" />
-    <Compile Include="Convert\FromSpeckle\Geometry\Mesh.cs" />
-    <Compile Include="Convert\FromSpeckle\Geometry\Line.cs" />
-    <Compile Include="Convert\FromSpeckle\Geometry\Vector.cs" />
-    <Compile Include="Convert\FromSpeckle\Geometry\Point.cs" />
-    <Compile Include="Convert\_GeomHelpers.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\Mesh.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\Line.cs" />
-    <Compile Include="Convert\ToSpeckle\Other\Request.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\Vector.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\Point.cs" />
-    <Compile Include="Convert\FromSpeckle\FromSpeckle.cs" />
+    <Compile Include="Compute\SpeckleAbstract.cs" />
     <Compile Include="Modify\SetDiffingHash.cs" />
     <Compile Include="Modify\SetBHoMData.cs" />
     <Compile Include="Query\FilterBySpeckleGUID.cs" />

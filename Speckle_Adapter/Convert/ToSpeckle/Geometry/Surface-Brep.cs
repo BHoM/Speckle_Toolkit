@@ -34,25 +34,20 @@ using System.Reflection;
 using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
-using BH.oM.Structure.Elements;
-using BH.Engine.Structure;
-using BH.Engine.Rhinoceros;
 using BH.oM.Speckle;
 
-namespace BH.Engine.Speckle
+namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
-        [Description("Convert BHoM Line to a Speckle Line")]
-        public static SpeckleLine ToSpeckle(this BHG.Line l)
+        [Description("Convert BHoM surface to a Speckle surface")]
+        public static SpeckleObject ToSpeckle(this BHG.ISurface surface)
         {
-            if (l == null) return default(SpeckleLine);
+            return null;
 
-            SpeckleLine speckleLine = new SpeckleLine(
-                new double[] { l.Start.X, l.Start.Y, l.Start.Z, l.End.X, l.End.Y, l.End.Z }
-                );
+            //Rhino.Geometry.NurbsSurface rhinoSurface = BH.Engine.Rhinoceros.Convert.IToRhino(surface) as Rhino.Geometry.NurbsSurface;
 
-            return speckleLine;
+            //return SpeckleCoreGeometryRhino.Conversions.ToSpeckle(rhinoSurface.ToBrep() as dynamic);
         }
     }
 }
