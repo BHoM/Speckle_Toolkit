@@ -44,15 +44,10 @@ namespace BH.Adapter.Speckle
             // Clone objects for immutability in the UI
             List<object> objectsToPush = objects.Select(x => x.DeepClone()).ToList();
 
-            // Initialize Speckle Layer if not existing
-            if (SpeckleLayer == null)
-                SpeckleLayer = new Layer() { Name = "Default Layer", OrderIndex = 0, StartIndex = 0, Topology = "", Guid = "c8a58593-7080-450b-96b9-b0158844644b" };
-
-            SpeckleLayer.ObjectCount = 0;
-
             // Initialize the SpeckleStream
             SpeckleStream.Layers = new List<Layer>() { SpeckleLayer };
             SpeckleStream.Objects = new List<SpeckleObject>(); // stream is immutable
+            SpeckleClient.StreamId = SpeckleClient.StreamId ?? SpeckleStreamId; // make sure it's there
 
             // //- Read config
             SpecklePushConfig pushConfig = (actionConfig as SpecklePushConfig) ?? new SpecklePushConfig();
@@ -76,8 +71,9 @@ namespace BH.Adapter.Speckle
             {
                 // Issue: with `StreamUpdateAsync` Speckle doesn't seem to send anything if the Stream is initially empty.
                 // You need to Push twice if the Stream is initially empty.
-                var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
-                SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
+                //var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
+                //SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
+                UpdateStream(pushConfig);
             }
             catch (Exception e)
             {
@@ -89,5 +85,8 @@ namespace BH.Adapter.Speckle
 
             return objectsToPush;
         }
+
+
+    
     }
 }

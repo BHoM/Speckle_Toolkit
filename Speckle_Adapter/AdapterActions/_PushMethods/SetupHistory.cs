@@ -39,24 +39,25 @@ namespace BH.Adapter.Speckle
         [Description("Creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.")]
         private void SetupHistory()
         {
-            ResponseStreamClone response = null;
+            ResponseStreamClone cloneResult = null;
             Task<ResponseStreamClone> respStreamClTask = null;
 
             // The following line creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.
             // The streamId of the cloned "backup" is saved among the main Stream "children" field,
             // accessible through SpeckleServerAddress/api/v1/streams/streamId
-            respStreamClTask = SpeckleClient.StreamCloneAsync(SpeckleStreamId);
+            respStreamClTask = SpeckleClient.StreamCloneAsync(SpeckleStream.StreamId);
 
             try
             {
-                response = respStreamClTask?.Result;
+                cloneResult = respStreamClTask?.Result;
+                SpeckleClient.Stream.Children.Add(cloneResult.Clone.StreamId);
             }
             catch (Exception e)
             {
                 BH.Engine.Reflection.Compute.RecordWarning($"Failed configuring Speckle History. Error: {e.InnerException}");
             }
 
-            if (response == null)
+            if (cloneResult == null)
                 BH.Engine.Reflection.Compute.RecordWarning($"Failed configuring Speckle History. Task status: {respStreamClTask.Status.ToString()}");
         }
     }

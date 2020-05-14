@@ -34,17 +34,28 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter : BHoMAdapter
     {
-        public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId)
+        public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId, string speckleStreamName = "Anonymous stream", string speckleLayerName = "DefaultLayer")
         {
             AdapterIdName = BH.Adapter.Speckle.Convert.AdapterIdName;
 
             SpeckleAccount = speckleAccount;
-            SpeckleStream = new SpeckleStream() { StreamId = SpeckleStreamId };
+            SpeckleStream = new SpeckleStream() { StreamId = speckleStreamId, Name = speckleStreamName };
 
             SpeckleClient = new SpeckleApiClient() { BaseUrl = SpeckleAccount.RestApi, AuthToken = SpeckleAccount.Token, Stream = SpeckleStream }; // hacky, but i don't want to rebuild stuff and fiddle dll loading etc.
             SpeckleClient.SetupWebsocket();
 
             SpeckleStreamId = speckleStreamId;
+
+            // Initialize Speckle Layer
+            if (SpeckleLayer == null)
+                SpeckleLayer = new Layer() { Name = speckleLayerName, OrderIndex = 0, StartIndex = 0, Topology = "", Guid = this.AdapterGuid.ToString() };
+
+            SpeckleLayer.ObjectCount = 0;
+        }
+
+        public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId) : this(speckleAccount, speckleStreamId, "Anonymous stream", "DefaultLayer")
+        {
+            
         }
 
 
