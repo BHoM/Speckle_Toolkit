@@ -168,6 +168,7 @@
     <Compile Include="CRUD\Create\CreateObjects.cs" />
     <Compile Include="CRUD\Delete.cs" />
     <Compile Include="CRUD\Read.cs" />
+    <Compile Include="Extra\UpdateStream.cs" />
     <Compile Include="Extra\SpeckleRepresentation.cs" />
     <Compile Include="SpeckleAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
