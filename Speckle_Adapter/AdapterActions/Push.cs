@@ -77,9 +77,7 @@ namespace BH.Adapter.Speckle
             }
             catch (Exception e)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Upload to Speckle failed. Message returned:\n{e.InnerException}");
-                BH.Engine.Reflection.Compute.RecordError($"The server might be busy, or a heavy model upload might have triggered the Timeout.\n" +
-                    $"Try sending again. Try pushing the objects with a SpecklePushConfig having DisplayOptions set to false for some of the objects, e.g. Bars.");
+                BH.Engine.Reflection.Compute.RecordError($"Upload to Speckle failed. Message returned:\n{e.Message}");
                 return new List<object>();
             }
 
