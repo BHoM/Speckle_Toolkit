@@ -79,13 +79,13 @@ namespace BH.Adapter.Speckle
                     // Object is too big?
                     if (size > 2e6)
                     {
-                        BH.Engine.Reflection.Compute.RecordWarning("This stream contains a super big object. These will fail. Sorry for the bad error message - we're working on improving this.");
+                        BH.Engine.Reflection.Compute.RecordWarning("An object is too big for the current Speckle limitations.");
                         currentBucketObjects.Remove(convertedObject);
                     }
 
-                    if (currentBucketSize > 5e5) // restrict max to ~500kb; should it be user config? anyway these functions should go into core. at one point. 
+                    if (currentBucketSize > 5e5) // restrict max to ~500kb; 
                     {
-                        BH.Engine.Reflection.Compute.RecordNote("Reached payload limit. Making a new one, current  #: " + objectUpdatePayloads.Count);
+                        //BH.Engine.Reflection.Compute.RecordNote("Reached payload limit. Making a new one, current  #: " + objectUpdatePayloads.Count);
 
                         objectUpdatePayloads.Add(currentBucketObjects);
                         currentBucketObjects = new List<SpeckleObject>();
