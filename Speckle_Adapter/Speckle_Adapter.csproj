@@ -152,13 +152,11 @@
     <Compile Include="Convert\FromSpeckle\Geometry\Mesh.cs" />
     <Compile Include="Convert\FromSpeckle\Geometry\Point.cs" />
     <Compile Include="Convert\FromSpeckle\Geometry\Vector.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\Extrusion.cs" />
     <Compile Include="Convert\ToSpeckle\Geometry\Line.cs" />
     <Compile Include="Convert\ToSpeckle\Geometry\Mesh.cs" />
     <Compile Include="Convert\ToSpeckle\Geometry\Point.cs" />
     <Compile Include="Convert\ToSpeckle\Geometry\Polyline.cs" />
     <Compile Include="Convert\ToSpeckle\Geometry\RenderMesh.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\Surface-Brep.cs" />
     <Compile Include="Convert\ToSpeckle\Geometry\Vector.cs" />
     <Compile Include="Convert\ToSpeckle\Geometry\_IToSpeckle.cs" />
     <Compile Include="Convert\ToSpeckle\Other\Request.cs" />
