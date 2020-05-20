@@ -34,8 +34,14 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter : BHoMAdapter
     {
-        public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId, string speckleStreamName = "Anonymous stream", string speckleLayerName = "DefaultLayer")
+        public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId, string speckleStreamName = "Anonymous stream")
         {
+            if (string.IsNullOrWhiteSpace(speckleStreamId))
+            {
+                BH.Engine.Reflection.Compute.RecordError("StreamId can't be null or empty.");
+                return;
+            }
+
             AdapterIdName = BH.Adapter.Speckle.Convert.AdapterIdName;
 
             SpeckleAccount = speckleAccount;
@@ -45,18 +51,11 @@ namespace BH.Adapter.Speckle
             SpeckleClient.SetupWebsocket();
 
             SpeckleStreamId = speckleStreamId;
-
-            // Initialize Speckle Layer
-            if (SpeckleLayer == null)
-                SpeckleLayer = new Layer() { Name = speckleLayerName, OrderIndex = 0, StartIndex = 0, Topology = "", Guid = this.AdapterGuid.ToString() };
-
-            SpeckleLayer.ObjectCount = 0;
         }
 
-        public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId) : this(speckleAccount, speckleStreamId, "Anonymous stream", "DefaultLayer")
-        {
-            
-        }
+        // Keep for retrocompatibility
+        public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId) : this(speckleAccount, speckleStreamId, "Anonymous stream")
+        { }
 
 
         /***************************************************/
@@ -66,6 +65,5 @@ namespace BH.Adapter.Speckle
         public string SpeckleStreamId { get; private set; }
         public Account SpeckleAccount { get; private set; }
         public SpeckleStream SpeckleStream { get; private set; }
-        public SpeckleCore.Layer SpeckleLayer { get; private set; }
     }
 }

@@ -83,7 +83,7 @@ namespace BH.Adapter.Speckle
                         currentBucketObjects.Remove(convertedObject);
                     }
 
-                    if (currentBucketSize > 5e5) // restrict max to ~500kb; 
+                    if (currentBucketSize > 3e5) // restrict max to ~300kb; 
                     {
                         //BH.Engine.Reflection.Compute.RecordNote("Reached payload limit. Making a new one, current  #: " + objectUpdatePayloads.Count);
 
@@ -97,7 +97,7 @@ namespace BH.Adapter.Speckle
                 if (currentBucketObjects.Count > 0)
                     objectUpdatePayloads.Add(currentBucketObjects);
 
-                BH.Engine.Reflection.Compute.RecordNote("Payload object update count is: " + objectUpdatePayloads.Count + " total bucket size is (kb) " + totalBucketSize / 1000);
+                BH.Engine.Reflection.Compute.RecordNote($"Payload object update count is: { objectUpdatePayloads.Count }. Total bucket size is {totalBucketSize / 1024} kB.");
 
                 // create bulk object creation tasks
                 int k = 0;
@@ -126,8 +126,8 @@ namespace BH.Adapter.Speckle
                     }
                     catch (Exception err)
                     {
-                        BH.Engine.Reflection.Compute.RecordError(err.Message);
-                        return;
+                        BH.Engine.Reflection.Compute.RecordWarning(err.Message);
+                        continue;
                     }
                 }
             }
@@ -145,7 +145,6 @@ namespace BH.Adapter.Speckle
 
             SpeckleStream updateStream = new SpeckleStream()
             {
-                Layers = new List<Layer>() { new Layer() },
                 Name = this.SpeckleStream.Name,
                 Objects = placeholders
             };

@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 using BH.Engine.Speckle;
 using BH.oM.Speckle;
 
+
 namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
@@ -44,9 +45,17 @@ namespace BH.Adapter.Speckle
             SpeckleObject speckleObject = null;
 
             if (typeof(IGeometry).IsAssignableFrom(iObject.GetType()))
-                speckleObject = Convert.ToSpeckle((IGeometry)iObject as dynamic); // DYNAMIC DISPATCH
-            else
-                speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(iObject); // These will be exported as `Abstract` Speckle Objects.
+                speckleObject = Convert.IToSpeckle((IGeometry)iObject);
+
+            if (speckleObject == null)
+            {
+                BH.oM.Graphics.RenderMesh rm = BH.Engine.Representation.Compute.IRenderMesh(iObject);
+
+                if (rm != null)
+                    speckleObject = Convert.ToSpeckle(rm);
+                else
+                    speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(iObject); // These will be exported as `Abstract` Speckle Objects.
+            }
 
             // Save BHoMObject data inside the speckleObject.
             Modify.SetBHoMData(speckleObject, iObject, config.UseSpeckleSerialiser);

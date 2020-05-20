@@ -55,6 +55,17 @@ namespace BH.Adapter.Speckle
 
             speckleObject.SetDiffingHash(bhomObject, config);
 
+            // If the BHoMObject has a "RevisionName" string field in the Customdata, 
+            // use that value to create a Layer for it, and set the SpeckleObject's layer.
+            //object revisionValue = null;
+            //string revisionName = "";
+            //if (bhomObject.CustomData.TryGetValue("RevisionName", out revisionValue))
+            //{
+            //    revisionName = revisionValue as string;
+            //    if (!string.IsNullOrWhiteSpace(revisionName))
+            //        speckleObject.Properties["revisionName"] = revisionName;
+            //}
+
             return speckleObject;
         }
     }
