@@ -45,7 +45,7 @@ namespace BH.Adapter.Speckle
             // The following line creates a new stream (with a different StreamId), where the current stream content is copied, before it gets modified.
             // The streamId of the cloned "backup" is saved among the main Stream "children" field,
             // accessible through SpeckleServerAddress/api/v1/streams/streamId
-            respStreamClTask = SpeckleClient.StreamCloneAsync(SpeckleStream.StreamId);
+            respStreamClTask = SpeckleClient.StreamCloneAsync(SpeckleClient.Stream.StreamId);
 
             try
             {

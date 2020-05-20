@@ -1,4 +1,4 @@
-﻿/*
+/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -20,49 +20,37 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
-using BH.oM.Base;
-using BH.oM.Data;
-using BH.oM.Data.Collections;
-using BH.oM.Geometry;
-using SpeckleCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using BH.Engine.Speckle;
+using SpeckleCore;
+using BHG = BH.oM.Geometry;
+using SpeckleCoreGeometryClasses;
+using BH.oM.Base;
+using BH.Engine.Geometry;
+using System.Reflection;
+using BH.oM.Geometry;
+using BH.Engine.Base;
+using System.ComponentModel;
 using BH.oM.Speckle;
-
 
 namespace BH.Adapter.Speckle
 {
-    public partial class SpeckleAdapter
+    public static partial class Convert
     {
-        protected SpeckleObject Create(IObject iObject, SpecklePushConfig config)
+        // Interface method
+        public static SpeckleObject IToSpeckle(this object obj)
         {
-            // Convert the objects into the appropriate SpeckleObject using the available converters.
-            SpeckleObject speckleObject = null;
+            return ToSpeckle(obj as dynamic);
+        }
 
-            if (typeof(IGeometry).IsAssignableFrom(iObject.GetType()))
-                speckleObject = Convert.IToSpeckle((IGeometry)iObject);
-
-            if (speckleObject == null)
-            {
-                BH.oM.Graphics.RenderMesh rm = BH.Engine.Representation.Compute.IRenderMesh(iObject);
-
-                if (rm != null)
-                    speckleObject = Convert.ToSpeckle(rm);
-                else
-                    speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(iObject); // These will be exported as `Abstract` Speckle Objects.
-            }
-
-            // Save BHoMObject data inside the speckleObject.
-            Modify.SetBHoMData(speckleObject, iObject, config.UseSpeckleSerialiser);
-
-            speckleObject.SetDiffingHash(iObject, config);
-
-            return speckleObject;
+        // FallBack case for geometry conversions
+        private static SpeckleObject ToSpeckle(this IGeometry iGeometry)
+        {
+            // If more appropriate conversions are not found, return null
+            return null;
         }
     }
 }

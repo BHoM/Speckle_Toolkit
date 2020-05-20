@@ -51,7 +51,7 @@ namespace BH.oM.Speckle
 
         [Description("(ADVANCED FEATURE)\n" +
            "DiffConfig for the Hash calculation. The objects' hash in Speckle is set based on these configurations.")]
-        public virtual DiffConfig DiffConfig { get; set; } = new DiffConfig();
+        public override DiffConfig DiffConfig { get; set; } = new DiffConfig();
 
         //[Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
         //    "The CustomData dictionary is only available for BHoMObjects.")]

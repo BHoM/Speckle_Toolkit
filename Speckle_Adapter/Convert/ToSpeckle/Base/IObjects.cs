@@ -34,14 +34,35 @@ using System.Threading.Tasks;
 using BH.Engine.Speckle;
 using BH.oM.Speckle;
 
+
 namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        protected SpeckleObject Create(object obj, SpecklePushConfig config)
+        protected SpeckleObject ToSpeckle(IObject iObject, SpecklePushConfig config)
         {
-            // Convert the objects into "Abstract" SpeckleObjects 
-            return SpeckleCore.Converter.Serialise(obj) as SpeckleObject;
+            // Convert the objects into the appropriate SpeckleObject using the available converters.
+            SpeckleObject speckleObject = null;
+
+            if (typeof(IGeometry).IsAssignableFrom(iObject.GetType()))
+                speckleObject = Speckle.Convert.IToSpeckle((IGeometry)iObject);
+
+            if (speckleObject == null)
+            {
+                BH.oM.Graphics.RenderMesh rm = BH.Engine.Representation.Compute.IRenderMesh(iObject);
+
+                if (rm != null)
+                    speckleObject = Speckle.Convert.ToSpeckle(rm);
+                else
+                    speckleObject = (SpeckleObject)SpeckleCore.Converter.Serialise(iObject); // These will be exported as `Abstract` Speckle Objects.
+            }
+
+            // Save BHoMObject data inside the speckleObject.
+            Modify.SetBHoMData(speckleObject, iObject, config.UseSpeckleSerialiser);
+
+            speckleObject.SetDiffingHash(iObject, config);
+
+            return speckleObject;
         }
     }
 }

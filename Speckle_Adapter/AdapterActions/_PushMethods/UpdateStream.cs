@@ -42,9 +42,9 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        public void UpdateStream(SpecklePushConfig pushConfig)
+        public void BatchUpdateStream(SpecklePushConfig pushConfig)
         {
-            List<SpeckleObject> convertedObjects = SpeckleStream.Objects;
+            List<SpeckleObject> convertedObjects = SpeckleClient.Stream.Objects;
 
             SpeckleCore.SpeckleInitializer.Initialize();
             SpeckleCore.LocalContext.Init();
@@ -97,10 +97,10 @@ namespace BH.Adapter.Speckle
                 if (currentBucketObjects.Count > 0)
                     objectUpdatePayloads.Add(currentBucketObjects);
 
-                BH.Engine.Reflection.Compute.RecordNote($"Payload object update count is: { objectUpdatePayloads.Count }. Total bucket size is {totalBucketSize / 1024} kB.");
+                if (objectUpdatePayloads.Count > 1)
+                    BH.Engine.Reflection.Compute.RecordNote($"Payload has been split in { objectUpdatePayloads.Count } batches. Total size is {totalBucketSize / 1024} kB.");
 
                 // create bulk object creation tasks
-                int k = 0;
                 List<ResponseObject> responses = new List<ResponseObject>();
 
                 foreach (var payload in objectUpdatePayloads)
@@ -143,21 +143,16 @@ namespace BH.Adapter.Speckle
             foreach (var obj in persistedObjects)
                 placeholders.Add(new SpecklePlaceholder() { _id = obj._id });
 
-            SpeckleStream updateStream = new SpeckleStream()
-            {
-                Name = this.SpeckleStream.Name,
-                Objects = placeholders
-            };
+            SpeckleClient.Stream.Objects = placeholders;
 
             // set some base properties (will be overwritten)
             var baseProps = new Dictionary<string, object>();
             baseProps["units"] = "m";
             baseProps["tolerance"] = "0.001";
             baseProps["angleTolerance"] = "0.01";
-            updateStream.BaseProperties = baseProps;
+            SpeckleClient.Stream.BaseProperties = baseProps;
 
-
-            var response = SpeckleClient.StreamUpdateAsync(SpeckleClient.StreamId, updateStream).Result;
+            var response = SpeckleClient.StreamUpdateAsync(SpeckleClient.StreamId, SpeckleClient.Stream).Result;
             SpeckleClient.BroadcastMessage("stream", SpeckleClient.StreamId, new { eventType = "update-global" });
         }
     }

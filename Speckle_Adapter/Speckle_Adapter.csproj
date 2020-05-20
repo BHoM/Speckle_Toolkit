@@ -158,16 +158,15 @@
     <Compile Include="Convert\ToSpeckle\Geometry\Polyline.cs" />
     <Compile Include="Convert\ToSpeckle\Geometry\RenderMesh.cs" />
     <Compile Include="Convert\ToSpeckle\Geometry\Vector.cs" />
-    <Compile Include="Convert\ToSpeckle\Geometry\_IToSpeckle.cs" />
+    <Compile Include="Convert\ToSpeckle\IToSpeckle.cs" />
     <Compile Include="Convert\ToSpeckle\Other\Request.cs" />
     <Compile Include="Convert\_GeomHelpers.cs" />
-    <Compile Include="CRUD\Create\CreateIObjects.cs" />
-    <Compile Include="CRUD\Create\CreateIBHoMObjects.cs" />
-    <Compile Include="CRUD\Create\CreateObjects.cs" />
+    <Compile Include="Convert\ToSpeckle\Base\IObjects.cs" />
+    <Compile Include="Convert\ToSpeckle\Base\IBHoMObjects.cs" />
+    <Compile Include="Convert\ToSpeckle\Base\Objects.cs" />
     <Compile Include="CRUD\Delete.cs" />
-    <Compile Include="CRUD\Read.cs" />
-    <Compile Include="Extra\UpdateStream.cs" />
-    <Compile Include="Extra\SpeckleRepresentation.cs" />
+    <Compile Include="AdapterActions\_PushMethods\UpdateStream.cs" />
+    <Compile Include="AdapterActions\_PushMethods\SpeckleRepresentation.cs" />
     <Compile Include="SpeckleAdapter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -187,6 +186,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
