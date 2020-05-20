@@ -45,7 +45,6 @@ namespace BH.Adapter.Speckle
             List<object> objectsToPush = objects.Select(x => x.DeepClone()).ToList();
 
             // Initialize the SpeckleStream
-            SpeckleStream.Layers = new List<Layer>() { SpeckleLayer };
             SpeckleStream.Objects = new List<SpeckleObject>(); // stream is immutable
             SpeckleClient.StreamId = SpeckleClient.StreamId ?? SpeckleStreamId; // make sure it's there
 
@@ -62,7 +61,6 @@ namespace BH.Adapter.Speckle
                 SpeckleObject speckleObject = Create(objectsToPush[i] as dynamic, pushConfig); // Dynamic dispatch to most appropriate method
 
                 // Add objects to the stream
-                SpeckleLayer.ObjectCount += 1;
                 SpeckleStream.Objects.Add(speckleObject);
             }
 
