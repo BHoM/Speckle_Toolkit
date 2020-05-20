@@ -164,7 +164,6 @@
     <Compile Include="Convert\ToSpeckle\Base\IObjects.cs" />
     <Compile Include="Convert\ToSpeckle\Base\IBHoMObjects.cs" />
     <Compile Include="Convert\ToSpeckle\Base\Objects.cs" />
-    <Compile Include="CRUD\Delete.cs" />
     <Compile Include="AdapterActions\_PushMethods\UpdateStream.cs" />
     <Compile Include="AdapterActions\_PushMethods\SpeckleRepresentation.cs" />
     <Compile Include="SpeckleAdapter.cs" />
