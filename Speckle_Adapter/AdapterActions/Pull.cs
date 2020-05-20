@@ -47,7 +47,27 @@ namespace BH.Adapter.Speckle
                 return new List<object>();
             }
 
-            return Read(speckleRequest);
+            ResponseObject response = null;
+            string speckleQuery = "";
+
+            if (speckleRequest != null)
+                speckleQuery = Speckle.Convert.ToSpeckleQuery(speckleRequest);
+
+            // Download the objects.
+            response = SpeckleClient.StreamGetObjectsAsync(SpeckleClient.Stream.StreamId, speckleQuery).Result;
+
+            // Conversion configuration.
+            bool storeSpeckleId = true;
+
+            // Extract the configuations from the ActionConfig.
+            // In this case, only SpecklePullConfig contains an option.
+            SpecklePullConfig config = actionConfig as SpecklePullConfig;
+            if (config != null)
+                storeSpeckleId = config.StoreSpeckleId;
+
+            List<object> converted = Speckle.Convert.FromSpeckle(response.Resources, storeSpeckleId);
+
+            return converted;
         }
     }
 }

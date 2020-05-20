@@ -103,7 +103,7 @@ namespace BH.Adapter.Speckle
             // Else, mesh the BHoMObject's geometrical representation, and convert the resulting RenderMesh to Speckle's mesh.
             renderMesh = geometricalRepresentation.IRenderMesh();
             if (renderMesh != null)
-                speckleRepresentation = Convert.ToSpeckle(renderMesh);
+                speckleRepresentation = Speckle.Convert.ToSpeckle(renderMesh);
 
             return speckleRepresentation;
         }

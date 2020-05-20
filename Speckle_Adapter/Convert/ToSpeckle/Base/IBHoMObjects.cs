@@ -38,10 +38,10 @@ namespace BH.Adapter.Speckle
 {
     public partial class SpeckleAdapter
     {
-        protected SpeckleObject Create(IBHoMObject bhomObject, SpecklePushConfig config)
+        protected SpeckleObject ToSpeckle(IBHoMObject bhomObject, SpecklePushConfig config)
         {
             // Assign SpeckleStreamId to the CustomData of the IBHoMObjects
-            bhomObject.CustomData["Speckle_StreamId"] = SpeckleStreamId;
+            bhomObject.CustomData["Speckle_StreamId"] = SpeckleClient.Stream.StreamId;
 
             // SpeckleObject "container". Top level has geometry representation of BHoM Object, so it can be visualised in the SpeckleViewer. 
             SpeckleObject speckleObject = SpeckleRepresentation(bhomObject, config.RendermeshOptions);

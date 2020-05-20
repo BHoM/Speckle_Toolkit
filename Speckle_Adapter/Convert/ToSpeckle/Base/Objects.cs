@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the Buildings and Habitats object Model (BHoM)
  * Copyright (c) 2015 - 2019, the respective contributors. All rights reserved.
  *
@@ -20,37 +20,28 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.oM.Base;
+using BH.oM.Data;
+using BH.oM.Data.Collections;
+using BH.oM.Geometry;
+using SpeckleCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using SpeckleCore;
-using BHG = BH.oM.Geometry;
-using SpeckleCoreGeometryClasses;
-using BH.oM.Base;
-using BH.Engine.Geometry;
-using System.Reflection;
-using BH.oM.Geometry;
-using BH.Engine.Base;
-using System.ComponentModel;
+using BH.Engine.Speckle;
 using BH.oM.Speckle;
 
 namespace BH.Adapter.Speckle
 {
-    public static partial class Convert
+    public partial class SpeckleAdapter
     {
-        // Interface method
-        public static SpeckleObject IToSpeckle(this IGeometry iGeometry)
+        protected SpeckleObject ToSpeckle(object obj, SpecklePushConfig config)
         {
-            return ToSpeckle(iGeometry as dynamic);
-        }
-
-        // FallBack case for geometry conversions
-        private static SpeckleObject ToSpeckle(this IGeometry iGeometry)
-        {
-            // If more appropriate conversions are not found, return null
-            return null;
+            // Convert the objects into "Abstract" SpeckleObjects 
+            return SpeckleCore.Converter.Serialise(obj) as SpeckleObject;
         }
     }
 }

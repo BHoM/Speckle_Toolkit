@@ -45,8 +45,7 @@ namespace BH.Adapter.Speckle
             List<object> objectsToPush = objects.Select(x => x.DeepClone()).ToList();
 
             // Initialize the SpeckleStream
-            SpeckleStream.Objects = new List<SpeckleObject>(); // stream is immutable
-            SpeckleClient.StreamId = SpeckleClient.StreamId ?? SpeckleStreamId; // make sure it's there
+            SpeckleClient.Stream.Objects = new List<SpeckleObject>(); // stream is immutable
 
             // //- Read config
             SpecklePushConfig pushConfig = (actionConfig as SpecklePushConfig) ?? new SpecklePushConfig();
@@ -58,31 +57,38 @@ namespace BH.Adapter.Speckle
             // Actual creation and add to the stream
             for (int i = 0; i < objectsToPush.Count(); i++)
             {
-                SpeckleObject speckleObject = Create(objectsToPush[i] as dynamic, pushConfig); // Dynamic dispatch to most appropriate method
+                SpeckleObject speckleObject = ToSpeckle(objectsToPush[i] as dynamic, pushConfig); // Dynamic dispatch to most appropriate method
 
                 // Add objects to the stream
-                SpeckleStream.Objects.Add(speckleObject);
+                SpeckleClient.Stream.Objects.Add(speckleObject);
             }
 
-            // Send the objects
+            // // - Send the objects
             try
             {
-                // Issue: with `StreamUpdateAsync` Speckle doesn't seem to send anything if the Stream is initially empty.
-                // You need to Push twice if the Stream is initially empty.
-                //var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleStreamId, SpeckleStream).Result;
-                //SpeckleClient.BroadcastMessage("stream", SpeckleStreamId, new { eventType = "update-global" });
-                UpdateStream(pushConfig);
+                // Try the batch upload
+                BatchUpdateStream(pushConfig);
             }
             catch (Exception e)
             {
-                BH.Engine.Reflection.Compute.RecordError($"Upload to Speckle failed. Message returned:\n{e.Message}");
-                return new List<object>();
+                try
+                {
+                    // If the batch upload fails, try the standard SpeckleCore Update as a last resort.
+
+                    //// - Issue: with `StreamUpdateAsync` Speckle doesn't seem to send anything if the Stream is initially empty.
+                    //// - You need to Push twice if the Stream is initially empty.
+                    var updateResponse = SpeckleClient.StreamUpdateAsync(SpeckleClient.Stream.StreamId, SpeckleClient.Stream).Result;
+                    SpeckleClient.BroadcastMessage("stream", SpeckleClient.Stream.StreamId, new { eventType = "update-global" });
+                }
+                catch 
+                {
+                    // If all has failed, return the first error.
+                    BH.Engine.Reflection.Compute.RecordError($"Upload to Speckle failed. Message returned:\n{e.InnerException.Message}");
+                    return new List<object>();
+                }
             }
 
             return objectsToPush;
         }
-
-
-    
     }
 }
