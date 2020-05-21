@@ -50,7 +50,7 @@ namespace BH.Adapter.Speckle
             try
             {
                 cloneResult = respStreamClTask?.Result;
-                SpeckleClient.Stream.Children.Add(cloneResult.Clone.StreamId);
+                SpeckleClient.Stream.Children = cloneResult.Parent.Children;
             }
             catch (Exception e)
             {
