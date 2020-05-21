@@ -49,7 +49,17 @@ namespace BH.Adapter.Speckle
 
             if (speckleObject == null)
             {
-                BH.oM.Graphics.RenderMesh rm = BH.Engine.Representation.Compute.IRenderMesh(iObject);
+                BH.oM.Graphics.RenderMesh rm = null;
+
+                try
+                {
+                    rm = BH.Engine.Representation.Compute.IRenderMesh(iObject);
+                }
+                catch
+                {
+                    BH.Engine.Reflection.Compute.RecordNote($"Could not compute the representation for an object of type {iObject.GetType().Name}.\n" +
+                        $"This simply means that the object will not be viewable in the browser (SpeckleViewer).");
+                }
 
                 if (rm != null)
                     speckleObject = Speckle.Convert.ToSpeckle(rm);
