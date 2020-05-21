@@ -89,21 +89,31 @@ namespace BH.Adapter.Speckle
 
             // See if there is a custom BHoM Geometry representation for that BHoMObject.
             // If so, attempt to convert it to Speckle.
-            IGeometry geometricalRepresentation = BH.Engine.Representation.Compute.IGeometricalRepresentation(bhomObject, renderMeshOptions.RepresentationOptions);
-
-            if (geometricalRepresentation == null)
-                return null;
+            IGeometry geometricalRepresentation = null;
+            try
+            {
+                geometricalRepresentation = BH.Engine.Representation.Compute.IGeometricalRepresentation(bhomObject, renderMeshOptions.RepresentationOptions);
+            }
+            catch { }
 
             // If found, attempt to convert the BHoM Geometrical representation of the object to Speckle geometry.
-            speckleRepresentation = geometricalRepresentation.IToSpeckle();
+            if (geometricalRepresentation != null)
+                speckleRepresentation = geometricalRepresentation.IToSpeckle();
 
-            if (speckleRepresentation != null)
-                return speckleRepresentation;
+            // If the convert of the base geometry to Speckle Geometry didn't work, 
+            // try to obtain a BHoM RenderMesh of the geometrical representation, then convert it to a Speckle mesh.
+            if (speckleRepresentation == null)
+            {
+                try
+                {
+                    // Do not use the interface method IRenderMesh here. That one re-computes the geometrical representation.
+                    renderMesh = BH.Engine.Representation.Compute.RenderMesh(geometricalRepresentation as dynamic);
+                }
+                catch { }
 
-            // Else, mesh the BHoMObject's geometrical representation, and convert the resulting RenderMesh to Speckle's mesh.
-            renderMesh = geometricalRepresentation.IRenderMesh();
-            if (renderMesh != null)
-                speckleRepresentation = Speckle.Convert.ToSpeckle(renderMesh);
+                if (renderMesh != null)
+                    speckleRepresentation = Speckle.Convert.ToSpeckle(renderMesh);
+            }
 
             return speckleRepresentation;
         }
