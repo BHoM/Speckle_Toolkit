@@ -44,22 +44,15 @@ namespace BH.Adapter.Speckle
 
             AdapterIdName = BH.Adapter.Speckle.Convert.AdapterIdName;
 
-            SpeckleAccount = speckleAccount;
             SpeckleStream SpeckleStream = new SpeckleStream() { StreamId = speckleStreamId, Name = speckleStreamName };
 
-            SpeckleClient = new SpeckleApiClient() { BaseUrl = SpeckleAccount.RestApi, AuthToken = SpeckleAccount.Token, Stream = SpeckleStream, StreamId = SpeckleStream.StreamId}; // hacky, but i don't want to rebuild stuff and fiddle dll loading etc.
+            SpeckleClient = new SpeckleApiClient() { BaseUrl = speckleAccount.RestApi, AuthToken = speckleAccount.Token, Stream = SpeckleStream, StreamId = SpeckleStream.StreamId};
             SpeckleClient.SetupWebsocket();
         }
-
-        // Keep for retrocompatibility
-        public SpeckleAdapter(SpeckleCore.Account speckleAccount, string speckleStreamId) : this(speckleAccount, speckleStreamId, "Anonymous stream")
-        { }
-
-
+        
         /***************************************************/
         /**** Public Properties                         ****/
         /***************************************************/
         public SpeckleApiClient SpeckleClient { get; private set; }
-        public Account SpeckleAccount { get; private set; }
     }
 }
