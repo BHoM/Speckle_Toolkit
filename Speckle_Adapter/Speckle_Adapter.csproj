@@ -190,14 +190,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
     <PostBuildEvent>rem update BHoM Assemblies folder
 call "..\..\BHoM_UI\Build\UI_PostBuild.exe" ..\..\ "$(AppData)\BHoM\Assemblies"
 
