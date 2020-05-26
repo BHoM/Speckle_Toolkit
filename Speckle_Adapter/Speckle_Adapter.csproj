@@ -49,6 +49,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="netstandard, Version=2.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51">
+      <Private>False</Private>
     </Reference>
     <Reference Include="Adapter_oM, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -103,11 +104,11 @@
     </Reference>
     <Reference Include="SpeckleCore, Version=1.7.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SpeckleCore.1.7.3.417\lib\netstandard2.0\SpeckleCore.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SpeckleCoreGeometryClasses, Version=1.2.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\SpeckleCoreGeometry.1.2.8\lib\net461\SpeckleCoreGeometryClasses.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System">
       <Private>False</Private>
@@ -115,9 +116,15 @@
     <Reference Include="System.Core">
       <Private>False</Private>
     </Reference>
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Net" />
+    <Reference Include="System.Drawing">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Management">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Net">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq">
       <Private>False</Private>
     </Reference>
@@ -191,6 +198,12 @@
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
+    <PostBuildEvent>rem update BHoM Assemblies folder
+call "..\..\BHoM_UI\Build\UI_PostBuild.exe" ..\..\ "$(AppData)\BHoM\Assemblies"
+
+rem copy Grasshopper_UI to BHoM Assemblies folder
+Copy /Y "..\..\Grasshopper_Toolkit\Build\BH.UI.Grasshopper.dll" "$(AppData)\BHoM\Assemblies\BH.UI.Grasshopper.dll"
+Copy /Y "..\..\Grasshopper_Toolkit\Build\BH.UI.Grasshopper.dll" "$(AppData)\BHoM\Assemblies\BH.UI.Grasshopper.gha"</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
