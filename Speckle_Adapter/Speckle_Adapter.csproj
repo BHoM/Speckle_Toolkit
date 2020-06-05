@@ -195,8 +195,9 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>xcopy "$(TargetDir)$(TargetFileName)"  "C:\ProgramData\BHoM\Assemblies" /Y
+if not exist "%25localappdata%25\Speckle" xcopy "$(TargetDir)SpeckleCoreGeometryClasses.dll"  "C:\ProgramData\BHoM\Assemblies" /Y
+if not exist "%25localappdata%25\Speckle" xcopy "$(TargetDir)SpeckleCore.dll"  "C:\ProgramData\BHoM\Assemblies" /Y</PostBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
