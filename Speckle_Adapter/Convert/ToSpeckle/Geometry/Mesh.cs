@@ -35,13 +35,14 @@ using BH.oM.Geometry;
 using BH.Engine.Base;
 using System.ComponentModel;
 using BH.oM.Speckle;
+using System.Drawing;
 
 namespace BH.Adapter.Speckle
 {
     public static partial class Convert
     {
         [Description("Convert BHoM Mesh to a Speckle Mesh")]
-        public static SpeckleMesh ToSpeckle(this BHG.Mesh bhomMesh)
+        public static SpeckleMesh ToSpeckle(this BHG.Mesh bhomMesh, Color? colour = null)
         {
             double[] vertices = bhomMesh.Vertices.ToFlatArray();
             int[] faces = bhomMesh.Faces.SelectMany(face =>
@@ -49,8 +50,13 @@ namespace BH.Adapter.Speckle
                 if (face.D != -1) return new int[] { 1, face.A, face.B, face.C, face.D };
                 return new int[] { 0, face.A, face.B, face.C };
             }).ToArray();
-            var defaultColour = System.Drawing.Color.FromArgb(255, 100, 100, 100);
-            var colors = Enumerable.Repeat(defaultColour.ToArgb(), vertices.Count()).ToArray();
+
+            Color col = System.Drawing.Color.FromArgb(255, 100, 100, 100);
+
+            if (colour != null)
+                col = (Color)colour;
+
+            int[] colors = Enumerable.Repeat(col.ToArgb(), vertices.Count()).ToArray();
 
             SpeckleMesh speckleMesh = new SpeckleMesh(vertices, faces, colors, null);
 

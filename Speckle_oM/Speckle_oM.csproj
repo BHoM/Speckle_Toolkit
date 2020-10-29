@@ -61,6 +61,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SpeckleId.cs" />
     <Compile Include="ComparerForDiffing.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SpecklePushConfig.cs" />

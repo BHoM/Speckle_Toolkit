@@ -51,31 +51,16 @@ namespace BH.Adapter.Speckle
             if (bhomObject is CustomObject)
                 return null;
 
-            // See if the object contains a custom Mesh Representation in its CustomData.
+            // See if the object contains a custom Mesh Representation in its Fragments.
             Mesh meshRepresentation = null;
             RenderMesh renderMesh = null;
             if (bhomObject != null)
             {
-                object renderMeshObj = null;
-                bhomObject.CustomData.TryGetValue(renderMeshOptions.CustomRendermeshKey, out renderMeshObj);
+                RenderMesh renderMeshObj = null;
+                bhomObject.TryGetRendermesh(out renderMeshObj);
 
                 if (renderMeshObj != null)
-                {
-                    renderMesh = renderMeshObj as RenderMesh;
-                    meshRepresentation = renderMeshObj as Mesh;
-
-                    if (typeof(IEnumerable<object>).IsAssignableFrom(renderMeshObj.GetType()))
-                    {
-                        List<object> objects = renderMeshObj as List<object>;
-                        List<RenderMesh> renderMeshes = objects.OfType<RenderMesh>().ToList();
-                        if (renderMeshes.Count > 0)
-                            renderMesh = BH.Engine.Representation.Compute.JoinRenderMeshes(renderMeshes);
-
-                        List<Mesh> meshes = objects.OfType<Mesh>().ToList();
-                        if (meshes.Count > 0)
-                            meshRepresentation = BH.Engine.Representation.Compute.JoinMeshes(meshes);
-                    }
-                }
+                    meshRepresentation = new Mesh() { Faces = renderMeshObj.Faces, Vertices = renderMeshObj.Vertices.Select(v => v.Point).ToList() };
             }
 
             if (renderMesh != null)

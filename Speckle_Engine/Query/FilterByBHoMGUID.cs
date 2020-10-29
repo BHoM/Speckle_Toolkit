@@ -33,7 +33,7 @@ namespace BH.Engine.Speckle
 {
     public static partial class Query
     {
-        [Description("Return only BHoMObjects that have the specified BHoMGUID in their CustomData property; or all objects if no id is specified.")]
+        [Description("Return only BHoMObjects that have the specified BHoMGUID; or all objects if no id is specified.")]
         public static IEnumerable<object> FilterByBHoMGUID(IEnumerable<object> objects, List<string> bhomGuids = null)
         {
             // BHoMGUID is only available for BHoMObjects.

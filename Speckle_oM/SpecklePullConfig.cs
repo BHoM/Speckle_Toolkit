@@ -31,8 +31,7 @@ namespace BH.oM.Speckle
 {
     public class SpecklePullConfig : BH.oM.Adapter.ActionConfig
     {
-        [Description("Stores the SpeckleId of the pulled objects in the CustomData.\n" +
-            "The CustomData dictionary is only available for BHoMObjects.")]
+        [Description("Stores the SpeckleId of the pulled objects in the Fragments of the BHoMObjects.")]
         public virtual bool StoreSpeckleId { get; set; } = true;
     }
 }
