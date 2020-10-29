@@ -42,8 +42,6 @@ namespace BH.Adapter.Speckle
                 return;
             }
 
-            AdapterIdName = BH.Adapter.Speckle.Convert.AdapterIdName;
-
             SpeckleStream SpeckleStream = new SpeckleStream() { StreamId = speckleStreamId, Name = speckleStreamName };
 
             SpeckleClient = new SpeckleApiClient() { BaseUrl = speckleAccount.RestApi, AuthToken = speckleAccount.Token, Stream = SpeckleStream, StreamId = SpeckleStream.StreamId};

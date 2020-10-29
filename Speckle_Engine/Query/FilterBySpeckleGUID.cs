@@ -20,7 +20,9 @@
  * along with this code. If not, see <https://www.gnu.org/licenses/lgpl-3.0.html>.      
  */
 
+using BH.Engine.Adapter;
 using BH.oM.Base;
+using BH.oM.Speckle;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -33,14 +35,14 @@ namespace BH.Engine.Speckle
 {
     public static partial class Query
     {
-        [Description("Return only BHoMObjects that have the specified Speckle id in their CustomData property; or all objects if no id is specified.")]
+        [Description("Return only BHoMObjects that have the specified Speckle id in their Fragments; or all objects if no id is specified.")]
         public static IEnumerable<object> FilterBySpeckleGUID(IEnumerable<object> objects, List<string> speckleIds = null, string speckleAdapterIdName = "Speckle_id")
         {
-            // SpeckleGUID is stored in CustomData, which is only available for BHoMObjects.
+            // SpeckleGUID is stored in Fragments, which is only available for BHoMObjects.
             if (speckleIds != null && speckleIds.Count != 0)
                 return objects
                     .OfType<IBHoMObject>()
-                    .Where(o => speckleIds.Any(id => id == o.CustomData[speckleAdapterIdName].ToString()));
+                    .Where(o => speckleIds.Any(id => id == o.AdapterId(typeof(SpeckleId)).ToString()));
             else
                 return objects;
         }

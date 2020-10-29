@@ -53,8 +53,7 @@ namespace BH.oM.Speckle
            "DiffConfig for the Hash calculation. The objects' hash in Speckle is set based on these configurations.")]
         public override DiffConfig DiffConfig { get; set; } = new DiffConfig();
 
-        //[Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their CustomData property.\n" +
-        //    "The CustomData dictionary is only available for BHoMObjects.")]
+        //[Description("After the Push, the objects are downloaded to read their SpeckleId, which is then stored in their Fragments property.")]
         //// This does not work since I switched to BH.Engine deserialisation in the Pull. Issue is that our deserialisation "recreates" the objects without preserving the original GUID.
         //public bool StoreSpeckleId { get; set; } = true;
     }
